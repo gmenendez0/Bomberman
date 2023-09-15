@@ -20,14 +20,12 @@ impl ObjetoMapa for Vacio {
         &self.coordenada_actual
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self) {
-        //? No se debe hacer nada...
+    fn recibir_rafaga(&mut self) -> Result<(), String> {
+        Ok(())
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self) {
-        //? No se debe hacer nada...
+    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
+        Ok(())
     }
 
     fn detonar(&mut self) -> Result<(), String> {

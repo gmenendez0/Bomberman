@@ -2,13 +2,13 @@ use crate::coordenada::Coordenada;
 use crate::juego::Juego;
 use crate::objeto_mapa::ObjetoMapa;
 
-pub struct Pared {
+pub struct Pared<'a> {
     coordenada_actual: Coordenada,
-    juego: Juego,
+    juego: &'a mut Juego,
 }
 
-impl Pared {
-    pub fn new(coordenada_actual: Coordenada, juego: Juego) -> Pared {
+impl<'a> Pared<'a> {
+    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego) -> Pared {
         Pared {
             coordenada_actual,
             juego,
@@ -16,7 +16,7 @@ impl Pared {
     }
 }
 
-impl ObjetoMapa for Pared {
+impl<'a> ObjetoMapa for Pared<'a> {
     fn set_coordenada_actual(&mut self, coordenada: Coordenada) {
         self.coordenada_actual = coordenada;
     }
@@ -25,14 +25,14 @@ impl ObjetoMapa for Pared {
         &self.coordenada_actual
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self) {
+    fn recibir_rafaga(&mut self) -> Result<(), String> {
         //? Se debe bloquear que la explosion siga...
+        Ok(())
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self) {
+    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
         //? Se debe bloquear que la explosion siga...
+        Ok(())
     }
 
     fn detonar(&mut self) -> Result<(), String> {

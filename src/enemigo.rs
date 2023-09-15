@@ -2,23 +2,27 @@ use crate::coordenada::Coordenada;
 use crate::juego::Juego;
 use crate::objeto_mapa::ObjetoMapa;
 
-pub struct Enemigo {
+pub struct Enemigo<'a> {
     coordenada_actual: Coordenada,
-    juego: Juego,
+    juego: &'a mut Juego,
     vida: i32,
 }
 
-impl Enemigo {
-    pub fn new(coordenada_actual: Coordenada, juego: Juego, vida: i32) -> Enemigo {
+impl<'a> Enemigo<'a> {
+    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego, vida: i32) -> Enemigo {
         Enemigo {
             coordenada_actual,
             juego,
             vida,
         }
     }
+
+    fn reducir_vida(&mut self) {
+        self.vida -= 1;
+    }
 }
 
-impl ObjetoMapa for Enemigo {
+impl<'a> ObjetoMapa for Enemigo<'a> {
     fn set_coordenada_actual(&mut self, coordenada: Coordenada) {
         self.coordenada_actual = coordenada;
     }
@@ -27,18 +31,24 @@ impl ObjetoMapa for Enemigo {
         &self.coordenada_actual
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self) {
-        //? Se debe reducir la vida...
-        //? Se debe chequear si la vida llego a 0...
-        //? Si la vida llego a 0, se le debe decir al juego que elimine al jugador del mapa...
+    fn recibir_rafaga(&mut self) -> Result<(), String> {
+        self.reducir_vida();
+
+        if self.vida <= 0 {
+            self.juego.vaciar_coordenada(&self.coordenada_actual);
+        }
+
+        Ok(())
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self) {
-        //? Se debe reducir la vida...
-        //? Se debe chequear si la vida llego a 0...
-        //? Si la vida llego a 0, se le debe decir al juego que elimine al jugador del mapa...
+    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
+        self.reducir_vida();
+
+        if self.vida <= 0 {
+            self.juego.vaciar_coordenada(&self.coordenada_actual);
+        }
+
+        Ok(())
     }
 
     fn detonar(&mut self) -> Result<(), String> {

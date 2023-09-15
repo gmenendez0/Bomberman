@@ -6,25 +6,25 @@ pub struct Laberinto {
 }
 
 impl Laberinto {
-    pub fn new(filasDelTablero: Vec<String>) -> Laberinto {
+    pub fn new(filas_del_tablero: Vec<String>) -> Laberinto {
         //? Crear tablero basándose en las filas...
         Laberinto {}
     }
 
-    pub fn explotar_coordenada(self, coordenada_a_explotar: Coordenada) {
+    pub fn rafagear_coordenada(&mut self, coordenada_a_explotar: &Coordenada) {
         //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosion...
     }
 
-    pub fn explotar_coordenada_traspaso(self, coordenada_a_explotar: Coordenada) {
+    pub fn rafagear_coordenada_traspaso(&mut self, coordenada_a_explotar: &Coordenada) {
         //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosionTraspaso...
     }
 
     // ? Devolver el resultado de la detonacion!!
-    pub fn detonar_coordenada(self, coordenada_a_detonar: Coordenada) {
+    pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) {
         //? Acceder a la coordenada recibida dentro del tablero y decirle que detone.
     }
 
-    pub fn vaciar_coordenada(self, coordenada_a_vaciar: Coordenada) {
+    pub fn vaciar_coordenada(&mut self, coordenada_a_vaciar: &Coordenada) {
         //? Acceder a la coordenada recibida dentro del tablero y poner alli un nuevo Vacio.
     }
 

@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Coordenada {
     x: i32,
     y: i32,
@@ -8,12 +9,12 @@ impl Coordenada {
         Coordenada { x, y }
     }
 
-    pub fn get_x(&self) -> &i32 {
-        &self.x
+    pub fn get_x(&self) -> i32 {
+        self.x.clone()
     }
 
-    pub fn get_y(&self) -> &i32 {
-        &self.y
+    pub fn get_y(&self) -> i32 {
+        self.y.clone()
     }
 
     pub fn set_x(&mut self, x: i32) {

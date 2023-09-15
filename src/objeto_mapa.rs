@@ -5,9 +5,9 @@ pub trait ObjetoMapa {
 
     fn get_coordenada_actual(&self) -> &Coordenada;
 
-    fn recibir_rafaga(&self);
+    fn recibir_rafaga(&mut self) -> Result<(), String>;
 
-    fn recibir_rafaga_traspaso(&self);
+    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String>;
 
     fn detonar(&mut self) -> Result<(), String>;
 

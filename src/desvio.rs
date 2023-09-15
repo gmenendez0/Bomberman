@@ -9,14 +9,14 @@ pub enum Direccion {
     Derecha,
 }
 
-pub struct Desvio {
+pub struct Desvio<'a> {
     coordenada_actual: Coordenada,
-    juego: Juego,
+    juego: &'a mut Juego,
     direccion: Direccion,
 }
 
-impl Desvio {
-    pub fn new(coordenada_actual: Coordenada, juego: Juego, direccion: Direccion) -> Desvio {
+impl<'a> Desvio<'a> {
+    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego, direccion: Direccion) -> Desvio {
         Desvio {
             coordenada_actual,
             juego,
@@ -25,7 +25,7 @@ impl Desvio {
     }
 }
 
-impl ObjetoMapa for Desvio {
+impl<'a> ObjetoMapa for Desvio<'a> {
     fn set_coordenada_actual(&mut self, coordenada: Coordenada) {
         self.coordenada_actual = coordenada;
     }
@@ -34,14 +34,14 @@ impl ObjetoMapa for Desvio {
         &self.coordenada_actual
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self) {
+    fn recibir_rafaga(&mut self) -> Result<(), String> {
         //? Se debe desviar la rafaga de la explosion...
+        Ok(())
     }
 
-    //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self) {
+    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
         //? Se debe desviar la rafaga de la explosion...
+        Ok(())
     }
 
     fn detonar(&mut self) -> Result<(), String> {
