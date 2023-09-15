@@ -35,7 +35,6 @@ impl ObjetoMapa for Vacio {
     }
 
     fn obtener_representacion(&self) -> String {
-        //? Se debe corregir la representacion...
-        " ".to_string()
+        String::from("  ")
     }
 }

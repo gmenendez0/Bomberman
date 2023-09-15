@@ -2,16 +2,25 @@ use crate::coordenada::Coordenada;
 use crate::juego::Juego;
 use crate::objeto_mapa::ObjetoMapa;
 
+pub enum Direccion {
+    Arriba,
+    Abajo,
+    Izquierda,
+    Derecha,
+}
+
 pub struct Desvio {
     coordenada_actual: Coordenada,
     juego: Juego,
+    direccion: Direccion,
 }
 
 impl Desvio {
-    pub fn new(coordenada_actual: Coordenada, juego: Juego) -> Desvio {
+    pub fn new(coordenada_actual: Coordenada, juego: Juego, direccion: Direccion) -> Desvio {
         Desvio {
             coordenada_actual,
             juego,
+            direccion,
         }
     }
 }
@@ -40,7 +49,15 @@ impl ObjetoMapa for Desvio {
     }
 
     fn obtener_representacion(&self) -> String {
-        //? Se debe corregir la representacion...
-        " ".to_string()
+        let representacion_desvio = String::from("D");
+
+        let representacion_de_direccion = match self.direccion {
+            Direccion::Arriba => String::from("U"),
+            Direccion::Abajo => String::from("D"),
+            Direccion::Izquierda => String::from("L"),
+            Direccion::Derecha => String::from("R"),
+        };
+
+        representacion_desvio + &representacion_de_direccion
     }
 }

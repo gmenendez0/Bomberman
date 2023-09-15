@@ -40,7 +40,6 @@ impl ObjetoMapa for Pared {
     }
 
     fn obtener_representacion(&self) -> String {
-        //? Se debe corregir la representacion...
-        " ".to_string()
+        String::from("W ")
     }
 }

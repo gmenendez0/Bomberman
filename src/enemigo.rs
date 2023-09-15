@@ -46,7 +46,9 @@ impl ObjetoMapa for Enemigo {
     }
 
     fn obtener_representacion(&self) -> String {
-        //? Se debe corregir la representacion...
-        " ".to_string()
+        let representacion_enemigo = String::from("F");
+        let representacion_de_vida = self.vida.to_string();
+
+        representacion_enemigo + &representacion_de_vida
     }
 }

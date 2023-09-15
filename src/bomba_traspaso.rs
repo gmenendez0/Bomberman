@@ -43,7 +43,9 @@ impl ObjetoMapa for BombaTraspaso {
     }
 
     fn obtener_representacion(&self) -> String {
-        //? Se debe corregir la representacion...
-        " ".to_string()
+        let representacion_bomba_traspaso = String::from("S");
+        let representacion_de_alcance = self.alcance.to_string();
+
+        representacion_bomba_traspaso + &representacion_de_alcance
     }
 }
