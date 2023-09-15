@@ -1,3 +1,4 @@
+use crate::bomba::Bomba;
 use crate::coordenada::Coordenada;
 use crate::juego::Juego;
 use crate::objeto_mapa::ResultadoRafaga::{
@@ -19,8 +20,10 @@ impl<'a> BombaNormal<'a> {
             alcance,
         }
     }
+}
 
-    pub fn rafagear_arriba(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
+impl<'a> Bomba for BombaNormal<'a> {
+    fn rafagear_arriba(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
         let mut coordenada_a_rafagear = coordenada_inicial;
         let mut resultado_rafaga = Insignificante;
 
@@ -29,7 +32,7 @@ impl<'a> BombaNormal<'a> {
             &resultado_rafaga,
         ) {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
-            alcance_restante = alcance_restante - 1;
+            alcance_restante -= 1;
 
             resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
         }
@@ -42,7 +45,7 @@ impl<'a> BombaNormal<'a> {
         }
     }
 
-    pub fn rafagear_abajo(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
+    fn rafagear_abajo(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
         let mut coordenada_a_rafagear = coordenada_inicial;
         let mut resultado_rafaga = Insignificante;
 
@@ -51,7 +54,7 @@ impl<'a> BombaNormal<'a> {
             &resultado_rafaga,
         ) {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
-            alcance_restante = alcance_restante - 1;
+            alcance_restante -= 1;
 
             resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
         }
@@ -64,7 +67,7 @@ impl<'a> BombaNormal<'a> {
         }
     }
 
-    pub fn rafagear_derecha(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
+    fn rafagear_derecha(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
         let mut coordenada_a_rafagear = coordenada_inicial;
         let mut resultado_rafaga = Insignificante;
 
@@ -73,7 +76,7 @@ impl<'a> BombaNormal<'a> {
             &resultado_rafaga,
         ) {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_x() + 1);
-            alcance_restante = alcance_restante - 1;
+            alcance_restante -= 1;
 
             resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
         }
@@ -86,11 +89,7 @@ impl<'a> BombaNormal<'a> {
         }
     }
 
-    pub fn rafagear_izquierda(
-        &mut self,
-        coordenada_inicial: Coordenada,
-        mut alcance_restante: i32,
-    ) {
+    fn rafagear_izquierda(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
         let mut coordenada_a_rafagear = coordenada_inicial;
         let mut resultado_rafaga = Insignificante;
 
@@ -99,7 +98,7 @@ impl<'a> BombaNormal<'a> {
             &resultado_rafaga,
         ) {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_x() - 1);
-            alcance_restante = alcance_restante - 1;
+            alcance_restante -= 1;
 
             resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
         }
@@ -112,7 +111,7 @@ impl<'a> BombaNormal<'a> {
         }
     }
 
-    pub fn rafaga_no_choca_obstaculo(resultado_rafaga: &ResultadoRafaga) -> bool {
+    fn rafaga_no_choca_obstaculo(resultado_rafaga: &ResultadoRafaga) -> bool {
         !matches!(
             resultado_rafaga,
             DesvioArriba
@@ -124,21 +123,21 @@ impl<'a> BombaNormal<'a> {
         )
     }
 
-    pub fn rafaga_continua_sin_chocar_obstaculo(
+    fn rafaga_continua_sin_chocar_obstaculo(
         alcance_restante: i32,
         resultado_rafaga: &ResultadoRafaga,
     ) -> bool {
         alcance_restante > 0 && BombaNormal::<'a>::rafaga_no_choca_obstaculo(resultado_rafaga)
     }
 
-    pub fn rafaga_continua_chocando_obstaculo(
+    fn rafaga_continua_chocando_obstaculo(
         alcance_restante: i32,
         resultado_rafaga: &ResultadoRafaga,
     ) -> bool {
         alcance_restante > 0 && !BombaNormal::<'a>::rafaga_no_choca_obstaculo(resultado_rafaga)
     }
 
-    pub fn evaluar_camino_a_seguir(
+    fn evaluar_camino_a_seguir(
         &mut self,
         coordenada_inicial: Coordenada,
         alcance_restante: i32,
@@ -157,11 +156,11 @@ impl<'a> BombaNormal<'a> {
         }
     }
 
-    pub fn procesar_detonacion(&mut self) {
-        self.rafagear_arriba(self.coordenada_actual.clone(), self.alcance.clone());
-        self.rafagear_abajo(self.coordenada_actual.clone(), self.alcance.clone());
-        self.rafagear_izquierda(self.coordenada_actual.clone(), self.alcance.clone());
-        self.rafagear_derecha(self.coordenada_actual.clone(), self.alcance.clone());
+    fn procesar_detonacion(&mut self) {
+        self.rafagear_arriba(self.coordenada_actual.clone(), self.alcance);
+        self.rafagear_abajo(self.coordenada_actual.clone(), self.alcance);
+        self.rafagear_izquierda(self.coordenada_actual.clone(), self.alcance);
+        self.rafagear_derecha(self.coordenada_actual.clone(), self.alcance);
     }
 }
 

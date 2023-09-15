@@ -1,3 +1,4 @@
+mod bomba;
 mod bomba_normal;
 mod bomba_traspaso;
 mod coordenada;
