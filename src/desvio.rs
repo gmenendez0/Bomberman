@@ -1,6 +1,8 @@
 use crate::coordenada::Coordenada;
-use crate::juego::Juego;
-use crate::objeto_mapa::ObjetoMapa;
+use crate::objeto_mapa::ResultadoRafaga::{
+    DesvioAbajo, DesvioArriba, DesvioDerecha, DesvioIzquierda,
+};
+use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub enum Direccion {
     Arriba,
@@ -9,23 +11,30 @@ pub enum Direccion {
     Derecha,
 }
 
-pub struct Desvio<'a> {
+pub struct Desvio {
     coordenada_actual: Coordenada,
-    juego: &'a mut Juego,
     direccion: Direccion,
 }
 
-impl<'a> Desvio<'a> {
-    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego, direccion: Direccion) -> Desvio {
+impl Desvio {
+    pub fn new(coordenada_actual: Coordenada, direccion: Direccion) -> Desvio {
         Desvio {
             coordenada_actual,
-            juego,
             direccion,
+        }
+    }
+
+    fn chequear_desvio(&self) -> ResultadoRafaga {
+        match self.direccion {
+            Direccion::Arriba => DesvioArriba,
+            Direccion::Abajo => DesvioAbajo,
+            Direccion::Izquierda => DesvioIzquierda,
+            Direccion::Derecha => DesvioDerecha,
         }
     }
 }
 
-impl<'a> ObjetoMapa for Desvio<'a> {
+impl ObjetoMapa for Desvio {
     fn set_coordenada_actual(&mut self, coordenada: Coordenada) {
         self.coordenada_actual = coordenada;
     }
@@ -34,14 +43,12 @@ impl<'a> ObjetoMapa for Desvio<'a> {
         &self.coordenada_actual
     }
 
-    fn recibir_rafaga(&mut self) -> Result<(), String> {
-        //? Se debe desviar la rafaga de la explosion...
-        Ok(())
+    fn recibir_rafaga(&mut self) -> ResultadoRafaga {
+        self.chequear_desvio()
     }
 
-    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
-        //? Se debe desviar la rafaga de la explosion...
-        Ok(())
+    fn recibir_rafaga_traspaso(&mut self) -> ResultadoRafaga {
+        self.chequear_desvio()
     }
 
     fn detonar(&mut self) -> Result<(), String> {

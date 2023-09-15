@@ -1,22 +1,18 @@
 use crate::coordenada::Coordenada;
-use crate::juego::Juego;
-use crate::objeto_mapa::ObjetoMapa;
+use crate::objeto_mapa::ResultadoRafaga::Choque;
+use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
-pub struct Roca<'a> {
+pub struct Roca {
     coordenada_actual: Coordenada,
-    juego: &'a mut Juego,
 }
 
-impl<'a> Roca<'a> {
-    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego) -> Roca {
-        Roca {
-            coordenada_actual,
-            juego,
-        }
+impl Roca {
+    pub fn new(coordenada_actual: Coordenada) -> Roca {
+        Roca { coordenada_actual }
     }
 }
 
-impl<'a> ObjetoMapa for Roca<'a> {
+impl ObjetoMapa for Roca {
     fn set_coordenada_actual(&mut self, coordenada: Coordenada) {
         self.coordenada_actual = coordenada;
     }
@@ -25,14 +21,12 @@ impl<'a> ObjetoMapa for Roca<'a> {
         &self.coordenada_actual
     }
 
-    fn recibir_rafaga(&mut self) -> Result<(), String> {
-        //? Se debe bloquear que la explosion siga...
-        Ok(())
+    fn recibir_rafaga(&mut self) -> ResultadoRafaga {
+        Choque
     }
 
-    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
-        //? No se debe hacer nada...
-        Ok(())
+    fn recibir_rafaga_traspaso(&mut self) -> ResultadoRafaga {
+        Choque
     }
 
     fn detonar(&mut self) -> Result<(), String> {

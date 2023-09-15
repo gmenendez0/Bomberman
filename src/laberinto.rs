@@ -1,5 +1,5 @@
 use crate::coordenada::Coordenada;
-use crate::objeto_mapa::ObjetoMapa;
+use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub struct Laberinto {
     //tablero: Vec<Vec<Box<dyn ObjetoMapa>>>,
@@ -11,12 +11,17 @@ impl Laberinto {
         Laberinto {}
     }
 
-    pub fn rafagear_coordenada(&mut self, coordenada_a_explotar: &Coordenada) {
+    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> ResultadoRafaga {
         //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosion...
+        ResultadoRafaga::Insignificante
     }
 
-    pub fn rafagear_coordenada_traspaso(&mut self, coordenada_a_explotar: &Coordenada) {
+    pub fn rafagear_coordenada_traspaso(
+        &mut self,
+        coordenada_a_rafagear: &Coordenada,
+    ) -> ResultadoRafaga {
         //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosionTraspaso...
+        ResultadoRafaga::Insignificante
     }
 
     // ? Devolver el resultado de la detonacion!!

@@ -1,5 +1,6 @@
 use crate::coordenada::Coordenada;
-use crate::objeto_mapa::ObjetoMapa;
+use crate::objeto_mapa::ResultadoRafaga::Insignificante;
+use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub struct Vacio {
     coordenada_actual: Coordenada,
@@ -20,12 +21,12 @@ impl ObjetoMapa for Vacio {
         &self.coordenada_actual
     }
 
-    fn recibir_rafaga(&mut self) -> Result<(), String> {
-        Ok(())
+    fn recibir_rafaga(&mut self) -> ResultadoRafaga {
+        Insignificante
     }
 
-    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
-        Ok(())
+    fn recibir_rafaga_traspaso(&mut self) -> ResultadoRafaga {
+        Insignificante
     }
 
     fn detonar(&mut self) -> Result<(), String> {

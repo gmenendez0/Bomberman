@@ -1,5 +1,6 @@
 use crate::coordenada::Coordenada;
 use crate::laberinto::Laberinto;
+use crate::objeto_mapa::ResultadoRafaga;
 
 pub struct Juego {
     laberinto: Laberinto,
@@ -12,13 +13,16 @@ impl Juego {
         }
     }
 
-    pub fn rafagear_coordenada(&mut self, coordenada_a_explotar: &Coordenada) {
-        self.laberinto.rafagear_coordenada(coordenada_a_explotar);
+    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> ResultadoRafaga {
+        self.laberinto.rafagear_coordenada(coordenada_a_rafagear)
     }
 
-    pub fn rafagear_coordenada_traspaso(&mut self, coordenada_a_explotar: &Coordenada) {
+    pub fn rafagear_coordenada_traspaso(
+        &mut self,
+        coordenada_a_rafagear: &Coordenada,
+    ) -> ResultadoRafaga {
         self.laberinto
-            .rafagear_coordenada_traspaso(coordenada_a_explotar);
+            .rafagear_coordenada_traspaso(coordenada_a_rafagear)
     }
 
     // ? Devolver el resultado de la detonacion!!

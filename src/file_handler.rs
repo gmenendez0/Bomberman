@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, BufWriter};
 
 pub struct FileHandler {
     target: String,
@@ -28,8 +28,15 @@ impl FileHandler {
         Ok(lineas)
     }
 
-    pub fn write(&self, data: Vec<String>) -> Result<(), String> {
+    pub fn write(&self, data: Vec<Vec<String>>) -> Result<(), String> {
+        let archivo = match File::open(&self.target) {
+            Ok(archivo) => archivo,
+            Err(e) => return Err(e.to_string()),
+        };
+        let escritor = BufWriter::new(archivo);
+
         //? Debe implementarse...
+
         Ok(())
     }
 }

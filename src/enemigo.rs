@@ -1,6 +1,7 @@
 use crate::coordenada::Coordenada;
 use crate::juego::Juego;
-use crate::objeto_mapa::ObjetoMapa;
+use crate::objeto_mapa::ResultadoRafaga::Insignificante;
+use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub struct Enemigo<'a> {
     coordenada_actual: Coordenada,
@@ -31,24 +32,18 @@ impl<'a> ObjetoMapa for Enemigo<'a> {
         &self.coordenada_actual
     }
 
-    fn recibir_rafaga(&mut self) -> Result<(), String> {
+    fn recibir_rafaga(&mut self) -> ResultadoRafaga {
         self.reducir_vida();
 
         if self.vida <= 0 {
             self.juego.vaciar_coordenada(&self.coordenada_actual);
         }
 
-        Ok(())
+        Insignificante
     }
 
-    fn recibir_rafaga_traspaso(&mut self) -> Result<(), String> {
-        self.reducir_vida();
-
-        if self.vida <= 0 {
-            self.juego.vaciar_coordenada(&self.coordenada_actual);
-        }
-
-        Ok(())
+    fn recibir_rafaga_traspaso(&mut self) -> ResultadoRafaga {
+        self.recibir_rafaga()
     }
 
     fn detonar(&mut self) -> Result<(), String> {
