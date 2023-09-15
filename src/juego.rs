@@ -1,13 +1,13 @@
 use crate::coordenada::Coordenada;
 use crate::laberinto::Laberinto;
 
-pub struct Juego{
+pub struct Juego {
     laberinto: Laberinto,
 }
 
-impl Juego{
-    pub fn new(filas_del_tablero: Vec<String>) -> Juego{
-        Juego{
+impl Juego {
+    pub fn new(filas_del_tablero: Vec<String>) -> Juego {
+        Juego {
             laberinto: Laberinto::new(filas_del_tablero),
         }
     }
@@ -17,7 +17,8 @@ impl Juego{
     }
 
     pub fn explotar_coordenada_traspaso(self, coordenada_a_explotar: Coordenada) {
-        self.laberinto.explotar_coordenada_traspaso(coordenada_a_explotar);
+        self.laberinto
+            .explotar_coordenada_traspaso(coordenada_a_explotar);
     }
 
     // ? Devolver el resultado de la detonacion!!

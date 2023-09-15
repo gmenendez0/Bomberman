@@ -1,5 +1,5 @@
-use crate::objeto_mapa::ObjetoMapa;
 use crate::coordenada::Coordenada;
+use crate::objeto_mapa::ObjetoMapa;
 
 pub struct Vacio {
     coordenada_actual: Coordenada,
@@ -21,20 +21,20 @@ impl ObjetoMapa for Vacio {
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self){
+    fn recibir_rafaga(&self) {
         //? No se debe hacer nada...
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self){
+    fn recibir_rafaga_traspaso(&self) {
         //? No se debe hacer nada...
     }
 
-    fn detonar(&mut self) -> Result<(), String>{
+    fn detonar(&mut self) -> Result<(), String> {
         Err("No se puede detonar un vacio".to_string())
     }
 
-    fn obtener_representacion(&self) -> String{
+    fn obtener_representacion(&self) -> String {
         //? Se debe corregir la representacion...
         " ".to_string()
     }

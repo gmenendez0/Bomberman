@@ -1,15 +1,18 @@
-use crate::objeto_mapa::ObjetoMapa;
 use crate::coordenada::Coordenada;
 use crate::juego::Juego;
+use crate::objeto_mapa::ObjetoMapa;
 
 pub struct Pared {
     coordenada_actual: Coordenada,
-    juego: Juego
+    juego: Juego,
 }
 
 impl Pared {
     pub fn new(coordenada_actual: Coordenada, juego: Juego) -> Pared {
-        Pared { coordenada_actual, juego}
+        Pared {
+            coordenada_actual,
+            juego,
+        }
     }
 }
 
@@ -23,20 +26,20 @@ impl ObjetoMapa for Pared {
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self){
+    fn recibir_rafaga(&self) {
         //? Se debe bloquear que la explosion siga...
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self){
+    fn recibir_rafaga_traspaso(&self) {
         //? Se debe bloquear que la explosion siga...
     }
 
-    fn detonar(&mut self) -> Result<(), String>{
+    fn detonar(&mut self) -> Result<(), String> {
         Err("No se puede detonar una pared".to_string())
     }
 
-    fn obtener_representacion(&self) -> String{
+    fn obtener_representacion(&self) -> String {
         //? Se debe corregir la representacion...
         " ".to_string()
     }

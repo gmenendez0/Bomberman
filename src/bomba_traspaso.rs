@@ -1,6 +1,6 @@
-use crate::objeto_mapa::ObjetoMapa;
 use crate::coordenada::Coordenada;
 use crate::juego::Juego;
+use crate::objeto_mapa::ObjetoMapa;
 
 pub struct BombaTraspaso {
     coordenada_actual: Coordenada,
@@ -10,7 +10,11 @@ pub struct BombaTraspaso {
 
 impl BombaTraspaso {
     pub fn new(coordenada_actual: Coordenada, juego: Juego, alcance: i32) -> BombaTraspaso {
-        BombaTraspaso { coordenada_actual, juego, alcance }
+        BombaTraspaso {
+            coordenada_actual,
+            juego,
+            alcance,
+        }
     }
 }
 
@@ -24,21 +28,21 @@ impl ObjetoMapa for BombaTraspaso {
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self){
+    fn recibir_rafaga(&self) {
         //? Se debe explotar la bomba utilizando la explosion traspaso...
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self){
+    fn recibir_rafaga_traspaso(&self) {
         //? Se debe explotar la bomba utilizando la explosion traspaso...
     }
 
-    fn detonar(&mut self) -> Result<(), String>{
+    fn detonar(&mut self) -> Result<(), String> {
         //? Se debe explotar la bomba utilizando la explosion traspaso...
         Ok(())
     }
 
-    fn obtener_representacion(&self) -> String{
+    fn obtener_representacion(&self) -> String {
         //? Se debe corregir la representacion...
         " ".to_string()
     }

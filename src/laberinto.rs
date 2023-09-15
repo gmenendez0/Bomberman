@@ -1,22 +1,22 @@
 use crate::coordenada::Coordenada;
 use crate::objeto_mapa::ObjetoMapa;
 
-pub struct Laberinto{
+pub struct Laberinto {
     //tablero: Vec<Vec<Box<dyn ObjetoMapa>>>,
 }
 
-impl Laberinto{
-    pub fn new(filasDelTablero: Vec<String>) -> Laberinto{
+impl Laberinto {
+    pub fn new(filasDelTablero: Vec<String>) -> Laberinto {
         //? Crear tablero basándose en las filas...
-        Laberinto{}
+        Laberinto {}
     }
 
-   pub fn explotar_coordenada(self, coordenada_a_explotar: Coordenada) {
-       //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosion...
-   }
+    pub fn explotar_coordenada(self, coordenada_a_explotar: Coordenada) {
+        //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosion...
+    }
 
     pub fn explotar_coordenada_traspaso(self, coordenada_a_explotar: Coordenada) {
-         //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosionTraspaso...
+        //? Acceder a la coordenada recibida dentro del tablero y decirle que recibaExplosionTraspaso...
     }
 
     // ? Devolver el resultado de la detonacion!!

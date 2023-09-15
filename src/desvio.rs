@@ -1,15 +1,18 @@
-use crate::objeto_mapa::ObjetoMapa;
 use crate::coordenada::Coordenada;
 use crate::juego::Juego;
+use crate::objeto_mapa::ObjetoMapa;
 
 pub struct Desvio {
     coordenada_actual: Coordenada,
-    juego: Juego
+    juego: Juego,
 }
 
 impl Desvio {
     pub fn new(coordenada_actual: Coordenada, juego: Juego) -> Desvio {
-        Desvio { coordenada_actual, juego}
+        Desvio {
+            coordenada_actual,
+            juego,
+        }
     }
 }
 
@@ -23,20 +26,20 @@ impl ObjetoMapa for Desvio {
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga(&self){
+    fn recibir_rafaga(&self) {
         //? Se debe desviar la rafaga de la explosion...
     }
 
     //? Seguramente debería recibir una referencia mutable...
-    fn recibir_rafaga_traspaso(&self){
+    fn recibir_rafaga_traspaso(&self) {
         //? Se debe desviar la rafaga de la explosion...
     }
 
-    fn detonar(&mut self) -> Result<(), String>{
+    fn detonar(&mut self) -> Result<(), String> {
         Err("No se puede detonar un desvio".to_string())
     }
 
-    fn obtener_representacion(&self) -> String{
+    fn obtener_representacion(&self) -> String {
         //? Se debe corregir la representacion...
         " ".to_string()
     }
