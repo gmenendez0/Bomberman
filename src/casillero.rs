@@ -4,6 +4,7 @@ use crate::casillero::Casillero::{
     CasilleroBombaNormal, CasilleroBombaTraspaso, CasilleroDesvio, CasilleroEnemigo,
     CasilleroPared, CasilleroRoca, CasilleroVacio,
 };
+use crate::coordenada::Coordenada;
 use crate::desvio::Desvio;
 use crate::enemigo::Enemigo;
 use crate::objeto_mapa::ObjetoMapa;
@@ -50,5 +51,35 @@ impl<'a> Casillero<'a> {
         };
 
         representacion
+    }
+
+    pub fn obtener_coordenada(&self) -> &Coordenada {
+        let coordenada: &Coordenada;
+
+        match &self {
+            CasilleroVacio(vacio) => {
+                coordenada = vacio.get_coordenada_actual();
+            }
+            CasilleroRoca(roca) => {
+                coordenada = roca.get_coordenada_actual();
+            }
+            CasilleroPared(pared) => {
+                coordenada = pared.get_coordenada_actual();
+            }
+            CasilleroEnemigo(enemigo) => {
+                coordenada = enemigo.get_coordenada_actual();
+            }
+            CasilleroDesvio(desvio) => {
+                coordenada = desvio.get_coordenada_actual();
+            }
+            CasilleroBombaNormal(bomba_normal) => {
+                coordenada = bomba_normal.get_coordenada_actual();
+            }
+            CasilleroBombaTraspaso(bomba_traspaso) => {
+                coordenada = bomba_traspaso.get_coordenada_actual();
+            }
+        };
+
+        coordenada
     }
 }

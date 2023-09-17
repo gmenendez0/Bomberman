@@ -17,7 +17,15 @@ pub struct Desvio {
 }
 
 impl Desvio {
-    pub fn new(coordenada_actual: Coordenada, direccion: Direccion) -> Desvio {
+    pub fn new(coordenada_actual: Coordenada, letra_direccion: String) -> Desvio {
+        let direccion = match letra_direccion.as_str() {
+            "U" => Direccion::Arriba,
+            "D" => Direccion::Abajo,
+            "L" => Direccion::Izquierda,
+            "R" => Direccion::Derecha,
+            _ => Direccion::Arriba,
+        };
+
         Desvio {
             coordenada_actual,
             direccion,

@@ -28,8 +28,13 @@ impl<'a> Laberinto<'a> {
         Laberinto { tablero }
     }
 
-    pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<Vec<String>>) {
-        //? Deben analizarse los datos, determinar que tipo de objeto hay en cada casilla y asignarlo al tablero.
+    pub fn reemplazar_casillero_en_tablero(&self, casillero: Casillero) {
+        if self.coordenadas_fuera_de_rango(casillero.obtener_coordenada()) {
+            return;
+        }
+
+        self.tablero[casillero.obtener_coordenada().get_x()]
+            [casillero.obtener_coordenada().get_y()] = casillero;
     }
 
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
@@ -111,7 +116,6 @@ impl<'a> Laberinto<'a> {
         resultado_rafaga
     }
 
-    // ? Devolver el resultado de la detonacion!!
     pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_detonar) {
             return Err("No se puede detonar fuera del mapa!".to_string());
@@ -164,6 +168,7 @@ impl<'a> Laberinto<'a> {
 
             for j in 0..self.tablero.len() {
                 fila.push(self.tablero[i][j].obtener_representacion());
+                fila.push(" ".to_string());
             }
 
             tablero_visualizacion.push(fila);

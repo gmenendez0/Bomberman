@@ -34,6 +34,6 @@ impl ObjetoMapa for Roca {
     }
 
     fn obtener_representacion(&self) -> String {
-        String::from("R ")
+        String::from("R")
     }
 }

@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 
 pub struct FileHandler {
     target: String,
@@ -10,11 +10,30 @@ impl FileHandler {
         FileHandler { target }
     }
 
-    pub fn read(&self) -> Result<Vec<String>, String> {
-        let archivo = match File::open(&self.target) {
+    pub fn crear_archivo(&self) -> Result<(), String> {
+        let archivo = match File::create(&self.target) {
             Ok(archivo) => archivo,
             Err(e) => return Err(e.to_string()),
         };
+
+        let mut escritor = BufWriter::new(archivo);
+        match escritor.write(b"ERROR: Se ha creado este archivo ya que no se ha podido abrir el archivo target especificado.") {
+            Ok(_) => (),
+            Err(e) => return Err(e.to_string()),
+        }
+
+        Ok(())
+    }
+
+    pub fn read(&self) -> Result<Vec<String>, String> {
+        let archivo = match File::open(&self.target) {
+            Ok(archivo) => archivo,
+            Err(_) => {
+                self.crear_archivo()?;
+                return Err("Error al abrir el archivo. Se ha creado uno y detallado el error dentro de el.".to_string());
+            }
+        };
+
         let lector = BufReader::new(archivo);
         let mut lineas = Vec::new();
 

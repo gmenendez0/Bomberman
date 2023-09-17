@@ -34,6 +34,6 @@ impl ObjetoMapa for Pared {
     }
 
     fn obtener_representacion(&self) -> String {
-        String::from("W ")
+        String::from("W")
     }
 }
