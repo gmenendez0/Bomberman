@@ -34,6 +34,6 @@ impl ObjetoMapa for Vacio {
     }
 
     fn obtener_representacion(&self) -> String {
-        String::from("  ")
+        String::from("__")
     }
 }

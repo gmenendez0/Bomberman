@@ -1,5 +1,6 @@
 use crate::bomba::Bomba;
 use crate::coordenada::Coordenada;
+use crate::juego;
 use crate::juego::Juego;
 use crate::objeto_mapa::ResultadoRafaga::{
     Choque, ChoqueFuerte, DesvioAbajo, DesvioArriba, Insignificante,
@@ -8,12 +9,16 @@ use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub struct BombaNormal<'a> {
     coordenada_actual: Coordenada,
-    juego: &'a mut Juego,
+    juego: &'a mut Juego<'a>,
     alcance: i32,
 }
 
 impl<'a> BombaNormal<'a> {
-    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego, alcance: i32) -> BombaNormal {
+    pub fn new(
+        coordenada_actual: Coordenada,
+        juego: &'a mut Juego<'a>,
+        alcance: i32,
+    ) -> BombaNormal<'a> {
         BombaNormal {
             coordenada_actual,
             juego,

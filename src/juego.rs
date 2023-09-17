@@ -2,15 +2,19 @@ use crate::coordenada::Coordenada;
 use crate::laberinto::Laberinto;
 use crate::objeto_mapa::ResultadoRafaga;
 
-pub struct Juego {
-    laberinto: Laberinto,
+pub struct Juego<'a> {
+    laberinto: Laberinto<'a>,
 }
 
-impl Juego {
-    pub fn new(filas_del_tablero: Vec<String>) -> Juego {
+impl<'a> Juego<'a> {
+    pub fn new(dimension_tablero: usize) -> Juego<'a> {
         Juego {
-            laberinto: Laberinto::new(filas_del_tablero),
+            laberinto: Laberinto::new(dimension_tablero),
         }
+    }
+
+    pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<Vec<String>>) {
+        self.laberinto.inicializar_laberinto_con_datos(datos);
     }
 
     pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> ResultadoRafaga {
@@ -26,8 +30,8 @@ impl Juego {
     }
 
     // ? Devolver el resultado de la detonacion!!
-    pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) {
-        self.laberinto.detonar_coordenada(coordenada_a_detonar);
+    pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
+        self.laberinto.detonar_coordenada(coordenada_a_detonar)
     }
 
     pub fn vaciar_coordenada(&mut self, coordenada_a_vaciar: &Coordenada) {

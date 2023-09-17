@@ -5,12 +5,12 @@ use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub struct Enemigo<'a> {
     coordenada_actual: Coordenada,
-    juego: &'a mut Juego,
+    juego: &'a mut Juego<'a>,
     vida: i32,
 }
 
 impl<'a> Enemigo<'a> {
-    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego, vida: i32) -> Enemigo {
+    pub fn new(coordenada_actual: Coordenada, juego: &'a mut Juego<'a>, vida: i32) -> Enemigo<'a> {
         Enemigo {
             coordenada_actual,
             juego,

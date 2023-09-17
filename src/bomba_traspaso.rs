@@ -8,12 +8,16 @@ use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub struct BombaTraspaso<'a> {
     coordenada_actual: Coordenada,
-    juego: &'a mut Juego,
+    juego: &'a mut Juego<'a>,
     alcance: i32,
 }
 
 impl<'a> BombaTraspaso<'a> {
-    pub fn new(coordenada_actual: Coordenada, juego: &mut Juego, alcance: i32) -> BombaTraspaso {
+    pub fn new(
+        coordenada_actual: Coordenada,
+        juego: &'a mut Juego<'a>,
+        alcance: i32,
+    ) -> BombaTraspaso<'a> {
         BombaTraspaso {
             coordenada_actual,
             juego,
