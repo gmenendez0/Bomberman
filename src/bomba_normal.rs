@@ -7,27 +7,25 @@ use crate::objeto_mapa::ResultadoRafaga::{
 };
 use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
-pub struct BombaNormal<'a> {
+pub struct BombaNormal {
     coordenada_actual: Coordenada,
-    juego: &'a mut Juego<'a>,
     alcance: i32,
 }
 
-impl<'a> BombaNormal<'a> {
-    pub fn new(
-        coordenada_actual: Coordenada,
-        juego: &'a mut Juego<'a>,
-        alcance: i32,
-    ) -> BombaNormal<'a> {
+impl BombaNormal {
+    pub fn new(coordenada_actual: Coordenada, alcance: i32) -> BombaNormal {
         BombaNormal {
             coordenada_actual,
-            juego,
             alcance,
         }
     }
+
+    pub fn get_alcance(&self) -> i32 {
+        self.alcance
+    }
 }
 
-impl<'a> Bomba for BombaNormal<'a> {
+impl Bomba for BombaNormal {
     fn rafagear_arriba(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
         let mut coordenada_a_rafagear = coordenada_inicial;
         let mut resultado_rafaga = Insignificante;
