@@ -2,6 +2,7 @@ use crate::coordenada::Coordenada;
 use crate::laberinto::Laberinto;
 use crate::objeto_mapa::ResultadoRafaga::Insignificante;
 use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
+use crate::pared::Pared;
 
 pub struct Vacio {
     coordenada_actual: Coordenada,

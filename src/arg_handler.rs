@@ -1,3 +1,5 @@
+use crate::coordenada::Coordenada;
+
 const CANT_ARGS: usize = 5;
 const POSICION_X: usize = 3;
 const POSICION_Y: usize = 4;
@@ -51,6 +53,16 @@ impl ArgHandler {
         };
 
         Ok(y)
+    }
+    
+    //? Devuelve una Coordenada a partir de los argumentos 3 y 4.
+    pub fn get_coordenada_bomba_a_detonar(&self) -> Result<Coordenada, String> {
+        let x = self.parse_x()?;
+        let y = self.parse_y()?;
+        
+        let coordenada = Coordenada::new(x as usize, y as usize);
+        
+        Ok(coordenada)
     }
 
     //? Concatena el path recibido (2do argumento) con el nombre del archivo recibido (1er argumento).

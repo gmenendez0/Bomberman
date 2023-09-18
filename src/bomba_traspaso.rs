@@ -1,8 +1,6 @@
 use crate::coordenada::Coordenada;
 use crate::laberinto::Laberinto;
-
 use crate::objeto_mapa::ResultadoRafaga::Insignificante;
-
 use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
 pub struct BombaTraspaso {
