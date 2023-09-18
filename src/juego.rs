@@ -75,15 +75,14 @@ impl Juego {
     }
 
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
-        let mut coordenada_x = 0;
-        let mut coordenada_y = 0;
         let mut casillero: Casillero;
         let mut coordenada_casillero: Coordenada;
 
-        for dato in datos {
+
+        for (coordenada_y, dato) in datos.iter().enumerate() {
             let partes = dato.split_whitespace().collect::<Vec<&str>>();
 
-            for parte in partes {
+            for(coordenada_x, parte) in partes.iter().enumerate() {
                 coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
 
                 if parte.len() == UN_CARACTER {
@@ -93,11 +92,7 @@ impl Juego {
                 }
 
                 self.laberinto.reemplazar_casillero_en_tablero(casillero);
-                coordenada_x += 1;
             }
-
-            coordenada_y += 1;
-            coordenada_x = 0;
         }
 
         Ok(())

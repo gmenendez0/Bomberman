@@ -16,11 +16,8 @@ mod roca;
 mod vacio;
 
 fn main() -> Result<(), String> {
-    //cargo run -- maze.txt /path/to/output_dir/ x y
-
     let args: Vec<String> = std::env::args().collect();
     let arg_handler = arg_handler::ArgHandler::new(args);
-
     arg_handler.chequear_cant_args()?;
     let coordenada_bomba_a_detonar = coordenada::Coordenada::new(
         arg_handler.parse_x()? as usize,
@@ -39,8 +36,9 @@ fn main() -> Result<(), String> {
         return Err("Se ha detallado el error en el archivo.".to_string());
     };
 
-    file_handler.write(juego.obtener_visualizacion())?;
+    //juego.detonar_coordenada(&coordenada_bomba_a_detonar)?;
 
+    file_handler.write(juego.obtener_visualizacion())?;
 
     //? FOR TESTING PURPOSES
     /*let hola = juego.obtener_visualizacion();
@@ -51,7 +49,6 @@ fn main() -> Result<(), String> {
         println!();
     }*/
 
-    //lab.detonar_coordenada(&coordenada_bomba_a_detonar)?;
 
     Ok(())
 }

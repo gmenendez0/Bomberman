@@ -25,3 +25,33 @@ impl Coordenada {
         self.y = y;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::coordenada::Coordenada;
+
+    #[test]
+    fn test_new_coordenada() {
+        let coord = Coordenada::new(3, 4);
+        assert_eq!(coord.get_x(), 3);
+        assert_eq!(coord.get_y(), 4);
+    }
+
+    #[test]
+    fn test_get_set_x() {
+        let mut coord = Coordenada::new(3, 4);
+        assert_eq!(coord.get_x(), 3);
+
+        coord.set_x(5);
+        assert_eq!(coord.get_x(), 5);
+    }
+
+    #[test]
+    fn test_get_set_y() {
+        let mut coord = Coordenada::new(3, 4);
+        assert_eq!(coord.get_y(), 4);
+
+        coord.set_y(6);
+        assert_eq!(coord.get_y(), 6);
+    }
+}
