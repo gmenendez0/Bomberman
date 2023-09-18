@@ -15,6 +15,7 @@ use crate::roca::Roca;
 use crate::vacio::Vacio;
 
 const UN_CARACTER: usize = 1;
+const ASCII_DIF: i32 = 48;
 
 pub struct Juego {
     laberinto: Laberinto,
@@ -48,13 +49,24 @@ impl Juego {
 
         if let Some(primer_caracter) = parte.chars().next() {
             if primer_caracter == 'B' {
-                result = Ok(CasilleroBombaNormal(BombaNormal::new(
-                    coordenada_objeto, segundo_caracter as i32)));
+                if segundo_caracter as i32  - ASCII_DIF < 1 {
+                    return Err("El alcance de la bomba no puede ser menor a 1".to_string());
+                }
+
+
+                result = Ok(CasilleroBombaNormal(BombaNormal::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'S' {
-                result = Ok(CasilleroBombaTraspaso(BombaTraspaso::new(
-                    coordenada_objeto, segundo_caracter as i32)));
+                if segundo_caracter as i32  - ASCII_DIF < 1 {
+                    return Err("El alcance de la bomba no puede ser menor a 1".to_string());
+                }
+
+                result = Ok(CasilleroBombaTraspaso(BombaTraspaso::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'F' {
-                result = Ok(CasilleroEnemigo(Enemigo::new(coordenada_objeto, segundo_caracter as i32)));
+                if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
+                    return Err("La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
+                }
+
+                result = Ok(CasilleroEnemigo(Enemigo::new(coordenada_objeto, segundo_caracter as i32 - ASCII_DIF)));
             } else if primer_caracter == 'D' {
                 result = Ok(CasilleroDesvio(Desvio::new(coordenada_objeto, segundo_caracter.to_string())));
             }
@@ -92,8 +104,9 @@ impl Juego {
         Ok(())
     }
 
-    pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<ResultadoRafaga, String> {
-        self.laberinto.detonar_coordenada(coordenada_a_detonar)
+    pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
+        //self.laberinto.detonar_coordenada(coordenada_a_detonar)
+        Ok(())
     }
 
     pub fn obtener_visualizacion(&self) -> Vec<Vec<String>> {

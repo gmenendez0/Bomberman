@@ -29,60 +29,6 @@ impl Laberinto {
         Laberinto { tablero }
     }
 
-    pub fn reemplazar_casillero_en_tablero(&mut self, casillero: Casillero) {
-        if self.coordenadas_fuera_de_rango(&casillero.obtener_coordenada()) {
-            return;
-        }
-
-        let x = casillero.obtener_coordenada().get_x();
-        let y = casillero.obtener_coordenada().get_y();
-
-        self.tablero[x][y] = casillero;
-    }
-
-    pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
-        coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()
-    }
-
-    pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<ResultadoRafaga, String> {
-        if self.coordenadas_fuera_de_rango(coordenada_a_detonar) {
-            return Err("No se puede detonar fuera del mapa!".to_string());
-        }
-
-        let casillero_a_detonar: &mut Casillero = &mut self.tablero[coordenada_a_detonar.get_x()][coordenada_a_detonar.get_y()];
-        let resultado_detonacion: Result<ResultadoRafaga, String>;
-
-        match casillero_a_detonar {
-            CasilleroVacio(_) => {
-                resultado_detonacion = Err("No se puede detonar un vacio".to_string())
-            }
-            CasilleroRoca(_) => {
-                resultado_detonacion = Err("No se puede detonar una roca".to_string())
-            }
-            CasilleroPared(_) => {
-                resultado_detonacion = Err("No se puede detonar una pared".to_string())
-            }
-            CasilleroEnemigo(_) => {
-                resultado_detonacion = Err("No se puede detonar un enemigo".to_string())
-            }
-            CasilleroDesvio(_) => {
-                resultado_detonacion = Err("No se puede detonar un desvio".to_string())
-            }
-            CasilleroBombaNormal(bomba_normal) => {
-                resultado_detonacion = self.iniciar_rafagas(casillero_a_detonar, bomba_normal.get_alcance());
-            }
-            CasilleroBombaTraspaso(bomba_traspaso) => {
-                resultado_detonacion = self.iniciar_rafagas_traspaso(casillero_a_detonar, bomba_traspaso.get_alcance());
-            }
-        };
-
-        resultado_detonacion
-    }
-
-    pub fn vaciar_coordenada(&mut self, coordenada_a_vaciar: &Coordenada) {
-        self.tablero[coordenada_a_vaciar.get_x()][coordenada_a_vaciar.get_y()] = CasilleroVacio(Vacio::new(Coordenada::new(coordenada_a_vaciar.get_x(), coordenada_a_vaciar.get_y(), )));
-    }
-
     pub fn obtener_visualizacion(&self) -> Vec<Vec<String>> {
         let mut tablero_visualizacion: Vec<Vec<String>> = Vec::new();
 
@@ -100,7 +46,63 @@ impl Laberinto {
         tablero_visualizacion
     }
 
-    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> Result<ResultadoRafaga, String> {
+    pub fn reemplazar_casillero_en_tablero(&mut self, casillero: Casillero) {
+        if self.coordenadas_fuera_de_rango(&casillero.obtener_coordenada()) {
+            return;
+        }
+
+        let x = casillero.obtener_coordenada().get_x();
+        let y = casillero.obtener_coordenada().get_y();
+
+        self.tablero[x][y] = casillero;
+    }
+
+    pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
+        coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()
+    }
+}
+
+
+
+/*
+        pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
+            if self.coordenadas_fuera_de_rango(coordenada_a_detonar) {
+                return Err("No se puede detonar fuera del mapa!".to_string());
+            }
+
+            let resultado_detonacion = self.tablero[coordenada_a_detonar.get_x()][coordenada_a_detonar.get_y()].detonar(self);
+
+          match casillero_a_detonar {
+                CasilleroVacio(_) => {
+                    resultado_detonacion = Err("No se puede detonar un vacio".to_string())
+                }
+                CasilleroRoca(_) => {
+                    resultado_detonacion = Err("No se puede detonar una roca".to_string())
+                }
+                CasilleroPared(_) => {
+                    resultado_detonacion = Err("No se puede detonar una pared".to_string())
+                }
+                CasilleroEnemigo(_) => {
+                    resultado_detonacion = Err("No se puede detonar un enemigo".to_string())
+                }
+                CasilleroDesvio(_) => {
+                    resultado_detonacion = Err("No se puede detonar un desvio".to_string())
+                }
+                CasilleroBombaNormal(bomba_normal) => {
+                    resultado_detonacion = self.iniciar_rafagas(casillero_a_detonar, bomba_normal.get_alcance());
+                }
+                CasilleroBombaTraspaso(bomba_traspaso) => {
+                    resultado_detonacion = self.iniciar_rafagas_traspaso(casillero_a_detonar, bomba_traspaso.get_alcance());
+                }
+            };
+
+        resultado_detonacion*/
+
+    /*pub fn vaciar_coordenada(&mut self, coordenada_a_vaciar: &Coordenada) {
+        self.tablero[coordenada_a_vaciar.get_x()][coordenada_a_vaciar.get_y()] = CasilleroVacio(Vacio::new(Coordenada::new(coordenada_a_vaciar.get_x(), coordenada_a_vaciar.get_y(), )));
+    }*/
+
+    /*pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
             return Ok(ResultadoRafaga::ChoqueFuerte);
         }
@@ -361,5 +363,4 @@ impl Laberinto {
 
         Ok(Insignificante)
     }
-
-}
+}*/

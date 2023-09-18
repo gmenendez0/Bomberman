@@ -1,4 +1,5 @@
 use crate::coordenada::Coordenada;
+use crate::laberinto::Laberinto;
 
 use crate::objeto_mapa::ResultadoRafaga::Insignificante;
 
@@ -38,7 +39,7 @@ impl ObjetoMapa for BombaTraspaso {
         Insignificante
     }
 
-    fn detonar(&mut self) -> Result<(), String> {
+    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
         Ok(())
     }
 

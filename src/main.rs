@@ -32,6 +32,9 @@ fn main() -> Result<(), String> {
     let contenido_archivo = file_handler.read()?;
 
     let mut juego = Juego::new(contenido_archivo.len());
+    println!("Contenido del archivo: {:?}", contenido_archivo);
+
+
     let resultado = juego.inicializar_laberinto_con_datos(contenido_archivo) ?;
     let hola = juego.obtener_visualizacion();
 

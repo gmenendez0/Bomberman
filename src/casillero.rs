@@ -8,7 +8,8 @@ use crate::coordenada::Coordenada;
 use crate::desvio::Desvio;
 use crate::enemigo::Enemigo;
 use crate::laberinto::Laberinto;
-use crate::objeto_mapa::ObjetoMapa;
+use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
+use crate::objeto_mapa::ResultadoRafaga::Insignificante;
 use crate::pared::Pared;
 use crate::roca::Roca;
 use crate::vacio::Vacio;
@@ -89,29 +90,30 @@ impl Casillero {
 
         match self {
             CasilleroVacio(vacio) => {
-                result = vacio.detonar();
+                result = vacio.detonar(laberinto);
             }
             CasilleroRoca(roca) => {
                 result = roca.detonar(laberinto);
             }
             CasilleroPared(pared) => {
-                result = pared.detonar();
+                result = pared.detonar(laberinto);
             }
             CasilleroEnemigo(enemigo) => {
-                result = enemigo.detonar();
+                result = enemigo.detonar(laberinto);
             }
             CasilleroDesvio(desvio) => {
-                result = desvio.detonar();
+                result = desvio.detonar(laberinto);
             }
             CasilleroBombaNormal(bomba_normal) => {
-                result = bomba_normal.detonar();
+                result = bomba_normal.detonar(laberinto);
             }
             CasilleroBombaTraspaso(bomba_traspaso) => {
-                result = bomba_traspaso.detonar();
+                result = bomba_traspaso.detonar(laberinto);
             }
         };
 
         result
+
     }
 
 }

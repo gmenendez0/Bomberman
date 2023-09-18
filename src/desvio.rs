@@ -1,4 +1,5 @@
 use crate::coordenada::Coordenada;
+use crate::laberinto::Laberinto;
 use crate::objeto_mapa::ResultadoRafaga::{
     DesvioAbajo, DesvioArriba, DesvioDerecha, DesvioIzquierda,
 };
@@ -55,7 +56,7 @@ impl ObjetoMapa for Desvio {
         self.chequear_desvio()
     }
 
-    fn detonar(&mut self) -> Result<(), String> {
+    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
         Err("No se puede detonar un desvio".to_string())
     }
 
