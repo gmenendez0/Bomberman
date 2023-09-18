@@ -32,24 +32,24 @@ fn main() -> Result<(), String> {
     let contenido_archivo = file_handler.read()?;
 
     let mut juego = Juego::new(contenido_archivo.len());
-    println!("Contenido del archivo: {:?}", contenido_archivo);
+    let resultado_inicializacion = juego.inicializar_laberinto_con_datos(contenido_archivo);
 
+    if resultado_inicializacion.is_err() {
+        file_handler.write_error(resultado_inicializacion.err().unwrap_or("".to_string()))?;
+        return Err("Se ha detallado el error en el archivo.".to_string());
+    };
 
-    let resultado = juego.inicializar_laberinto_con_datos(contenido_archivo) ?;
-    let hola = juego.obtener_visualizacion();
+    file_handler.write(juego.obtener_visualizacion())?;
+
 
     //? FOR TESTING PURPOSES
-/*    println!("Contenido del archivo: {:?}", contenido_archivo);
-
-    let mut lab = laberinto::Laberinto::new(contenido_archivo.len());
-    let hola = lab.obtener_visualizacion();*/
-
+    /*let hola = juego.obtener_visualizacion();
     for i in 0..hola.len() {
         for j in 0..hola[i].len() {
             print!("{}", hola[i][j]);
         }
         println!();
-    }
+    }*/
 
     //lab.detonar_coordenada(&coordenada_bomba_a_detonar)?;
 

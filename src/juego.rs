@@ -50,20 +50,19 @@ impl Juego {
         if let Some(primer_caracter) = parte.chars().next() {
             if primer_caracter == 'B' {
                 if segundo_caracter as i32  - ASCII_DIF < 1 {
-                    return Err("El alcance de la bomba no puede ser menor a 1".to_string());
+                    return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
                 }
-
 
                 result = Ok(CasilleroBombaNormal(BombaNormal::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'S' {
                 if segundo_caracter as i32  - ASCII_DIF < 1 {
-                    return Err("El alcance de la bomba no puede ser menor a 1".to_string());
+                    return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
                 }
 
                 result = Ok(CasilleroBombaTraspaso(BombaTraspaso::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'F' {
                 if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
-                    return Err("La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
+                    return Err("Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
                 }
 
                 result = Ok(CasilleroEnemigo(Enemigo::new(coordenada_objeto, segundo_caracter as i32 - ASCII_DIF)));
@@ -94,10 +93,10 @@ impl Juego {
                 }
 
                 self.laberinto.reemplazar_casillero_en_tablero(casillero);
-                coordenada_x = coordenada_x + 1;
+                coordenada_x += 1;
             }
 
-            coordenada_y = coordenada_y + 1;
+            coordenada_y += 1;
             coordenada_x = 0;
         }
 
