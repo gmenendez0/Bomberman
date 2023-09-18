@@ -25,7 +25,7 @@ pub trait ObjetoMapa {
     fn recibir_rafaga(&mut self) -> ResultadoRafaga;
 
     //? Detona el objeto, si es posible. Dependiendo de eso, devuelve un error o exito.
-    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String>;
+    fn detonar(&self, laberinto: &mut Laberinto) -> Result<(), String>;
 
     //? Devuelve la representacion del objeto en el mapa.
     fn obtener_representacion(&self) -> String;

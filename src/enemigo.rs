@@ -40,7 +40,7 @@ impl ObjetoMapa for Enemigo {
         Insignificante
     }
 
-    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
+    fn detonar(&self, laberinto: &mut Laberinto) -> Result<(), String> {
         Err("No se puede detonar un enemigo".to_string())
     }
 

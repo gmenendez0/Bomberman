@@ -1,25 +1,25 @@
-use crate::casillero::Casillero;
-use crate::casillero::Casillero::{BombaNormall, BombaTraspasoo, Desvioo, Enemigoo, Paredd, Rocaa, Vacioo};
 use crate::coordenada::Coordenada;
 use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 use crate::objeto_mapa::ResultadoRafaga::{EnemigoEliminado, Insignificante};
+use crate::pared::Pared;
 use crate::vacio::Vacio;
 
 //? Laberinto es la estructura destinada a manejar el tablero del juego.
 pub struct Laberinto{
-    tablero: Vec<Vec<Casillero>>,
+    tablero: Vec<Vec<Box<dyn ObjetoMapa>>>,
 }
 
 impl Laberinto {
     //? Crea un laberinto lleno de Vacio y lo devuelve.
     pub fn new(dimension_tablero: usize) -> Laberinto {
-        let mut tablero: Vec<Vec<Casillero>> = Vec::new();
+        let mut tablero: Vec<Vec<Box<dyn ObjetoMapa>>> = Vec::new();
 
         for i in 0..dimension_tablero {
-            let mut fila: Vec<Casillero> = Vec::new();
+            let mut fila: Vec<Box<dyn ObjetoMapa>> = Vec::new();
 
             for j in 0..dimension_tablero {
-                fila.push(Vacioo(Vacio::new(Coordenada::new(i, j))));
+                let vacio: Box<dyn ObjetoMapa> = Box::new(Vacio::new(Coordenada::new(i, j)));
+                fila.push(vacio);
             }
 
             tablero.push(fila);
@@ -46,22 +46,39 @@ impl Laberinto {
         tablero_visualizacion
     }
 
+
+
     //? Reemplaza el casillero ubicado en las coordenadas del casillero recibido por el casillero recibido.
-    pub fn reemplazar_casillero_en_tablero(&mut self, casillero: Casillero) {
-        if self.coordenadas_fuera_de_rango(&casillero.obtener_coordenada()) {
+    pub fn reemplazar_objeto_en_tablero(&mut self, objeto: Box<dyn ObjetoMapa>) {
+        if self.coordenadas_fuera_de_rango(&objeto.get_coordenada_actual()) {
             return;
         }
 
-        let x = casillero.obtener_coordenada().get_x();
-        let y = casillero.obtener_coordenada().get_y();
+        let x = objeto.get_coordenada_actual().get_x();
+        let y = objeto.get_coordenada_actual().get_y();
 
-        self.tablero[y][x] = casillero;
+        self.tablero[y][x] = objeto;
     }
+
 
     //? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
         coordenada.get_x() > self.tablero.len() || coordenada.get_y() > self.tablero.len()
     }
+    
+    fn obtener_objeto(tablero: &mut Vec<Vec<Box<dyn ObjetoMapa>>>, coordenada_a_detonar: Coordenada) -> &mut Box<dyn ObjetoMapa> {
+        &mut tablero[coordenada_a_detonar.get_x()][coordenada_a_detonar.get_y()]
+    }
+
+    pub fn detonar_coordenadas(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
+        if self.coordenadas_fuera_de_rango(coordenada_a_detonar) {
+            return Err("No se puede detonar fuera del mapa!".to_string());
+        }
+
+        let objeto = Laberinto::obtener_objeto(&mut self.tablero, coordenada_a_detonar.clone());
+        objeto.detonar(self)
+    }
+
 
     /*pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_detonar) {
@@ -342,6 +359,8 @@ impl Laberinto {
     }*/
 }
 
+/*
+
 #[cfg(test)]
 mod tests {
     use crate::coordenada::Coordenada;
@@ -361,3 +380,5 @@ mod tests {
         assert!(!laberinto.coordenadas_fuera_de_rango(&coordenada));
     }
 }
+
+ */

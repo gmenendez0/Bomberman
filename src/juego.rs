@@ -1,12 +1,10 @@
 use crate::bomba_normal::BombaNormal;
 use crate::bomba_traspaso::BombaTraspaso;
-use crate::casillero::Casillero;
-use crate::casillero::Casillero::{BombaNormall, BombaTraspasoo, Desvioo, Enemigoo, Paredd, Rocaa, Vacioo};
 use crate::coordenada::Coordenada;
 use crate::desvio::Desvio;
 use crate::enemigo::Enemigo;
 use crate::laberinto::Laberinto;
-use crate::objeto_mapa::{ResultadoRafaga};
+use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 use crate::pared::Pared;
 use crate::roca::Roca;
 use crate::vacio::Vacio;
@@ -28,24 +26,23 @@ impl Juego {
     }
 
     //? Crea objetos representados unicamente por un unico caracter.
-    fn crear_objeto_un_caracter(&mut self, caracter: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        let mut result: Result<Casillero, String> =
-            Err("Caracter representado no valido".to_string());
+    fn crear_objeto_un_caracter(&mut self, caracter: &str, coordenada_objeto: Coordenada) -> Result<Box<dyn ObjetoMapa>, String> {
+        let mut result: Result<Box<dyn ObjetoMapa>, String> = Err("Caracter representado no valido".to_string());
 
         if caracter == "_" {
-            result = Ok(Vacioo(Vacio::new(coordenada_objeto)));
+            result = Ok(Box::new(Vacio::new(coordenada_objeto)));
         } else if caracter == "R" {
-            result = Ok(Rocaa(Roca::new(coordenada_objeto)));
+            result = Ok(Box::new(Roca::new(coordenada_objeto)));
         } else if caracter == "W" {
-            result = Ok(Paredd(Pared::new(coordenada_objeto)));
+            result = Ok(Box::new(Pared::new(coordenada_objeto)));
         };
 
         result
     }
 
     //? Crea objetos representados unicamente por dos caracteres.
-    fn crear_objeto_dos_caracteres(&mut self, parte: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        let mut result: Result<Casillero, String> = Err("Caracter representado no valido".to_string());
+    fn crear_objeto_dos_caracteres(&mut self, parte: &str, coordenada_objeto: Coordenada) -> Result<Box<dyn ObjetoMapa>, String> {
+        let mut result: Result<Box<dyn ObjetoMapa>, String> = Err("Caracter representado no valido".to_string());
         let segundo_caracter = parte.as_bytes()[1];
 
         if let Some(primer_caracter) = parte.chars().next() {
@@ -54,21 +51,21 @@ impl Juego {
                     return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
                 }
 
-                result = Ok(BombaNormall(BombaNormal::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
+                result = Ok(Box::new(BombaNormal::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'S' {
                 if segundo_caracter as i32  - ASCII_DIF < 1 {
                     return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
                 }
 
-                result = Ok(BombaTraspasoo(BombaTraspaso::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
+                result = Ok(Box::new(BombaTraspaso::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'F' {
                 if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
                     return Err("Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
                 }
 
-                result = Ok(Enemigoo(Enemigo::new(coordenada_objeto, segundo_caracter as i32 - ASCII_DIF)));
+                result = Ok(Box::new(Enemigo::new(coordenada_objeto, segundo_caracter as i32 - ASCII_DIF)));
             } else if primer_caracter == 'D' {
-                result = Ok(Desvioo(Desvio::new(coordenada_objeto, segundo_caracter.to_string())));
+                result = Ok(Box::new(Desvio::new(coordenada_objeto, segundo_caracter.to_string())));
             }
         };
 
@@ -78,7 +75,7 @@ impl Juego {
     //? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
     //? A partir de estos datos, cambia el estado del laberinto.
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
-        let mut casillero: Casillero;
+        let mut objeto: Box<dyn ObjetoMapa>;
         let mut coordenada_casillero: Coordenada;
 
 
@@ -89,12 +86,12 @@ impl Juego {
                 coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
 
                 if parte.len() == UN_CARACTER {
-                    casillero = self.crear_objeto_un_caracter(parte, coordenada_casillero)?;
+                    objeto = self.crear_objeto_un_caracter(parte, coordenada_casillero)?;
                 } else {
-                    casillero = self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?;
+                    objeto = self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?;
                 }
 
-                self.laberinto.reemplazar_casillero_en_tablero(casillero);
+                self.laberinto.reemplazar_objeto_en_tablero(objeto);
             }
         }
 
@@ -103,7 +100,7 @@ impl Juego {
 
     //? Recibe una coordenada del tablero y ordena al laberinto que la detone.
     pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
-        //self.laberinto.detonar_coordenada(coordenada_a_detonar)
+        //self.laberinto.detonar_coordenadas(coordenada_a_detonar)
         Ok(())
     }
 

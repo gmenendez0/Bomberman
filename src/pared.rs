@@ -26,7 +26,7 @@ impl ObjetoMapa for Pared {
         ChoqueFuerte
     }
 
-    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
+    fn detonar(&self, laberinto: &mut Laberinto) -> Result<(), String> {
         Err("No se puede detonar una pared".to_string())
     }
 

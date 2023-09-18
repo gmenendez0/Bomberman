@@ -35,8 +35,10 @@ impl ObjetoMapa for BombaNormal {
         Insignificante
     }
 
-    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
+    fn detonar(&self, laberinto: &mut Laberinto) -> Result<(), String> {
         Ok(())
+
+
     }
 
     fn obtener_representacion(&self) -> String {

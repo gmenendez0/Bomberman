@@ -3,7 +3,6 @@ use crate::juego::Juego;
 mod arg_handler;
 mod bomba_normal;
 mod bomba_traspaso;
-mod casillero;
 mod coordenada;
 mod desvio;
 mod enemigo;
@@ -29,26 +28,31 @@ fn main() -> Result<(), String> {
     let contenido_archivo = file_handler.read()?;
 
     let mut juego = Juego::new(contenido_archivo.len());
-    let resultado_inicializacion = juego.inicializar_laberinto_con_datos(contenido_archivo);
 
+    let resultado_inicializacion = juego.inicializar_laberinto_con_datos(contenido_archivo);
     if resultado_inicializacion.is_err() {
         file_handler.write_error(resultado_inicializacion.err().unwrap_or("".to_string()))?;
         return Err("Se ha detallado el error en el archivo.".to_string());
     };
 
-    //juego.detonar_coordenada(&coordenada_bomba_a_detonar)?;
+    juego.detonar_coordenada(&coordenada_bomba_a_detonar)?;
 
     file_handler.write(juego.obtener_visualizacion())?;
 
+
+
+
+
     //? FOR TESTING PURPOSES
-    /*let hola = juego.obtener_visualizacion();
+    /*
+    let hola = juego.obtener_visualizacion();
     for i in 0..hola.len() {
         for j in 0..hola[i].len() {
             print!("{}", hola[i][j]);
         }
         println!();
-    }*/
-
+    }
+*/
 
     Ok(())
 }

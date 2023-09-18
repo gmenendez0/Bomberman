@@ -26,7 +26,7 @@ impl ObjetoMapa for Roca {
         Choque
     }
 
-    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
+    fn detonar(&self, laberinto: &mut Laberinto) -> Result<(), String> {
         Err("No se puede detonar una roca".to_string())
     }
 

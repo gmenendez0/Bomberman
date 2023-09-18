@@ -56,7 +56,7 @@ impl ObjetoMapa for Desvio {
         self.chequear_desvio()
     }
 
-    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
+    fn detonar(&self, laberinto: &mut Laberinto) -> Result<(), String> {
         Err("No se puede detonar un desvio".to_string())
     }
 

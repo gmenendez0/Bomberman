@@ -39,7 +39,7 @@ impl ObjetoMapa for BombaTraspaso {
         Insignificante
     }
 
-    fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
+    fn detonar(&self, laberinto: &mut Laberinto) -> Result<(), String> {
         Ok(())
     }
 
