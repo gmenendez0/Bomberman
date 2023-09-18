@@ -5,11 +5,13 @@ use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 use crate::objeto_mapa::ResultadoRafaga::{EnemigoEliminado, Insignificante};
 use crate::vacio::Vacio;
 
+//? Laberinto es la estructura destinada a manejar el tablero del juego.
 pub struct Laberinto{
     tablero: Vec<Vec<Casillero>>,
 }
 
 impl Laberinto {
+    //? Crea un laberinto lleno de Vacio y lo devuelve.
     pub fn new(dimension_tablero: usize) -> Laberinto {
         let mut tablero: Vec<Vec<Casillero>> = Vec::new();
 
@@ -26,6 +28,7 @@ impl Laberinto {
         Laberinto { tablero }
     }
 
+    //? Devuelve la visualizacion del estado actual del laberinto.
     pub fn obtener_visualizacion(&self) -> Vec<Vec<String>> {
         let mut tablero_visualizacion: Vec<Vec<String>> = Vec::new();
 
@@ -43,6 +46,7 @@ impl Laberinto {
         tablero_visualizacion
     }
 
+    //? Reemplaza el casillero ubicado en las coordenadas del casillero recibido por el casillero recibido.
     pub fn reemplazar_casillero_en_tablero(&mut self, casillero: Casillero) {
         if self.coordenadas_fuera_de_rango(&casillero.obtener_coordenada()) {
             return;
@@ -54,8 +58,9 @@ impl Laberinto {
         self.tablero[y][x] = casillero;
     }
 
+    //? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
-        coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()
+        coordenada.get_x() > self.tablero.len() || coordenada.get_y() > self.tablero.len()
     }
 
     /*pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
@@ -335,4 +340,24 @@ impl Laberinto {
 
         Ok(Insignificante)
     }*/
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::coordenada::Coordenada;
+    use crate::laberinto::Laberinto;
+
+    #[test]
+    fn test_chequear_coordenadas_fuera_de_rango() {
+        let laberinto = Laberinto::new(3);
+        let coordenada = Coordenada::new(4, 3);
+        assert!(laberinto.coordenadas_fuera_de_rango(&coordenada));
+    }
+
+    #[test]
+    fn test_chequear_coordenadas_dentro_de_rango() {
+        let laberinto = Laberinto::new(3);
+        let coordenada = Coordenada::new(2, 2);
+        assert!(!laberinto.coordenadas_fuera_de_rango(&coordenada));
+    }
 }

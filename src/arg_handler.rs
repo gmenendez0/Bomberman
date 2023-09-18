@@ -4,15 +4,18 @@ const POSICION_Y: usize = 4;
 const POSICION_NOMBRE_ARCHIVO: usize = 1;
 const POSICION_PATH: usize = 2;
 
+//? ArgHandler es el encargado de manejar los argumentos recibidos por el programa.
 pub struct ArgHandler {
     args: Vec<String>,
 }
 
 impl ArgHandler {
+    //? Crea un nuevo ArgHandler a partir de los argumentos recibidos por el programa.
     pub(crate) fn new(args: Vec<String>) -> ArgHandler {
         ArgHandler { args }
     }
 
+    //? Chequea que la cantidad de argumentos recibidos sea la esperada.
     pub(crate) fn chequear_cant_args(&self) -> Result<(), String> {
         if self.args.len() != CANT_ARGS {
             return Err("ERROR: Se esperaban 4 argumentos pero se recibió otra cantidad. Cerrando el programa...".to_string());
@@ -20,6 +23,7 @@ impl ArgHandler {
         Ok(())
     }
 
+    //? Parsea el argumento 3 a un i32.
     pub fn parse_x(&self) -> Result<i32, String> {
         let x = match self.args[POSICION_X].parse::<i32>() {
             Ok(x) => x,
@@ -34,6 +38,7 @@ impl ArgHandler {
         Ok(x)
     }
 
+    //? Parsea el argumento 4 a un i32.
     pub fn parse_y(&self) -> Result<i32, String> {
         let y = match self.args[POSICION_Y].parse::<i32>() {
             Ok(y) => y,
@@ -48,6 +53,7 @@ impl ArgHandler {
         Ok(y)
     }
 
+    //? Concatena el path recibido (2do argumento) con el nombre del archivo recibido (1er argumento).
     pub fn concatenar_path_y_nombre_archivo(&self) -> String {
         let mut path = self.args[POSICION_PATH].clone();
         path.push('/');

@@ -1,3 +1,4 @@
+//? Estructura que representa una coordenada en el tablero de 2 dimensiones.
 #[derive(Clone)]
 pub struct Coordenada {
     x: usize,

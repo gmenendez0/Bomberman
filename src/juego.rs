@@ -14,17 +14,20 @@ use crate::vacio::Vacio;
 const UN_CARACTER: usize = 1;
 const ASCII_DIF: i32 = 48;
 
+//? Juego es el encargado de manejar el juego en generar, el laberinto y los objetos que se encuentran en el mismo.
 pub struct Juego {
     laberinto: Laberinto,
 }
 
 impl Juego {
+    //? Crea un juego inicializado con el laberinto lleno de Vacio y lo devuelve. El laberinto sera cuadrado, de las dimensiones recibidas.
     pub fn new(dimension_tablero: usize) -> Juego {
         Juego {
             laberinto: Laberinto::new(dimension_tablero),
         }
     }
 
+    //? Crea objetos representados unicamente por un unico caracter.
     fn crear_objeto_un_caracter(&mut self, caracter: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
         let mut result: Result<Casillero, String> =
             Err("Caracter representado no valido".to_string());
@@ -40,6 +43,7 @@ impl Juego {
         result
     }
 
+    //? Crea objetos representados unicamente por dos caracteres.
     fn crear_objeto_dos_caracteres(&mut self, parte: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
         let mut result: Result<Casillero, String> = Err("Caracter representado no valido".to_string());
         let segundo_caracter = parte.as_bytes()[1];
@@ -71,6 +75,8 @@ impl Juego {
         result
     }
 
+    //? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
+    //? A partir de estos datos, cambia el estado del laberinto.
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
         let mut casillero: Casillero;
         let mut coordenada_casillero: Coordenada;
@@ -95,12 +101,51 @@ impl Juego {
         Ok(())
     }
 
+    //? Recibe una coordenada del tablero y ordena al laberinto que la detone.
     pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
         //self.laberinto.detonar_coordenada(coordenada_a_detonar)
         Ok(())
     }
 
+    //? Devuelve la visualizacion del laberinto.
     pub fn obtener_visualizacion(&self) -> Vec<Vec<String>> {
         self.laberinto.obtener_visualizacion()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::coordenada::Coordenada;
+    use crate::juego::Juego;
+
+    #[test]
+    fn test_chequear_inicializacion_con_datos() {
+        let mut juego = Juego::new(3);
+        let datos = vec!["R _ _".to_string(), "_ W _".to_string(), "_ _ _".to_string()];
+        assert!(juego.inicializar_laberinto_con_datos(datos).is_ok());
+
+        let mut juego2 = Juego::new(3);
+        let datos = vec!["R _ _".to_string(), "_ Z _".to_string(), "_ _ _".to_string()];
+        assert!(juego2.inicializar_laberinto_con_datos(datos).is_err());
+    }
+
+    #[test]
+    fn test_chequear_visualizacion_datos() {
+        let mut juego = Juego::new(3);
+        let datos = vec!["R _ _".to_string(), "_ W _".to_string(), "_ _ _".to_string()];
+        juego.inicializar_laberinto_con_datos(datos).unwrap();
+        let visualizacion = juego.obtener_visualizacion();
+        assert_eq!(visualizacion[0][0], "R");
+        assert_eq!(visualizacion[0][2], "_");
+        assert_eq!(visualizacion[1][2], "W");
+    }
+
+    #[test]
+    fn test_crear_objeto_un_caracter() {
+        let mut juego = Juego::new(3);
+        let caracter = "P";
+        let casillero = juego.crear_objeto_un_caracter(caracter, Coordenada::new(2,2));
+        let es_error = casillero.is_err();
+        assert!(es_error);
     }
 }
