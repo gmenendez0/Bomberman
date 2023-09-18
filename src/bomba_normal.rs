@@ -1,11 +1,7 @@
-use crate::bomba::Bomba;
 use crate::coordenada::Coordenada;
-use crate::juego;
-use crate::juego::Juego;
-use crate::objeto_mapa::ResultadoRafaga::{
-    Choque, ChoqueFuerte, DesvioAbajo, DesvioArriba, Insignificante,
-};
+
 use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
+use crate::objeto_mapa::ResultadoRafaga::Insignificante;
 
 pub struct BombaNormal {
     coordenada_actual: Coordenada,
@@ -25,169 +21,20 @@ impl BombaNormal {
     }
 }
 
-impl Bomba for BombaNormal {
-    fn rafagear_arriba(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
-        let mut coordenada_a_rafagear = coordenada_inicial;
-        let mut resultado_rafaga = Insignificante;
-
-        while BombaNormal::<'a>::rafaga_continua_sin_chocar_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
-            alcance_restante -= 1;
-
-            resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
-        }
-
-        if BombaNormal::<'a>::rafaga_continua_chocando_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            self.evaluar_camino_a_seguir(coordenada_a_rafagear, alcance_restante, resultado_rafaga);
-        }
-    }
-
-    fn rafagear_abajo(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
-        let mut coordenada_a_rafagear = coordenada_inicial;
-        let mut resultado_rafaga = Insignificante;
-
-        while BombaNormal::<'a>::rafaga_continua_sin_chocar_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
-            alcance_restante -= 1;
-
-            resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
-        }
-
-        if BombaNormal::<'a>::rafaga_continua_chocando_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            self.evaluar_camino_a_seguir(coordenada_a_rafagear, alcance_restante, resultado_rafaga);
-        }
-    }
-
-    fn rafagear_derecha(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
-        let mut coordenada_a_rafagear = coordenada_inicial;
-        let mut resultado_rafaga = Insignificante;
-
-        while BombaNormal::<'a>::rafaga_continua_sin_chocar_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_x() + 1);
-            alcance_restante -= 1;
-
-            resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
-        }
-
-        if BombaNormal::<'a>::rafaga_continua_chocando_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            self.evaluar_camino_a_seguir(coordenada_a_rafagear, alcance_restante, resultado_rafaga);
-        }
-    }
-
-    fn rafagear_izquierda(&mut self, coordenada_inicial: Coordenada, mut alcance_restante: i32) {
-        let mut coordenada_a_rafagear = coordenada_inicial;
-        let mut resultado_rafaga = Insignificante;
-
-        while BombaNormal::<'a>::rafaga_continua_sin_chocar_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_x() - 1);
-            alcance_restante -= 1;
-
-            resultado_rafaga = self.juego.rafagear_coordenada(&coordenada_a_rafagear);
-        }
-
-        if BombaNormal::<'a>::rafaga_continua_chocando_obstaculo(
-            alcance_restante,
-            &resultado_rafaga,
-        ) {
-            self.evaluar_camino_a_seguir(coordenada_a_rafagear, alcance_restante, resultado_rafaga);
-        }
-    }
-
-    fn rafaga_no_choca_obstaculo(resultado_rafaga: &ResultadoRafaga) -> bool {
-        !matches!(
-            resultado_rafaga,
-            DesvioArriba
-                | DesvioAbajo
-                | ResultadoRafaga::DesvioIzquierda
-                | ResultadoRafaga::DesvioDerecha
-                | Choque
-                | ChoqueFuerte
-        )
-    }
-
-    fn rafaga_continua_sin_chocar_obstaculo(
-        alcance_restante: i32,
-        resultado_rafaga: &ResultadoRafaga,
-    ) -> bool {
-        alcance_restante > 0 && BombaNormal::<'a>::rafaga_no_choca_obstaculo(resultado_rafaga)
-    }
-
-    fn rafaga_continua_chocando_obstaculo(
-        alcance_restante: i32,
-        resultado_rafaga: &ResultadoRafaga,
-    ) -> bool {
-        alcance_restante > 0 && !BombaNormal::<'a>::rafaga_no_choca_obstaculo(resultado_rafaga)
-    }
-
-    fn evaluar_camino_a_seguir(
-        &mut self,
-        coordenada_inicial: Coordenada,
-        alcance_restante: i32,
-        resultado_rafaga: ResultadoRafaga,
-    ) {
-        match resultado_rafaga {
-            DesvioArriba => self.rafagear_arriba(coordenada_inicial, alcance_restante),
-            DesvioAbajo => self.rafagear_abajo(coordenada_inicial, alcance_restante),
-            ResultadoRafaga::DesvioIzquierda => {
-                self.rafagear_izquierda(coordenada_inicial, alcance_restante)
-            }
-            ResultadoRafaga::DesvioDerecha => {
-                self.rafagear_derecha(coordenada_inicial, alcance_restante)
-            }
-            _ => {}
-        }
-    }
-
-    fn procesar_detonacion(&mut self) {
-        self.rafagear_arriba(self.coordenada_actual.clone(), self.alcance);
-        self.rafagear_abajo(self.coordenada_actual.clone(), self.alcance);
-        self.rafagear_izquierda(self.coordenada_actual.clone(), self.alcance);
-        self.rafagear_derecha(self.coordenada_actual.clone(), self.alcance);
-    }
-}
-
-impl<'a> ObjetoMapa for BombaNormal<'a> {
+impl ObjetoMapa for BombaNormal {
     fn set_coordenada_actual(&mut self, coordenada: Coordenada) {
         self.coordenada_actual = coordenada;
     }
 
-    fn get_coordenada_actual(&self) -> &Coordenada {
-        &self.coordenada_actual
+    fn get_coordenada_actual(&self) -> Coordenada {
+        self.coordenada_actual.clone()
     }
 
     fn recibir_rafaga(&mut self) -> ResultadoRafaga {
-        self.procesar_detonacion();
-        Insignificante
-    }
-
-    fn recibir_rafaga_traspaso(&mut self) -> ResultadoRafaga {
-        self.procesar_detonacion();
         Insignificante
     }
 
     fn detonar(&mut self) -> Result<(), String> {
-        self.procesar_detonacion();
         Ok(())
     }
 

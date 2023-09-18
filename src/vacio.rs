@@ -17,15 +17,11 @@ impl ObjetoMapa for Vacio {
         self.coordenada_actual = coordenada;
     }
 
-    fn get_coordenada_actual(&self) -> &Coordenada {
-        &self.coordenada_actual
+    fn get_coordenada_actual(&self) -> Coordenada {
+        self.coordenada_actual.clone()
     }
 
     fn recibir_rafaga(&mut self) -> ResultadoRafaga {
-        Insignificante
-    }
-
-    fn recibir_rafaga_traspaso(&mut self) -> ResultadoRafaga {
         Insignificante
     }
 

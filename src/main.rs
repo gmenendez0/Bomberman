@@ -1,5 +1,6 @@
+use crate::juego::Juego;
+
 mod arg_handler;
-mod bomba;
 mod bomba_normal;
 mod bomba_traspaso;
 mod casillero;
@@ -30,12 +31,15 @@ fn main() -> Result<(), String> {
     let file_handler = file_handler::FileHandler::new(full_path);
     let contenido_archivo = file_handler.read()?;
 
+    let mut juego = Juego::new(contenido_archivo.len());
+    let resultado = juego.inicializar_laberinto_con_datos(contenido_archivo) ?;
+    let hola = juego.obtener_visualizacion();
+
     //? FOR TESTING PURPOSES
-    println!("Hola");
-    println!("Contenido del archivo: {:?}", contenido_archivo);
+/*    println!("Contenido del archivo: {:?}", contenido_archivo);
 
     let mut lab = laberinto::Laberinto::new(contenido_archivo.len());
-    let hola = lab.obtener_visualizacion();
+    let hola = lab.obtener_visualizacion();*/
 
     for i in 0..hola.len() {
         for j in 0..hola[i].len() {
@@ -44,7 +48,7 @@ fn main() -> Result<(), String> {
         println!();
     }
 
-    lab.detonar_coordenada(&coordenada_bomba_a_detonar)?;
+    //lab.detonar_coordenada(&coordenada_bomba_a_detonar)?;
 
     Ok(())
 }

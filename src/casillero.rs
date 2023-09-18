@@ -7,22 +7,23 @@ use crate::casillero::Casillero::{
 use crate::coordenada::Coordenada;
 use crate::desvio::Desvio;
 use crate::enemigo::Enemigo;
+use crate::laberinto::Laberinto;
 use crate::objeto_mapa::ObjetoMapa;
 use crate::pared::Pared;
 use crate::roca::Roca;
 use crate::vacio::Vacio;
 
-pub(crate) enum Casillero<'a> {
+pub enum Casillero {
     CasilleroVacio(Vacio),
     CasilleroRoca(Roca),
     CasilleroPared(Pared),
-    CasilleroEnemigo(Enemigo<'a>),
+    CasilleroEnemigo(Enemigo),
     CasilleroDesvio(Desvio),
-    CasilleroBombaNormal(BombaNormal<'a>),
-    CasilleroBombaTraspaso(BombaTraspaso<'a>),
+    CasilleroBombaNormal(BombaNormal),
+    CasilleroBombaTraspaso(BombaTraspaso),
 }
 
-impl<'a> Casillero<'a> {
+impl Casillero {
     pub fn obtener_representacion(&self) -> String {
         let representacion: String;
 
@@ -53,8 +54,8 @@ impl<'a> Casillero<'a> {
         representacion
     }
 
-    pub fn obtener_coordenada(&self) -> &Coordenada {
-        let coordenada: &Coordenada;
+    pub fn obtener_coordenada(&self) -> Coordenada {
+        let coordenada: Coordenada;
 
         match &self {
             CasilleroVacio(vacio) => {
@@ -82,4 +83,35 @@ impl<'a> Casillero<'a> {
 
         coordenada
     }
+
+    pub fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
+        let result: Result<(), String>;
+
+        match self {
+            CasilleroVacio(vacio) => {
+                result = vacio.detonar();
+            }
+            CasilleroRoca(roca) => {
+                result = roca.detonar(laberinto);
+            }
+            CasilleroPared(pared) => {
+                result = pared.detonar();
+            }
+            CasilleroEnemigo(enemigo) => {
+                result = enemigo.detonar();
+            }
+            CasilleroDesvio(desvio) => {
+                result = desvio.detonar();
+            }
+            CasilleroBombaNormal(bomba_normal) => {
+                result = bomba_normal.detonar();
+            }
+            CasilleroBombaTraspaso(bomba_traspaso) => {
+                result = bomba_traspaso.detonar();
+            }
+        };
+
+        result
+    }
+
 }

@@ -1,19 +1,16 @@
 use crate::coordenada::Coordenada;
-use crate::juego::Juego;
 use crate::objeto_mapa::ResultadoRafaga::Insignificante;
 use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 
-pub struct Enemigo<'a> {
+pub struct Enemigo {
     coordenada_actual: Coordenada,
-    juego: &'a mut Juego<'a>,
     vida: i32,
 }
 
-impl<'a> Enemigo<'a> {
-    pub fn new(coordenada_actual: Coordenada, juego: &'a mut Juego<'a>, vida: i32) -> Enemigo<'a> {
+impl Enemigo {
+    pub fn new(coordenada_actual: Coordenada, vida: i32) -> Enemigo {
         Enemigo {
             coordenada_actual,
-            juego,
             vida,
         }
     }
@@ -23,27 +20,23 @@ impl<'a> Enemigo<'a> {
     }
 }
 
-impl<'a> ObjetoMapa for Enemigo<'a> {
+impl ObjetoMapa for Enemigo {
     fn set_coordenada_actual(&mut self, coordenada: Coordenada) {
         self.coordenada_actual = coordenada;
     }
 
-    fn get_coordenada_actual(&self) -> &Coordenada {
-        &self.coordenada_actual
+    fn get_coordenada_actual(&self) -> Coordenada {
+        self.coordenada_actual.clone()
     }
 
     fn recibir_rafaga(&mut self) -> ResultadoRafaga {
         self.reducir_vida();
 
         if self.vida <= 0 {
-            self.juego.vaciar_coordenada(&self.coordenada_actual);
+            //? Se debe actuar!
         }
 
         Insignificante
-    }
-
-    fn recibir_rafaga_traspaso(&mut self) -> ResultadoRafaga {
-        self.recibir_rafaga()
     }
 
     fn detonar(&mut self) -> Result<(), String> {
