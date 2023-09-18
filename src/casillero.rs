@@ -1,8 +1,8 @@
 use crate::bomba_normal::BombaNormal;
 use crate::bomba_traspaso::BombaTraspaso;
 use crate::casillero::Casillero::{
-    CasilleroBombaNormal, CasilleroBombaTraspaso, CasilleroDesvio, CasilleroEnemigo,
-    CasilleroPared, CasilleroRoca, CasilleroVacio,
+    BombaNormall, BombaTraspasoo, Desvioo, Enemigoo,
+    Paredd, Rocaa, Vacioo,
 };
 use crate::coordenada::Coordenada;
 use crate::desvio::Desvio;
@@ -15,13 +15,13 @@ use crate::roca::Roca;
 use crate::vacio::Vacio;
 
 pub enum Casillero {
-    CasilleroVacio(Vacio),
-    CasilleroRoca(Roca),
-    CasilleroPared(Pared),
-    CasilleroEnemigo(Enemigo),
-    CasilleroDesvio(Desvio),
-    CasilleroBombaNormal(BombaNormal),
-    CasilleroBombaTraspaso(BombaTraspaso),
+    Vacioo(Vacio),
+    Rocaa(Roca),
+    Paredd(Pared),
+    Enemigoo(Enemigo),
+    Desvioo(Desvio),
+    BombaNormall(BombaNormal),
+    BombaTraspasoo(BombaTraspaso),
 }
 
 impl Casillero {
@@ -29,25 +29,25 @@ impl Casillero {
         let representacion: String;
 
         match &self {
-            CasilleroVacio(vacio) => {
+            Vacioo(vacio) => {
                 representacion = vacio.obtener_representacion();
             }
-            CasilleroRoca(roca) => {
+            Rocaa(roca) => {
                 representacion = roca.obtener_representacion();
             }
-            CasilleroPared(pared) => {
+            Paredd(pared) => {
                 representacion = pared.obtener_representacion();
             }
-            CasilleroEnemigo(enemigo) => {
+            Enemigoo(enemigo) => {
                 representacion = enemigo.obtener_representacion();
             }
-            CasilleroDesvio(desvio) => {
+            Desvioo(desvio) => {
                 representacion = desvio.obtener_representacion();
             }
-            CasilleroBombaNormal(bomba_normal) => {
+            BombaNormall(bomba_normal) => {
                 representacion = bomba_normal.obtener_representacion();
             }
-            CasilleroBombaTraspaso(bomba_traspaso) => {
+            BombaTraspasoo(bomba_traspaso) => {
                 representacion = bomba_traspaso.obtener_representacion();
             }
         };
@@ -59,25 +59,25 @@ impl Casillero {
         let coordenada: Coordenada;
 
         match &self {
-            CasilleroVacio(vacio) => {
+            Vacioo(vacio) => {
                 coordenada = vacio.get_coordenada_actual();
             }
-            CasilleroRoca(roca) => {
+            Rocaa(roca) => {
                 coordenada = roca.get_coordenada_actual();
             }
-            CasilleroPared(pared) => {
+            Paredd(pared) => {
                 coordenada = pared.get_coordenada_actual();
             }
-            CasilleroEnemigo(enemigo) => {
+            Enemigoo(enemigo) => {
                 coordenada = enemigo.get_coordenada_actual();
             }
-            CasilleroDesvio(desvio) => {
+            Desvioo(desvio) => {
                 coordenada = desvio.get_coordenada_actual();
             }
-            CasilleroBombaNormal(bomba_normal) => {
+            BombaNormall(bomba_normal) => {
                 coordenada = bomba_normal.get_coordenada_actual();
             }
-            CasilleroBombaTraspaso(bomba_traspaso) => {
+            BombaTraspasoo(bomba_traspaso) => {
                 coordenada = bomba_traspaso.get_coordenada_actual();
             }
         };
@@ -89,25 +89,25 @@ impl Casillero {
         let result: Result<(), String>;
 
         match self {
-            CasilleroVacio(vacio) => {
+            Vacioo(vacio) => {
                 result = vacio.detonar(laberinto);
             }
-            CasilleroRoca(roca) => {
+            Rocaa(roca) => {
                 result = roca.detonar(laberinto);
             }
-            CasilleroPared(pared) => {
+            Paredd(pared) => {
                 result = pared.detonar(laberinto);
             }
-            CasilleroEnemigo(enemigo) => {
+            Enemigoo(enemigo) => {
                 result = enemigo.detonar(laberinto);
             }
-            CasilleroDesvio(desvio) => {
+            Desvioo(desvio) => {
                 result = desvio.detonar(laberinto);
             }
-            CasilleroBombaNormal(bomba_normal) => {
+            BombaNormall(bomba_normal) => {
                 result = bomba_normal.detonar(laberinto);
             }
-            CasilleroBombaTraspaso(bomba_traspaso) => {
+            BombaTraspasoo(bomba_traspaso) => {
                 result = bomba_traspaso.detonar(laberinto);
             }
         };

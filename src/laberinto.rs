@@ -1,8 +1,5 @@
 use crate::casillero::Casillero;
-use crate::casillero::Casillero::{
-    CasilleroBombaNormal, CasilleroBombaTraspaso, CasilleroDesvio, CasilleroEnemigo,
-    CasilleroPared, CasilleroRoca, CasilleroVacio,
-};
+use crate::casillero::Casillero::{BombaNormall, BombaTraspasoo, Desvioo, Enemigoo, Paredd, Rocaa, Vacioo};
 use crate::coordenada::Coordenada;
 use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
 use crate::objeto_mapa::ResultadoRafaga::{EnemigoEliminado, Insignificante};
@@ -20,7 +17,7 @@ impl Laberinto {
             let mut fila: Vec<Casillero> = Vec::new();
 
             for j in 0..dimension_tablero {
-                fila.push(CasilleroVacio(Vacio::new(Coordenada::new(i, j))));
+                fila.push(Vacioo(Vacio::new(Coordenada::new(i, j))));
             }
 
             tablero.push(fila);

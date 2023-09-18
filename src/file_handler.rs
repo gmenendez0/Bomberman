@@ -78,13 +78,14 @@ impl FileHandler {
 
         let mut escritor = BufWriter::new(archivo);
 
-        for i in 0..data.len() {
-            for j in 0..data[i].len() {
-                match escritor.write(data[i][j].as_bytes()) {
+        for dat in data {
+            for d in dat {
+                match escritor.write(d.as_bytes()) {
                     Ok(_) => (),
                     Err(e) => return Err(e.to_string()),
                 }
             }
+
             match escritor.write(b"\n") {
                 Ok(_) => (),
                 Err(e) => return Err(e.to_string()),

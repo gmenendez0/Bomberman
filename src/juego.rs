@@ -1,10 +1,7 @@
 use crate::bomba_normal::BombaNormal;
 use crate::bomba_traspaso::BombaTraspaso;
 use crate::casillero::Casillero;
-use crate::casillero::Casillero::{
-    CasilleroBombaNormal, CasilleroBombaTraspaso, CasilleroDesvio, CasilleroEnemigo,
-    CasilleroPared, CasilleroRoca, CasilleroVacio,
-};
+use crate::casillero::Casillero::{BombaNormall, BombaTraspasoo, Desvioo, Enemigoo, Paredd, Rocaa, Vacioo};
 use crate::coordenada::Coordenada;
 use crate::desvio::Desvio;
 use crate::enemigo::Enemigo;
@@ -33,11 +30,11 @@ impl Juego {
             Err("Caracter representado no valido".to_string());
 
         if caracter == "_" {
-            result = Ok(CasilleroVacio(Vacio::new(coordenada_objeto)));
+            result = Ok(Vacioo(Vacio::new(coordenada_objeto)));
         } else if caracter == "R" {
-            result = Ok(CasilleroRoca(Roca::new(coordenada_objeto)));
+            result = Ok(Rocaa(Roca::new(coordenada_objeto)));
         } else if caracter == "W" {
-            result = Ok(CasilleroPared(Pared::new(coordenada_objeto)));
+            result = Ok(Paredd(Pared::new(coordenada_objeto)));
         };
 
         result
@@ -53,21 +50,21 @@ impl Juego {
                     return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
                 }
 
-                result = Ok(CasilleroBombaNormal(BombaNormal::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
+                result = Ok(BombaNormall(BombaNormal::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'S' {
                 if segundo_caracter as i32  - ASCII_DIF < 1 {
                     return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
                 }
 
-                result = Ok(CasilleroBombaTraspaso(BombaTraspaso::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
+                result = Ok(BombaTraspasoo(BombaTraspaso::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
             } else if primer_caracter == 'F' {
                 if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
                     return Err("Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
                 }
 
-                result = Ok(CasilleroEnemigo(Enemigo::new(coordenada_objeto, segundo_caracter as i32 - ASCII_DIF)));
+                result = Ok(Enemigoo(Enemigo::new(coordenada_objeto, segundo_caracter as i32 - ASCII_DIF)));
             } else if primer_caracter == 'D' {
-                result = Ok(CasilleroDesvio(Desvio::new(coordenada_objeto, segundo_caracter.to_string())));
+                result = Ok(Desvioo(Desvio::new(coordenada_objeto, segundo_caracter.to_string())));
             }
         };
 

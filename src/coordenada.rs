@@ -10,11 +10,11 @@ impl Coordenada {
     }
 
     pub fn get_x(&self) -> usize {
-        self.x.clone()
+        self.x
     }
 
     pub fn get_y(&self) -> usize {
-        self.y.clone()
+        self.y
     }
 
     pub fn set_x(&mut self, x: usize) {
