@@ -47,7 +47,7 @@ impl Laberinto {
 
     //? Crea una bomba normal a partir del segundo caracter recibido, o devuelve error.
     fn crear_bomba_normal(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        if segundo_caracter as i32  - ASCII_DIF < 1 {
+        if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 9){
             return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
         }
 
@@ -56,7 +56,7 @@ impl Laberinto {
 
     //? Crea una bomba traspaso a partir del segundo caracter recibido, o devuelve error.
     fn crear_bomba_traspaso(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        if segundo_caracter as i32  - ASCII_DIF < 1 {
+        if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 9) {
             return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
         }
 
@@ -208,6 +208,25 @@ impl Laberinto {
 mod tests {
     use crate::coordenada::Coordenada;
     use crate::laberinto::Laberinto;
+    use crate::resultado_rafaga::ResultadoRafaga;
+
+    #[test]
+    fn test_detonar() {
+        let mut laberinto = Laberinto::new(3);
+        let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1)).unwrap();
+        laberinto.reemplazar_objeto_en_tablero(bomba, Coordenada::new(1, 1));
+        let resultado_detonacion = laberinto.detonar_objeto(Coordenada::new(1, 1));
+        assert!(resultado_detonacion.unwrap() == ResultadoRafaga::Insignificante);
+    }
+
+    #[test]
+    fn test_rafagear() {
+        let mut laberinto = Laberinto::new(3);
+        let bomba = Laberinto::crear_enemigo(51, Coordenada::new(1, 1)).unwrap();
+        laberinto.reemplazar_objeto_en_tablero(bomba, Coordenada::new(1, 1));
+        let resultado_rafaga = laberinto.rafagear_coordenada(&Coordenada::new(1, 1));
+        assert!(resultado_rafaga.unwrap() == ResultadoRafaga::EnemigoTocado(2));
+    }
 
     #[test]
     fn test_chequear_coordenadas_fuera_de_rango() {
