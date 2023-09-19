@@ -1,4 +1,5 @@
-use crate::casillero::Casillero;
+use crate::casillero::{Casillero, ResultadoRafaga};
+use crate::casillero::ResultadoRafaga::{Detonacion, EnemigoEliminado};
 use crate::coordenada::Coordenada;
 use crate::enemigo::Enemigo;
 
@@ -138,22 +139,34 @@ impl Laberinto {
 
     //? Devuelve el objeto ubicado en las coordenadas recibidas.
     fn obtener_objeto(&mut self, coordenada_buscada: Coordenada) -> Casillero {
-        self.tablero[coordenada_buscada.get_x()][coordenada_buscada.get_y()].clone()
+        self.tablero[coordenada_buscada.get_y()][coordenada_buscada.get_x()].clone()
     }
 
     //? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
-    pub fn detonar_objeto(&mut self, coordenada_a_detonar: Coordenada) -> Result<(), String> {
+    pub fn detonar_objeto(&mut self, coordenada_a_detonar: Coordenada) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(&coordenada_a_detonar) {
             return Err("No se puede detonar fuera del mapa!".to_string());
         }
 
         let objeto = self.obtener_objeto(coordenada_a_detonar.clone());
-        objeto.detonar(self)?;
-
-        Ok(())
+        objeto.detonar(self)
     }
 
+    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> ResultadoRafaga {
+        if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
+            return ResultadoRafaga::ChoqueFuerte;
+        }
 
+        let resultado_rafaga = self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].recibir_rafaga();
+
+        if resultado_rafaga == EnemigoEliminado {
+            self.reemplazar_objeto_en_tablero(Casillero::Vacio(coordenada_a_rafagear.clone()), coordenada_a_rafagear.clone());
+        } else if resultado_rafaga == Detonacion {
+            self.detonar_objeto(coordenada_a_rafagear.clone());
+        }
+
+        resultado_rafaga
+    }
 
 
 
@@ -227,48 +240,6 @@ impl Laberinto {
 
     pub fn vaciar_coordenada(&mut self, coordenada_a_vaciar: &Coordenada) {
         self.tablero[coordenada_a_vaciar.get_x()][coordenada_a_vaciar.get_y()] = CasilleroVacio(Vacio::new(Coordenada::new(coordenada_a_vaciar.get_x(), coordenada_a_vaciar.get_y(), )));
-    }
-
-    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> Result<ResultadoRafaga, String> {
-        if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
-            return Ok(ResultadoRafaga::ChoqueFuerte);
-        }
-
-        let casillero: &mut Casillero = &mut self.tablero[coordenada_a_rafagear.get_x()][coordenada_a_rafagear.get_y()];
-        let resultado_rafaga: Result<ResultadoRafaga, String>;
-
-        match casillero {
-            CasilleroVacio(vacio) => {
-                resultado_rafaga = Ok(vacio.recibir_rafaga());
-            }
-            CasilleroRoca(roca) => {
-                resultado_rafaga = Ok(roca.recibir_rafaga());
-            }
-            CasilleroPared(pared) => {
-                resultado_rafaga = Ok(pared.recibir_rafaga());
-            }
-            CasilleroEnemigo(enemigo) => {
-                let resultado_rafaga_sobre_enemigo = enemigo.recibir_rafaga();
-
-                if let EnemigoEliminado = resultado_rafaga_sobre_enemigo {
-                    self.vaciar_coordenada(&enemigo.get_coordenada_actual());
-                }
-
-                resultado_rafaga = Ok(resultado_rafaga_sobre_enemigo);
-            }
-            CasilleroDesvio(desvio) => {
-                resultado_rafaga = Ok(desvio.recibir_rafaga());
-            }
-            CasilleroBombaNormal(bomba_normal) => {
-                self.detonar_coordenada(&bomba_normal.get_coordenada_actual());
-            }
-            CasilleroBombaTraspaso(bomba_traspaso) => {
-                self.detonar_coordenada(&bomba_traspaso.get_coordenada_actual());
-            }
-        }
-
-        //resultado_rafaga
-        Ok(Insignificante)
     }
 
     fn evaluar_camino_a_seguir_traspaso(&mut self, coordenada_inicial: &Coordenada, alcance_restante: i32, resultado_rafaga: ResultadoRafaga) -> Result<ResultadoRafaga, String> {
