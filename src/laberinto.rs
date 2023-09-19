@@ -37,7 +37,7 @@ impl Laberinto {
         coordenada_objeto: Coordenada,
     ) -> Result<Casillero, String> {
         let mut result: Result<Casillero, String> =
-            Err("Caracter representado no valido".to_string());
+            Err("ERROR: Caracter representado no valido".to_string());
 
         if caracter == "_" {
             result = Ok(Casillero::Vacio(coordenada_objeto));
@@ -56,7 +56,7 @@ impl Laberinto {
         coordenada_objeto: Coordenada,
     ) -> Result<Casillero, String> {
         if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
-            return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
+            return Err("ERROR: El alcance de la bomba no puede ser menor a 1".to_string());
         }
 
         Ok(Casillero::BombaNormal(
@@ -72,7 +72,7 @@ impl Laberinto {
     ) -> Result<Casillero, String> {
         if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
             return Err(
-                "Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string(),
+                "ERROR: El alcance de la bomba traspaso no puede ser menor a 1".to_string(),
             );
         }
 
@@ -89,7 +89,7 @@ impl Laberinto {
     ) -> Result<Casillero, String> {
         if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 3) {
             return Err(
-                "Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string(),
+                "ERROR: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string(),
             );
         }
 
@@ -105,7 +105,7 @@ impl Laberinto {
     ) -> Result<Casillero, String> {
         let direccion = String::from(segundo_caracter as char);
         if direccion != "U" && direccion != "D" && direccion != "L" && direccion != "R" {
-            return Err("Error: La direccion del desvio no es valida".to_string());
+            return Err("ERROR: La direccion del desvio no es valida".to_string());
         }
 
         Ok(Casillero::Desvio(coordenada_objeto, direccion))
@@ -118,7 +118,7 @@ impl Laberinto {
         coordenada_objeto: Coordenada,
     ) -> Result<Casillero, String> {
         let mut result: Result<Casillero, String> =
-            Err("Caracter representado no valido".to_string());
+            Err("ERROR: Caracter representado no valido".to_string());
         let segundo_caracter = parte.as_bytes()[1];
 
         if let Some(primer_caracter) = parte.chars().next() {
@@ -268,7 +268,7 @@ mod tests {
         let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1)).unwrap();
         laberinto.reemplazar_objeto_en_tablero(bomba, Coordenada::new(1, 1));
         let resultado_detonacion = laberinto.detonar_objeto(Coordenada::new(1, 1));
-        assert!(resultado_detonacion.unwrap() == ResultadoRafaga::Insignificante);
+        assert_eq!(resultado_detonacion.unwrap(), ResultadoRafaga::Insignificante);
     }
 
     #[test]
@@ -277,7 +277,7 @@ mod tests {
         let bomba = Laberinto::crear_enemigo(51, Coordenada::new(1, 1)).unwrap();
         laberinto.reemplazar_objeto_en_tablero(bomba, Coordenada::new(1, 1));
         let resultado_rafaga = laberinto.rafagear_coordenada(&Coordenada::new(1, 1));
-        assert!(resultado_rafaga.unwrap() == ResultadoRafaga::EnemigoTocado(2));
+        assert_eq!(resultado_rafaga.unwrap(), ResultadoRafaga::EnemigoTocado(2));
     }
 
     #[test]

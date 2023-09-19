@@ -475,11 +475,11 @@ impl Casillero {
     ///? Detona la casilla si es posible y devuelve el resultado final de la detonacion (resultado del ultimo rafageo), en caso de no poder detonar se devuelve un error.
     pub fn detonar(&self, lab: &mut Laberinto) -> Result<ResultadoRafaga, String> {
         match self {
-            Casillero::Vacio(_) => Err("Error: No se puede detonar un vacio".to_string()),
-            Casillero::Roca(_) => Err("Error: No se puede detonar una roca".to_string()),
-            Casillero::Pared(_) => Err("Error: No se puede detonar una pared".to_string()),
-            Casillero::Enemigoo(..) => Err("Error: No se puede detonar un enemigo".to_string()),
-            Casillero::Desvio(..) => Err("Error: No se puede detonar un desvio".to_string()),
+            Casillero::Vacio(_) => Err("ERROR: No se puede detonar un vacio".to_string()),
+            Casillero::Roca(_) => Err("ERROR: No se puede detonar una roca".to_string()),
+            Casillero::Pared(_) => Err("ERROR: No se puede detonar una pared".to_string()),
+            Casillero::Enemigoo(..) => Err("ERROR: No se puede detonar un enemigo".to_string()),
+            Casillero::Desvio(..) => Err("ERROR: No se puede detonar un desvio".to_string()),
             Casillero::BombaNormal(_, alcance) => {
                 lab.reemplazar_objeto_en_tablero(
                     Casillero::Vacio(self.get_coordenada()),

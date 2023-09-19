@@ -25,3 +25,32 @@ impl ResultadoRafaga {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::resultado_rafaga::ResultadoRafaga;
+
+    #[test]
+    fn test_get_vida_enemigo_enemigo_tocado() {
+        let resultado = ResultadoRafaga::EnemigoTocado(42);
+        assert_eq!(resultado.get_vida_enemigo(), 42);
+    }
+
+    #[test]
+    fn test_get_vida_enemigo_desvio_arriba() {
+        let resultado = ResultadoRafaga::DesvioArriba;
+        assert_eq!(resultado.get_vida_enemigo(), 0);
+    }
+
+    #[test]
+    fn test_get_vida_enemigo_enemigo_eliminado() {
+        let resultado = ResultadoRafaga::EnemigoEliminado;
+        assert_eq!(resultado.get_vida_enemigo(), 0);
+    }
+
+    #[test]
+    fn test_get_vida_enemigo_detonacion() {
+        let resultado = ResultadoRafaga::Detonacion;
+        assert_eq!(resultado.get_vida_enemigo(), 0);
+    }
+}

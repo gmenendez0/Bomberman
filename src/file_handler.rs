@@ -43,7 +43,7 @@ impl FileHandler {
             Ok(archivo) => archivo,
             Err(_) => {
                 self.archivo_no_encontrado()?;
-                return Err("Error al abrir el archivo. Se ha creado uno y detallado el error dentro de el.".to_string());
+                return Err("ERROR: Error al abrir el archivo. Se ha creado uno y detallado el error dentro de el.".to_string());
             }
         };
 
