@@ -1,119 +1,99 @@
-use crate::bomba_normal::BombaNormal;
-use crate::bomba_traspaso::BombaTraspaso;
-use crate::casillero::Casillero::{
-    BombaNormall, BombaTraspasoo, Desvioo, Enemigoo,
-    Paredd, Rocaa, Vacioo,
-};
+use crate::casillero::ResultadoRafaga::{Choque, ChoqueFuerte, EnemigoEliminado, Insignificante};
 use crate::coordenada::Coordenada;
-use crate::desvio::Desvio;
 use crate::enemigo::Enemigo;
 use crate::laberinto::Laberinto;
-use crate::objeto_mapa::{ObjetoMapa, ResultadoRafaga};
-use crate::objeto_mapa::ResultadoRafaga::Insignificante;
-use crate::pared::Pared;
-use crate::roca::Roca;
-use crate::vacio::Vacio;
 
+#[derive(Clone)]
+pub enum ResultadoRafaga {
+    DesvioArriba,
+    DesvioAbajo,
+    DesvioIzquierda,
+    DesvioDerecha,
+    Choque,
+    ChoqueFuerte,
+    Insignificante,
+    EnemigoEliminado,
+}
+
+#[derive(Clone)]
 pub enum Casillero {
-    Vacioo(Vacio),
-    Rocaa(Roca),
-    Paredd(Pared),
-    Enemigoo(Enemigo),
-    Desvioo(Desvio),
-    BombaNormall(BombaNormal),
-    BombaTraspasoo(BombaTraspaso),
+    Vacio(Coordenada),
+    Roca(Coordenada),
+    Pared(Coordenada),
+    Enemigoo(Coordenada, Enemigo), //Hay que agregarle la vida...
+    Desvio(Coordenada, String),
+    BombaNormal(Coordenada, i32),
+    BombaTraspaso(Coordenada, i32),
 }
 
 impl Casillero {
-    pub fn obtener_representacion(&self) -> String {
-        let representacion: String;
-
-        match &self {
-            Vacioo(vacio) => {
-                representacion = vacio.obtener_representacion();
-            }
-            Rocaa(roca) => {
-                representacion = roca.obtener_representacion();
-            }
-            Paredd(pared) => {
-                representacion = pared.obtener_representacion();
-            }
-            Enemigoo(enemigo) => {
-                representacion = enemigo.obtener_representacion();
-            }
-            Desvioo(desvio) => {
-                representacion = desvio.obtener_representacion();
-            }
-            BombaNormall(bomba_normal) => {
-                representacion = bomba_normal.obtener_representacion();
-            }
-            BombaTraspasoo(bomba_traspaso) => {
-                representacion = bomba_traspaso.obtener_representacion();
-            }
-        };
-
-        representacion
-    }
-
-    pub fn obtener_coordenada(&self) -> Coordenada {
-        let coordenada: Coordenada;
-
-        match &self {
-            Vacioo(vacio) => {
-                coordenada = vacio.get_coordenada_actual();
-            }
-            Rocaa(roca) => {
-                coordenada = roca.get_coordenada_actual();
-            }
-            Paredd(pared) => {
-                coordenada = pared.get_coordenada_actual();
-            }
-            Enemigoo(enemigo) => {
-                coordenada = enemigo.get_coordenada_actual();
-            }
-            Desvioo(desvio) => {
-                coordenada = desvio.get_coordenada_actual();
-            }
-            BombaNormall(bomba_normal) => {
-                coordenada = bomba_normal.get_coordenada_actual();
-            }
-            BombaTraspasoo(bomba_traspaso) => {
-                coordenada = bomba_traspaso.get_coordenada_actual();
-            }
-        };
-
-        coordenada
-    }
-
-    pub fn detonar(&mut self, laberinto: &mut Laberinto) -> Result<(), String> {
-        let result: Result<(), String>;
-
+    pub fn detonar(&self, x: &mut Laberinto) -> Result<(), String> {
         match self {
-            Vacioo(vacio) => {
-                result = vacio.detonar(laberinto);
-            }
-            Rocaa(roca) => {
-                result = roca.detonar(laberinto);
-            }
-            Paredd(pared) => {
-                result = pared.detonar(laberinto);
-            }
-            Enemigoo(enemigo) => {
-                result = enemigo.detonar(laberinto);
-            }
-            Desvioo(desvio) => {
-                result = desvio.detonar(laberinto);
-            }
-            BombaNormall(bomba_normal) => {
-                result = bomba_normal.detonar(laberinto);
-            }
-            BombaTraspasoo(bomba_traspaso) => {
-                result = bomba_traspaso.detonar(laberinto);
-            }
-        };
-
-        result
-
+            Casillero::Vacio(_) => Err("No se puede detonar un vacio".to_string()),
+            Casillero::Roca(_) => Err("No se puede detonar una roca".to_string()),
+            Casillero::Pared(_) => Err("No se puede detonar una pared".to_string()),
+            Casillero::Enemigoo(..) => Err("No se puede detonar un enemigo".to_string()),
+            Casillero::Desvio(..) => Err("No se puede detonar un desvio".to_string()),
+            Casillero::BombaNormal(_, _) => Ok(()),
+            Casillero::BombaTraspaso(_, _) => Ok(()),
+        }
     }
 
+    pub fn recibir_rafaga(&self) -> ResultadoRafaga {
+        match self {
+            Casillero::Vacio(_) => Insignificante,
+            Casillero::Roca(_) => Choque,
+            Casillero::Pared(_) => ChoqueFuerte,
+            Casillero::Enemigoo(_, enemigo) => {
+                //enemigo.reducir_vida();
+
+                if enemigo.esta_muerto() {
+                    return EnemigoEliminado;
+                }
+
+                EnemigoEliminado
+            },
+            Casillero::Desvio(..) => Insignificante,
+            Casillero::BombaNormal(_, _) => Insignificante,
+            Casillero::BombaTraspaso(_, _) => Insignificante,
+        }
+    }
+
+    pub(crate) fn obtener_representacion(&self) -> String {
+        match self {
+            Casillero::Vacio(_) => String::from("_"),
+            Casillero::Roca(_) => String::from("R"),
+            Casillero::Pared(_) => String::from("W"),
+            Casillero::Enemigoo(_, enemigo) => {
+                String::from("E") + &enemigo.get_vida().to_string()
+            },
+            Casillero::Desvio(_, direccion) => {
+                String::from("D") + direccion
+            },
+            Casillero::BombaNormal(_, alcance) => {
+                let representacion_bomba = String::from("B");
+                let representacion_alcance= alcance.to_string();
+
+                representacion_bomba + &representacion_alcance
+            },
+            Casillero::BombaTraspaso(_, alcance) => {
+                let representacion_bomba_traspaso = String::from("S");
+                let representacion_alcance= alcance.to_string();
+
+                representacion_bomba_traspaso + &representacion_alcance
+            },
+        }
+    }
+
+    pub fn get_coordenada(&self) -> Coordenada {
+        match self {
+            Casillero::Vacio(coordenada) => coordenada.clone(),
+            Casillero::Roca(coordenada) => coordenada.clone(),
+            Casillero::Pared(coordenada) => coordenada.clone(),
+            Casillero::Enemigoo(coordenada, ..) => coordenada.clone(),
+            Casillero::Desvio(coordenada, _) => coordenada.clone(),
+            Casillero::BombaNormal(coordenada, _) => coordenada.clone(),
+            Casillero::BombaTraspaso(coordenada, _) => coordenada.clone(),
+        }
+    }
 }

@@ -1,32 +1,25 @@
-use crate::bomba_normal::BombaNormal;
-use crate::bomba_traspaso::BombaTraspaso;
+use crate::casillero::Casillero;
 use crate::coordenada::Coordenada;
-use crate::desvio::Desvio;
 use crate::enemigo::Enemigo;
-use crate::objeto_mapa::{ObjetoMapa};
-use crate::pared::Pared;
-use crate::roca::Roca;
-use crate::vacio::Vacio;
 
 const UN_CARACTER: usize = 1;
 const ASCII_DIF: i32 = 48;
 
 //? Laberinto es la estructura destinada a manejar el tablero del juego.
 pub struct Laberinto{
-    tablero: Vec<Vec<Box<dyn ObjetoMapa>>>,
+    tablero: Vec<Vec<Casillero>>,
 }
 
 impl Laberinto {
     //? Crea un laberinto lleno de Vacio y lo devuelve.
     pub fn new(dimension_tablero: usize) -> Laberinto {
-        let mut tablero: Vec<Vec<Box<dyn ObjetoMapa>>> = Vec::new();
+        let mut tablero: Vec<Vec<Casillero>> = Vec::new();
 
         for i in 0..dimension_tablero {
-            let mut fila: Vec<Box<dyn ObjetoMapa>> = Vec::new();
+            let mut fila: Vec<Casillero> = Vec::new();
 
             for j in 0..dimension_tablero {
-                let vacio: Box<dyn ObjetoMapa> = Box::new(Vacio::new(Coordenada::new(i, j)));
-                fila.push(vacio);
+                fila.push(Casillero::Vacio(Coordenada::new(i, j)));
             }
 
             tablero.push(fila);
@@ -36,23 +29,23 @@ impl Laberinto {
     }
 
     //? Crea objetos representados unicamente por un unico caracter.
-    fn crear_objeto_un_caracter(&mut self, caracter: &str, coordenada_objeto: Coordenada) -> Result<Box<dyn ObjetoMapa>, String> {
-        let mut result: Result<Box<dyn ObjetoMapa>, String> = Err("Caracter representado no valido".to_string());
+    fn crear_objeto_un_caracter(&mut self, caracter: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
+        let mut result: Result<Casillero, String> = Err("Caracter representado no valido".to_string());
 
         if caracter == "_" {
-            result = Ok(Box::new(Vacio::new(coordenada_objeto)));
+            result = Ok(Casillero::Vacio(coordenada_objeto));
         } else if caracter == "R" {
-            result = Ok(Box::new(Roca::new(coordenada_objeto)));
+            result = Ok(Casillero::Roca(coordenada_objeto));
         } else if caracter == "W" {
-            result = Ok(Box::new(Pared::new(coordenada_objeto)));
+            result = Ok(Casillero::Pared(coordenada_objeto));
         };
 
         result
     }
 
-    //? Crea objetos representados unicamente por dos caracteres.
-    fn crear_objeto_dos_caracteres(&mut self, parte: &str, coordenada_objeto: Coordenada) -> Result<Box<dyn ObjetoMapa>, String> {
-        let mut result: Result<Box<dyn ObjetoMapa>, String> = Err("Caracter representado no valido".to_string());
+    //? Crea objetos representados únicamente por dos caracteres.
+    fn crear_objeto_dos_caracteres(&mut self, parte: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
+        let mut result: Result<Casillero, String> = Err("Caracter representado no valido".to_string());
         let segundo_caracter = parte.as_bytes()[1];
 
         if let Some(primer_caracter) = parte.chars().next() {
@@ -61,21 +54,23 @@ impl Laberinto {
                     return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
                 }
 
-                result = Ok(Box::new(BombaNormal::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
+                result = Ok(Casillero::BombaNormal(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF));
             } else if primer_caracter == 'S' {
                 if segundo_caracter as i32  - ASCII_DIF < 1 {
                     return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
                 }
 
-                result = Ok(Box::new(BombaTraspaso::new(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF)));
+                result = Ok(Casillero::BombaTraspaso(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF));
             } else if primer_caracter == 'F' {
                 if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
                     return Err("Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
                 }
 
-                result = Ok(Box::new(Enemigo::new(coordenada_objeto, segundo_caracter as i32 - ASCII_DIF)));
+                let enemigo = Enemigo::new(segundo_caracter as i32  - ASCII_DIF);
+
+                result = Ok(Casillero::Enemigoo(coordenada_objeto, enemigo));
             } else if primer_caracter == 'D' {
-                result = Ok(Box::new(Desvio::new(coordenada_objeto, segundo_caracter.to_string())));
+                result = Ok(Casillero::Desvio(coordenada_objeto, segundo_caracter.to_string()));
             }
         };
 
@@ -85,14 +80,16 @@ impl Laberinto {
     //? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
     //? A partir de estos datos, actualiza el tablero.
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
-        let mut objeto: Box<dyn ObjetoMapa>;
+        let mut objeto: Casillero;
         let mut coordenada_casillero: Coordenada;
+        let mut coordenada_casillero_copia: Coordenada;
 
         for (coordenada_y, dato) in datos.iter().enumerate() {
             let partes = dato.split_whitespace().collect::<Vec<&str>>();
 
             for(coordenada_x, parte) in partes.iter().enumerate() {
                 coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
+                coordenada_casillero_copia = coordenada_casillero.clone();
 
                 if parte.len() == UN_CARACTER {
                     objeto = self.crear_objeto_un_caracter(parte, coordenada_casillero)?;
@@ -100,7 +97,7 @@ impl Laberinto {
                     objeto = self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?;
                 }
 
-                self.reemplazar_objeto_en_tablero(objeto);
+                self.reemplazar_objeto_en_tablero(objeto, coordenada_casillero_copia);
             }
         }
 
@@ -126,17 +123,13 @@ impl Laberinto {
     }
 
     //? Reemplaza el casillero ubicado en las coordenadas del casillero recibido por el casillero recibido.
-    pub fn reemplazar_objeto_en_tablero(&mut self, objeto: Box<dyn ObjetoMapa>) {
-        if self.coordenadas_fuera_de_rango(&objeto.get_coordenada_actual()) {
+    pub fn reemplazar_objeto_en_tablero(&mut self, casillero: Casillero, coordenada: Coordenada) {
+        if self.coordenadas_fuera_de_rango(&coordenada) {
             return;
         }
 
-        let x = objeto.get_coordenada_actual().get_x();
-        let y = objeto.get_coordenada_actual().get_y();
-
-        self.tablero[y][x] = objeto;
+        self.tablero[coordenada.get_y()][coordenada.get_x()] = casillero;
     }
-
 
     //? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
@@ -144,8 +137,8 @@ impl Laberinto {
     }
 
     //? Devuelve el objeto ubicado en las coordenadas recibidas.
-    fn obtener_objeto(&mut self, coordenada_a_detonar: Coordenada) -> &mut Box<dyn ObjetoMapa> {
-        &mut self.tablero[coordenada_a_detonar.get_x()][coordenada_a_detonar.get_y()]
+    fn obtener_objeto(&mut self, coordenada_buscada: Coordenada) -> Casillero {
+        self.tablero[coordenada_buscada.get_x()][coordenada_buscada.get_y()].clone()
     }
 
     //? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
@@ -154,13 +147,8 @@ impl Laberinto {
             return Err("No se puede detonar fuera del mapa!".to_string());
         }
 
-        let objeto = self.obtener_objeto(coordenada_a_detonar);
-        //objeto.detonar(self);
-
-        //1. Tener un tablero de casillas de objetos en vez de un tablero de objetos.
-        //2. Que los objetos que tienen que interactuar con el laberinto tengan al laberinto como campo en su struct.
-        //3. Que el algoritmo de simular la explosion este en Laberinto. Entonces al hacer "objeto.Detonar()", esto devuelve un resultado
-        //Dependiendo del resultado devuelto, se ejecuta el algoritmo de simular la explosion o no. Pero aca se vuelve a generar el mismo issue de compilacion.
+        let objeto = self.obtener_objeto(coordenada_a_detonar.clone());
+        objeto.detonar(self)?;
 
         Ok(())
     }
@@ -192,9 +180,39 @@ impl Laberinto {
 
 
 
+    // * ------------------------------------------------- BASURA! -----------------------------------------------------
 
 
+/*    pub fn detonar_objeto(&mut self, coordenada_a_detonar: Coordenada) -> Result<(), String> {
+        if self.coordenadas_fuera_de_rango(&coordenada_a_detonar) {
+            return Err("No se puede detonar fuera del mapa!".to_string());
+        }
+        
+        let objeto = self.obtener_objeto(coordenada_a_detonar.clone());
+        objeto.detonar(self)?;
+        /*
+        //Supongamos que si es una bomba devuelve un valor particular, tipo Ok()...
+        match objeto.detonar(){
+            Ok(()) => {
+                drop(objeto);
+                self.reemplazar_objeto_en_tablero(Box::new(Vacio::new(coordenada_a_detonar)));
+            },
+            Err(error) => {
+                return Err(error);
+            }
+        }
+        
+        //let mut vector: Vec<Desvio> = vec![Desvio::new(coordenada_a_detonar.clone(), "R".to_string()),Desvio::new(coordenada_a_detonar.clone(), "R".to_string()),Desvio::new(coordenada_a_detonar.clone(), "R".to_string())];
+        //let hola = &mut vector[1];
+        //let hola2 = &mut vector[2]
 
+        //1. Tener un tablero de casillas de objetos en vez de un tablero de objetos.
+        //2. Que los objetos que tienen que interactuar con el laberinto tengan al laberinto como campo en su struct.
+        //3. Que el algoritmo de simular la explosion este en Laberinto. Entonces al hacer "objeto.Detonar()", esto devuelve un resultado
+        //Dependiendo del resultado devuelto, se ejecuta el algoritmo de simular la explosion o no. Pero aca se vuelve a generar el mismo issue de compilacion.
+        */
+        Ok(())
+    }*/
 
     /*pub fn detonar_coordenada(&mut self, coordenada_a_detonar: &Coordenada) -> Result<(), String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_detonar) {
