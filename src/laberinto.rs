@@ -1,7 +1,8 @@
-use crate::casillero::{Casillero, ResultadoRafaga};
-use crate::casillero::ResultadoRafaga::{Detonacion, EnemigoEliminado, EnemigoTocado};
+use crate::casillero::{Casillero};
+use crate::resultado_rafaga::ResultadoRafaga::{Detonacion, EnemigoEliminado, EnemigoTocado};
 use crate::coordenada::Coordenada;
 use crate::enemigo::Enemigo;
+use crate::resultado_rafaga::ResultadoRafaga;
 
 const UN_CARACTER: usize = 1;
 const ASCII_DIF: i32 = 48;

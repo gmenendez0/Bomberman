@@ -6,6 +6,7 @@ mod enemigo;
 mod file_handler;
 mod laberinto;
 mod casillero;
+mod resultado_rafaga;
 
 fn main() -> Result<(), String> {
     //? Consigo los argumentos. Path del archivo buscado y coordenadas a explotar.                                             --FUNCIONA OK
