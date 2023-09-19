@@ -7,8 +7,8 @@ use crate::resultado_rafaga::ResultadoRafaga::{
     EnemigoEliminado, EnemigoTocado, Insignificante,
 };
 
-//? Representa un casillero del tablero. Puede contener o no valores, segun corresponda. Siempre contiene su coordenada.
 #[derive(Clone)]
+///? Representa un casillero del tablero. Puede contener o no valores, segun corresponda. Siempre contiene su coordenada.
 pub enum Casillero {
     Vacio(Coordenada),
     Roca(Coordenada),
@@ -20,7 +20,7 @@ pub enum Casillero {
 }
 
 impl Casillero {
-    //? Devuelve true en caso de que la rafaga no haya chocado un obstaculo de bomba normal.
+    ///? Devuelve true en caso de que la rafaga no haya chocado un obstaculo de bomba normal, false caso contrario.
     fn rafaga_no_choca_obstaculo_traspaso(resultado_rafaga: &ResultadoRafaga) -> bool {
         !matches!(
             resultado_rafaga,
@@ -32,7 +32,7 @@ impl Casillero {
         )
     }
 
-    //? Devuelve true en caso de que la rafaga aun tenga alcance y no haya chocado un obstaculo de bomba normal.
+    ///? Devuelve true en caso de que la rafaga aun tenga alcance y no haya chocado un obstaculo de bomba normal. False en caso contrario
     fn rafaga_continua_sin_chocar_obstaculo_traspaso(
         alcance_restante: i32,
         resultado_rafaga: &ResultadoRafaga,
@@ -40,7 +40,7 @@ impl Casillero {
         alcance_restante > 0 && Casillero::rafaga_no_choca_obstaculo_traspaso(resultado_rafaga)
     }
 
-    //? Devuelve true en caso de que la rafaga aun tenga alcance pero haya chocado un obstaculo de bomba normal.
+    ///? Devuelve true en caso de que la rafaga aun tenga alcance pero haya chocado un obstaculo de bomba normal. False en caso contrario
     fn rafaga_continua_chocando_obstaculo_traspaso(
         alcance_restante: i32,
         resultado_rafaga: &ResultadoRafaga,
@@ -48,7 +48,7 @@ impl Casillero {
         alcance_restante > 0 && !Casillero::rafaga_no_choca_obstaculo_traspaso(resultado_rafaga)
     }
 
-    //? Devuelve true en caso de que la rafaga no haya chocado un obstaculo de bomba normal.
+    ///? Devuelve true en caso de que la rafaga no haya chocado un obstaculo de bomba normal. False en caso contrario.
     fn rafaga_no_choca_obstaculo(resultado_rafaga: &ResultadoRafaga) -> bool {
         !matches!(
             resultado_rafaga,
@@ -61,7 +61,7 @@ impl Casillero {
         )
     }
 
-    //? Devuelve true en caso de que la rafaga aun tenga alcance y no haya chocado un obstaculo de bomba normal.
+    ///? Devuelve true en caso de que la rafaga aun tenga alcance y no haya chocado un obstaculo de bomba normal.
     fn rafaga_continua_sin_chocar_obstaculo(
         alcance_restante: i32,
         resultado_rafaga: &ResultadoRafaga,
@@ -69,7 +69,7 @@ impl Casillero {
         alcance_restante > 0 && Casillero::rafaga_no_choca_obstaculo(resultado_rafaga)
     }
 
-    //? Devuelve true en caso de que la rafaga aun tenga alcance pero haya chocado un obstaculo de bomba normal.
+    ///? Devuelve true en caso de que la rafaga aun tenga alcance pero haya chocado un obstaculo de bomba normal.
     fn rafaga_continua_chocando_obstaculo(
         alcance_restante: i32,
         resultado_rafaga: &ResultadoRafaga,
@@ -77,7 +77,7 @@ impl Casillero {
         alcance_restante > 0 && !Casillero::rafaga_no_choca_obstaculo(resultado_rafaga)
     }
 
-    //? Evalua el camino a seguir dependiendo del obstaculo chocado. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Evalua el camino a seguir dependiendo del obstaculo chocado. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     fn evaluar_camino_a_seguir(
         &self,
         lab: &mut Laberinto,
@@ -95,7 +95,7 @@ impl Casillero {
         }
     }
 
-    //? Evalua el camino a seguir dependiendo del obstaculo chocado. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Evalua el camino a seguir dependiendo del obstaculo chocado. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     fn evaluar_camino_a_seguir_traspaso(
         &self,
         lab: &mut Laberinto,
@@ -118,7 +118,7 @@ impl Casillero {
         }
     }
 
-    //? Aplica la rafaga a la coordenada superior a la recibida.
+    ///? Aplica la rafaga a la coordenada superior a la recibida.
     pub fn aplicar_rafaga_arriba(
         coordenada_base: &mut Coordenada,
         lab: &mut Laberinto,
@@ -135,7 +135,7 @@ impl Casillero {
         }
     }
 
-    //? Aplica la rafaga a la coordenada izquierda a la recibida.
+    ///? Aplica la rafaga a la coordenada izquierda a la recibida.
     pub fn aplicar_rafaga_izquierda(
         coordenada_base: &mut Coordenada,
         lab: &mut Laberinto,
@@ -152,7 +152,7 @@ impl Casillero {
         }
     }
 
-    //? Rafagea hacia arriba. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea hacia arriba. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_arriba(
         &self,
         lab: &mut Laberinto,
@@ -190,7 +190,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Rafagea hacia abajo. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea hacia abajo. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_abajo(
         &self,
         lab: &mut Laberinto,
@@ -226,7 +226,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Rafagea a la derecha. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea a la derecha. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_derecha(
         &self,
         lab: &mut Laberinto,
@@ -262,7 +262,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Rafagea a la izquierda. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea a la izquierda. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_izquierda(
         &self,
         lab: &mut Laberinto,
@@ -300,7 +300,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Inicia los rafageos en todas las direcciones. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Inicia los rafageos en todas las direcciones. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     fn iniciar_rafagas(
         &self,
         lab: &mut Laberinto,
@@ -312,7 +312,7 @@ impl Casillero {
         self.rafagear_izquierda(lab, &self.get_coordenada(), alcance_restante_rafagas)
     }
 
-    //? Rafagea hacia arriba. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea hacia arriba. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_arriba_traspaso(
         &self,
         lab: &mut Laberinto,
@@ -350,7 +350,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Rafagea hacia abajo. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea hacia abajo. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_abajo_traspaso(
         &self,
         lab: &mut Laberinto,
@@ -386,7 +386,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Rafagea a la derecha. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea a la derecha. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_derecha_traspaso(
         &self,
         lab: &mut Laberinto,
@@ -422,7 +422,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Rafagea a la izquierda. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Rafagea a la izquierda. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_izquierda_traspaso(
         &self,
         lab: &mut Laberinto,
@@ -460,7 +460,7 @@ impl Casillero {
         resultado_rafaga
     }
 
-    //? Inicia los rafageos traspaso en todas las direcciones. Devuelve el resultado del rafageo de la ultima casilla rafageada.
+    ///? Inicia los rafageos traspaso en todas las direcciones. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     fn iniciar_rafagas_traspaso(
         &self,
         lab: &mut Laberinto,
@@ -472,7 +472,7 @@ impl Casillero {
         self.rafagear_izquierda_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)
     }
 
-    //? Detona la casilla si es posible y devuelve el resultado final de la detonacion (resultado del ultimo rafageo), en caso de no poder detonar se devuelve un error.
+    ///? Detona la casilla si es posible y devuelve el resultado final de la detonacion (resultado del ultimo rafageo), en caso de no poder detonar se devuelve un error.
     pub fn detonar(&self, lab: &mut Laberinto) -> Result<ResultadoRafaga, String> {
         match self {
             Casillero::Vacio(_) => Err("Error: No se puede detonar un vacio".to_string()),
@@ -497,7 +497,7 @@ impl Casillero {
         }
     }
 
-    //? Devuelve el resultado de recibir una rafaga sobre la casilla.
+    ///? Devuelve el resultado de recibir una rafaga sobre la casilla.
     pub fn recibir_rafaga(&self) -> ResultadoRafaga {
         match self {
             Casillero::Vacio(_) => Insignificante,
@@ -526,7 +526,7 @@ impl Casillero {
         }
     }
 
-    //? Devuelve la representacion de la casilla.
+    ///? Devuelve la representacion de la casilla.
     pub fn obtener_representacion(&self) -> String {
         match self {
             Casillero::Vacio(_) => String::from("_"),
@@ -552,7 +552,7 @@ impl Casillero {
         }
     }
 
-    //? Devuelve la coordenada de la casilla.
+    ///? Devuelve la coordenada de la casilla.
     pub fn get_coordenada(&self) -> Coordenada {
         match self {
             Casillero::Vacio(coordenada) => coordenada.clone(),

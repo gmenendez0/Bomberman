@@ -1,4 +1,4 @@
-//? Estructura que representa una coordenada en el tablero de 2 dimensiones.
+///? Estructura que representa una coordenada en el tablero de 2 dimensiones.
 //? PartialEq y Debug solo para testing.
 #[derive(Clone, PartialEq, Debug)]
 pub struct Coordenada {
@@ -11,22 +11,22 @@ impl Coordenada {
         Coordenada { x, y }
     }
 
-    //? Devuelve X
+    ///? Devuelve X
     pub fn get_x(&self) -> usize {
         self.x
     }
 
-    //? Devuelve Y
+    ///? Devuelve Y
     pub fn get_y(&self) -> usize {
         self.y
     }
 
-    //? Setea X
+    ///? Setea X
     pub fn set_x(&mut self, x: usize) {
         self.x = x;
     }
 
-    //? Setea Y
+    ///? Setea Y
     pub fn set_y(&mut self, y: usize) {
         self.y = y;
     }

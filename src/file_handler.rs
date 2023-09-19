@@ -1,18 +1,18 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 
-//? FileHandler es una estructura que se encarga de manejar los archivos.
+///? FileHandler es una estructura que se encarga de manejar los archivos.
 pub struct FileHandler {
     target: String,
 }
 
 impl FileHandler {
-    //? Constructor de FileHandler.
+    ///? Constructor de FileHandler.
     pub fn new(target: String) -> FileHandler {
         FileHandler { target }
     }
 
-    //? Crea un archivo en base al target especificado y lo devuelve. Si el archivo ya existe, lo sobreescribe.
+    ///? Crea un archivo en base al target especificado y lo devuelve. Si el archivo ya existe, lo sobreescribe.
     pub fn crear_archivo(&self) -> Result<File, String> {
         let result: Result<File, String>;
 
@@ -24,7 +24,7 @@ impl FileHandler {
         result
     }
 
-    //? Crea un archivo en base al target especificado y escribe un mensaje de error de archivo no encontrado en el mismo.
+    ///? Crea un archivo en base al target especificado y escribe un mensaje de error de archivo no encontrado en el mismo.
     pub fn archivo_no_encontrado(&self) -> Result<(), String> {
         let archivo = self.crear_archivo()?;
 
@@ -37,7 +37,7 @@ impl FileHandler {
         Ok(())
     }
 
-    //? Abre un archivo en base al target especificado y lo devuelve. Si el archivo no existe, crea uno y escribe un mensaje de error de archivo no encontrado en el mismo.
+    ///? Abre un archivo en base al target especificado y lo devuelve. Si el archivo no existe, crea uno y escribe un mensaje de error de archivo no encontrado en el mismo.
     pub fn abrir_archivo(&self) -> Result<File, String> {
         let archivo = match File::open(&self.target) {
             Ok(archivo) => archivo,
@@ -50,7 +50,7 @@ impl FileHandler {
         Ok(archivo)
     }
 
-    //? Lee el archivo especificado en el target y devuelve un vector de strings con las lineas del mismo.
+    ///? Lee el archivo especificado en el target y devuelve un vector de strings con las lineas del mismo.
     pub fn read(&self) -> Result<Vec<String>, String> {
         let archivo = self.abrir_archivo()?;
 
@@ -67,7 +67,7 @@ impl FileHandler {
         Ok(lineas)
     }
 
-    //? Escribe el mensaje de error recibido por parametro en el archivo especificado target.
+    ///? Escribe el mensaje de error recibido por parametro en el archivo especificado target.
     pub fn write_error(&self, error: String) -> Result<(), String> {
         println!("{}", error);
         let archivo = self.crear_archivo()?;
@@ -81,7 +81,7 @@ impl FileHandler {
         Ok(())
     }
 
-    //? Escribe el vector de strings recibido por parametro en el archivo especificado target.
+    ///? Escribe el vector de strings recibido por parametro en el archivo especificado target.
     pub fn write(&self, data: Vec<Vec<String>>) -> Result<(), String> {
         let archivo = self.crear_archivo()?;
 

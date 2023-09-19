@@ -7,13 +7,13 @@ use crate::resultado_rafaga::ResultadoRafaga::{Detonacion, EnemigoEliminado, Ene
 const UN_CARACTER: usize = 1;
 const ASCII_DIF: i32 = 48;
 
-//? Laberinto es la estructura destinada a manejar el tablero del juego.
+///? Laberinto es la estructura destinada a manejar el tablero del juego.
 pub struct Laberinto {
     tablero: Vec<Vec<Casillero>>,
 }
 
 impl Laberinto {
-    //? Crea un laberinto lleno de Vacio y lo devuelve.
+    ///? Crea un laberinto lleno de Vacio y lo devuelve.
     pub fn new(dimension_tablero: usize) -> Laberinto {
         let mut tablero: Vec<Vec<Casillero>> = Vec::new();
 
@@ -30,7 +30,7 @@ impl Laberinto {
         Laberinto { tablero }
     }
 
-    //? Crea objetos representados unicamente por un unico caracter.
+    ///? Crea objetos representados unicamente por un unico caracter.
     fn crear_objeto_un_caracter(
         &mut self,
         caracter: &str,
@@ -50,7 +50,7 @@ impl Laberinto {
         result
     }
 
-    //? Crea una bomba normal a partir del segundo caracter recibido, o devuelve error.
+    ///? Crea una bomba normal a partir del segundo caracter recibido, o devuelve error.
     fn crear_bomba_normal(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
@@ -65,7 +65,7 @@ impl Laberinto {
         ))
     }
 
-    //? Crea una bomba traspaso a partir del segundo caracter recibido, o devuelve error.
+    ///? Crea una bomba traspaso a partir del segundo caracter recibido, o devuelve error.
     fn crear_bomba_traspaso(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
@@ -82,7 +82,7 @@ impl Laberinto {
         ))
     }
 
-    //? Crea un enemigo a partir del segundo caracter recibido, o devuelve error.
+    ///? Crea un enemigo a partir del segundo caracter recibido, o devuelve error.
     fn crear_enemigo(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
@@ -98,7 +98,7 @@ impl Laberinto {
         Ok(Casillero::Enemigoo(coordenada_objeto, enemigo))
     }
 
-    //? Crea un desvio a partir del segundo caracter recibido, o devuelve error.
+    ///? Crea un desvio a partir del segundo caracter recibido, o devuelve error.
     fn crear_desvio(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
@@ -111,7 +111,7 @@ impl Laberinto {
         Ok(Casillero::Desvio(coordenada_objeto, direccion))
     }
 
-    //? Crea objetos representados únicamente por dos caracteres.
+    ///? Crea objetos representados únicamente por dos caracteres.
     fn crear_objeto_dos_caracteres(
         &mut self,
         parte: &str,
@@ -136,7 +136,7 @@ impl Laberinto {
         result
     }
 
-    //? Crea  el objeto correspondiente y lo agrega al mapa.
+    ///? Crea  el objeto correspondiente y lo agrega al mapa.
     pub fn crear_objeto_correspondiente(
         &mut self,
         parte: &str,
@@ -158,8 +158,8 @@ impl Laberinto {
         Ok(())
     }
 
-    //? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
-    //? A partir de estos datos, actualiza el tablero.
+    ///? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
+    ///? A partir de estos datos, actualiza el tablero.
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
         for (coordenada_y, dato) in datos.iter().enumerate() {
             let partes = dato.split_whitespace().collect::<Vec<&str>>();
@@ -172,7 +172,7 @@ impl Laberinto {
         Ok(())
     }
 
-    //? Devuelve la visualizacion del estado actual del laberinto.
+    ///? Devuelve la visualizacion del estado actual del laberinto.
     pub fn obtener_visualizacion(&self) -> Vec<Vec<String>> {
         let mut tablero_visualizacion: Vec<Vec<String>> = Vec::new();
 
@@ -190,7 +190,7 @@ impl Laberinto {
         tablero_visualizacion
     }
 
-    //? Reemplaza el casillero ubicado en las coordenadas del casillero recibido por el casillero recibido.
+    ///? Reemplaza el casillero ubicado en las coordenadas del casillero recibido por el casillero recibido.
     pub fn reemplazar_objeto_en_tablero(&mut self, casillero: Casillero, coordenada: Coordenada) {
         if self.coordenadas_fuera_de_rango(&coordenada) {
             return;
@@ -199,17 +199,17 @@ impl Laberinto {
         self.tablero[coordenada.get_y()][coordenada.get_x()] = casillero;
     }
 
-    //? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
+    ///? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
         coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()
     }
 
-    //? Devuelve el objeto ubicado en las coordenadas recibidas.
+    ///? Devuelve el objeto ubicado en las coordenadas recibidas.
     fn obtener_objeto(&mut self, coordenada_buscada: Coordenada) -> Casillero {
         self.tablero[coordenada_buscada.get_y()][coordenada_buscada.get_x()].clone()
     }
 
-    //? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
+    ///? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
     pub fn detonar_objeto(
         &mut self,
         coordenada_a_detonar: Coordenada,
@@ -222,7 +222,7 @@ impl Laberinto {
         objeto.detonar(self)
     }
 
-    //? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el resultado.
+    ///? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el resultado.
     pub fn rafagear_coordenada(
         &mut self,
         coordenada_a_rafagear: &Coordenada,
