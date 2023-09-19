@@ -1,14 +1,14 @@
-use crate::casillero::{Casillero};
-use crate::resultado_rafaga::ResultadoRafaga::{Detonacion, EnemigoEliminado, EnemigoTocado};
+use crate::casillero::Casillero;
 use crate::coordenada::Coordenada;
 use crate::enemigo::Enemigo;
 use crate::resultado_rafaga::ResultadoRafaga;
+use crate::resultado_rafaga::ResultadoRafaga::{Detonacion, EnemigoEliminado, EnemigoTocado};
 
 const UN_CARACTER: usize = 1;
 const ASCII_DIF: i32 = 48;
 
 //? Laberinto es la estructura destinada a manejar el tablero del juego.
-pub struct Laberinto{
+pub struct Laberinto {
     tablero: Vec<Vec<Casillero>>,
 }
 
@@ -31,8 +31,13 @@ impl Laberinto {
     }
 
     //? Crea objetos representados unicamente por un unico caracter.
-    fn crear_objeto_un_caracter(&mut self, caracter: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        let mut result: Result<Casillero, String> = Err("Caracter representado no valido".to_string());
+    fn crear_objeto_un_caracter(
+        &mut self,
+        caracter: &str,
+        coordenada_objeto: Coordenada,
+    ) -> Result<Casillero, String> {
+        let mut result: Result<Casillero, String> =
+            Err("Caracter representado no valido".to_string());
 
         if caracter == "_" {
             result = Ok(Casillero::Vacio(coordenada_objeto));
@@ -46,36 +51,58 @@ impl Laberinto {
     }
 
     //? Crea una bomba normal a partir del segundo caracter recibido, o devuelve error.
-    fn crear_bomba_normal(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 9){
+    fn crear_bomba_normal(
+        segundo_caracter: u8,
+        coordenada_objeto: Coordenada,
+    ) -> Result<Casillero, String> {
+        if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
             return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
         }
 
-        Ok(Casillero::BombaNormal(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF))
+        Ok(Casillero::BombaNormal(
+            coordenada_objeto,
+            segundo_caracter as i32 - ASCII_DIF,
+        ))
     }
 
     //? Crea una bomba traspaso a partir del segundo caracter recibido, o devuelve error.
-    fn crear_bomba_traspaso(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 9) {
-            return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
+    fn crear_bomba_traspaso(
+        segundo_caracter: u8,
+        coordenada_objeto: Coordenada,
+    ) -> Result<Casillero, String> {
+        if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
+            return Err(
+                "Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string(),
+            );
         }
 
-        Ok(Casillero::BombaTraspaso(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF))
+        Ok(Casillero::BombaTraspaso(
+            coordenada_objeto,
+            segundo_caracter as i32 - ASCII_DIF,
+        ))
     }
 
     //? Crea un enemigo a partir del segundo caracter recibido, o devuelve error.
-    fn crear_enemigo(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
-            return Err("Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
+    fn crear_enemigo(
+        segundo_caracter: u8,
+        coordenada_objeto: Coordenada,
+    ) -> Result<Casillero, String> {
+        if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 3) {
+            return Err(
+                "Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string(),
+            );
         }
 
-        let enemigo = Enemigo::new(segundo_caracter as i32  - ASCII_DIF);
+        let enemigo = Enemigo::new(segundo_caracter as i32 - ASCII_DIF);
 
         Ok(Casillero::Enemigoo(coordenada_objeto, enemigo))
     }
 
     //? Crea un desvio a partir del segundo caracter recibido, o devuelve error.
-    fn crear_desvio(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
+    fn crear_desvio(
+        segundo_caracter: u8,
+        coordenada_objeto: Coordenada,
+    ) -> Result<Casillero, String> {
         let direccion = String::from(segundo_caracter as char);
         if direccion != "U" && direccion != "D" && direccion != "L" && direccion != "R" {
             return Err("Error: La direccion del desvio no es valida".to_string());
@@ -85,8 +112,13 @@ impl Laberinto {
     }
 
     //? Crea objetos representados únicamente por dos caracteres.
-    fn crear_objeto_dos_caracteres(&mut self, parte: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
-        let mut result: Result<Casillero, String> = Err("Caracter representado no valido".to_string());
+    fn crear_objeto_dos_caracteres(
+        &mut self,
+        parte: &str,
+        coordenada_objeto: Coordenada,
+    ) -> Result<Casillero, String> {
+        let mut result: Result<Casillero, String> =
+            Err("Caracter representado no valido".to_string());
         let segundo_caracter = parte.as_bytes()[1];
 
         if let Some(primer_caracter) = parte.chars().next() {
@@ -105,7 +137,12 @@ impl Laberinto {
     }
 
     //? Crea  el objeto correspondiente y lo agrega al mapa.
-    pub fn crear_objeto_correspondiente(&mut self, parte: &str, coordenada_x: usize, coordenada_y: usize) -> Result<(), String>{
+    pub fn crear_objeto_correspondiente(
+        &mut self,
+        parte: &str,
+        coordenada_x: usize,
+        coordenada_y: usize,
+    ) -> Result<(), String> {
         let objeto: Casillero;
         let coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
         let coordenada_casillero_copia = coordenada_casillero.clone();
@@ -127,7 +164,7 @@ impl Laberinto {
         for (coordenada_y, dato) in datos.iter().enumerate() {
             let partes = dato.split_whitespace().collect::<Vec<&str>>();
 
-            for(coordenada_x, parte) in partes.iter().enumerate() {
+            for (coordenada_x, parte) in partes.iter().enumerate() {
                 self.crear_objeto_correspondiente(parte, coordenada_x, coordenada_y)?;
             }
         }
@@ -173,7 +210,10 @@ impl Laberinto {
     }
 
     //? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
-    pub fn detonar_objeto(&mut self, coordenada_a_detonar: Coordenada) -> Result<ResultadoRafaga, String> {
+    pub fn detonar_objeto(
+        &mut self,
+        coordenada_a_detonar: Coordenada,
+    ) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(&coordenada_a_detonar) {
             return Err("No se puede detonar fuera del mapa!".to_string());
         }
@@ -183,26 +223,38 @@ impl Laberinto {
     }
 
     //? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el resultado.
-    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> Result<ResultadoRafaga, String> {
+    pub fn rafagear_coordenada(
+        &mut self,
+        coordenada_a_rafagear: &Coordenada,
+    ) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
             return Ok(ResultadoRafaga::ChoqueFuerte);
         }
 
-        let mut resultado_rafaga = Ok(self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].recibir_rafaga());
+        let mut resultado_rafaga = Ok(self.tablero[coordenada_a_rafagear.get_y()]
+            [coordenada_a_rafagear.get_x()]
+        .recibir_rafaga());
 
         if resultado_rafaga.clone()? == EnemigoEliminado {
-            self.reemplazar_objeto_en_tablero(Casillero::Vacio(coordenada_a_rafagear.clone()), coordenada_a_rafagear.clone());
+            self.reemplazar_objeto_en_tablero(
+                Casillero::Vacio(coordenada_a_rafagear.clone()),
+                coordenada_a_rafagear.clone(),
+            );
         } else if resultado_rafaga.clone()? == Detonacion {
             resultado_rafaga = self.detonar_objeto(coordenada_a_rafagear.clone());
-        } else if resultado_rafaga.clone()? == EnemigoTocado(1) || resultado_rafaga.clone()? == EnemigoTocado(2){
+        } else if resultado_rafaga.clone()? == EnemigoTocado(1)
+            || resultado_rafaga.clone()? == EnemigoTocado(2)
+        {
             let enemigo_nuevo = Enemigo::new(resultado_rafaga.clone()?.get_vida_enemigo());
-            self.reemplazar_objeto_en_tablero(Casillero::Enemigoo(coordenada_a_rafagear.clone(), enemigo_nuevo), coordenada_a_rafagear.clone());
+            self.reemplazar_objeto_en_tablero(
+                Casillero::Enemigoo(coordenada_a_rafagear.clone(), enemigo_nuevo),
+                coordenada_a_rafagear.clone(),
+            );
         }
 
         resultado_rafaga
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -245,18 +297,30 @@ mod tests {
     #[test]
     fn test_chequear_inicializacion_con_datos() {
         let mut lab = Laberinto::new(3);
-        let datos = vec!["R _ _".to_string(), "_ W _".to_string(), "_ _ _".to_string()];
+        let datos = vec![
+            "R _ _".to_string(),
+            "_ W _".to_string(),
+            "_ _ _".to_string(),
+        ];
         assert!(lab.inicializar_laberinto_con_datos(datos).is_ok());
 
         let mut lab2 = Laberinto::new(3);
-        let datos = vec!["R _ _".to_string(), "_ Z _".to_string(), "_ _ _".to_string()];
+        let datos = vec![
+            "R _ _".to_string(),
+            "_ Z _".to_string(),
+            "_ _ _".to_string(),
+        ];
         assert!(lab2.inicializar_laberinto_con_datos(datos).is_err());
     }
 
     #[test]
     fn test_chequear_visualizacion_datos() {
         let mut lab = Laberinto::new(3);
-        let datos = vec!["R _ _".to_string(), "_ W _".to_string(), "_ _ _".to_string()];
+        let datos = vec![
+            "R _ _".to_string(),
+            "_ W _".to_string(),
+            "_ _ _".to_string(),
+        ];
         lab.inicializar_laberinto_con_datos(datos).unwrap();
         let visualizacion = lab.obtener_visualizacion();
         assert_eq!(visualizacion[0][0], "R");
@@ -268,9 +332,8 @@ mod tests {
     fn test_crear_objeto_un_caracter() {
         let mut lab = Laberinto::new(3);
         let caracter = "P";
-        let casillero = lab.crear_objeto_un_caracter(caracter, Coordenada::new(2,2));
+        let casillero = lab.crear_objeto_un_caracter(caracter, Coordenada::new(2, 2));
         let es_error = casillero.is_err();
         assert!(es_error);
     }
 }
-

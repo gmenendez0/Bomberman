@@ -38,7 +38,7 @@ impl FileHandler {
     }
 
     //? Abre un archivo en base al target especificado y lo devuelve. Si el archivo no existe, crea uno y escribe un mensaje de error de archivo no encontrado en el mismo.
-    pub fn abrir_archivo(&self) -> Result<File, String>{
+    pub fn abrir_archivo(&self) -> Result<File, String> {
         let archivo = match File::open(&self.target) {
             Ok(archivo) => archivo,
             Err(_) => {
@@ -81,7 +81,7 @@ impl FileHandler {
         Ok(())
     }
 
-//? Escribe el vector de strings recibido por parametro en el archivo especificado target.
+    //? Escribe el vector de strings recibido por parametro en el archivo especificado target.
     pub fn write(&self, data: Vec<Vec<String>>) -> Result<(), String> {
         let archivo = self.crear_archivo()?;
 

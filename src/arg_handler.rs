@@ -54,14 +54,14 @@ impl ArgHandler {
 
         Ok(y)
     }
-    
+
     //? Devuelve una Coordenada a partir de los argumentos 3 y 4.
     pub fn get_coordenada_bomba_a_detonar(&self) -> Result<Coordenada, String> {
         let x = self.parse_x()?;
         let y = self.parse_y()?;
-        
+
         let coordenada = Coordenada::new(x as usize, y as usize);
-        
+
         Ok(coordenada)
     }
 
@@ -80,41 +80,85 @@ mod tests {
 
     #[test]
     fn test_chequear_cant_args() {
-        let args = vec!["arg1".to_string(), "arg2".to_string(), "arg3".to_string(), "arg4".to_string(), "arg5".to_string()];
+        let args = vec![
+            "arg1".to_string(),
+            "arg2".to_string(),
+            "arg3".to_string(),
+            "arg4".to_string(),
+            "arg5".to_string(),
+        ];
         let arg_handler = ArgHandler::new(args);
         assert!(arg_handler.chequear_cant_args().is_ok());
 
-        let args = vec!["arg1".to_string(), "arg2".to_string(), "arg3".to_string(), "arg4".to_string()];
+        let args = vec![
+            "arg1".to_string(),
+            "arg2".to_string(),
+            "arg3".to_string(),
+            "arg4".to_string(),
+        ];
         let arg_handler = ArgHandler::new(args);
         assert!(arg_handler.chequear_cant_args().is_err());
     }
 
     #[test]
     fn test_parse_x() {
-        let args = vec!["arg1".to_string(), "arg2".to_string(), "123".to_string(), "456".to_string(), "arg5".to_string()];
+        let args = vec![
+            "arg1".to_string(),
+            "arg2".to_string(),
+            "123".to_string(),
+            "456".to_string(),
+            "arg5".to_string(),
+        ];
         let arg_handler = ArgHandler::new(args);
         assert_eq!(arg_handler.parse_x(), Ok(456));
 
-        let args = vec!["arg1".to_string(), "arg2".to_string(), "not_an_integer".to_string(), "dfgdfg".to_string(), "arg5".to_string()];
+        let args = vec![
+            "arg1".to_string(),
+            "arg2".to_string(),
+            "not_an_integer".to_string(),
+            "dfgdfg".to_string(),
+            "arg5".to_string(),
+        ];
         let arg_handler = ArgHandler::new(args);
         assert!(arg_handler.parse_x().is_err());
     }
 
     #[test]
     fn test_parse_y() {
-        let args = vec!["arg1".to_string(), "arg2".to_string(), "123".to_string(), "456".to_string(), "456".to_string()];
+        let args = vec![
+            "arg1".to_string(),
+            "arg2".to_string(),
+            "123".to_string(),
+            "456".to_string(),
+            "456".to_string(),
+        ];
         let arg_handler = ArgHandler::new(args);
         assert_eq!(arg_handler.parse_y(), Ok(456));
 
-        let args = vec!["arg1".to_string(), "arg2".to_string(), "123".to_string(), "not_an_integer".to_string(), "not_an_integer".to_string()];
+        let args = vec![
+            "arg1".to_string(),
+            "arg2".to_string(),
+            "123".to_string(),
+            "not_an_integer".to_string(),
+            "not_an_integer".to_string(),
+        ];
         let arg_handler = ArgHandler::new(args);
         assert!(arg_handler.parse_y().is_err());
     }
 
     #[test]
     fn test_concatenar_path_y_nombre_archivo() {
-        let args = vec!["arg1".to_string(), "file.txt".to_string(), "path_cualquiera".to_string(), "435".to_string(), "arg5".to_string()];
+        let args = vec![
+            "arg1".to_string(),
+            "file.txt".to_string(),
+            "path_cualquiera".to_string(),
+            "435".to_string(),
+            "arg5".to_string(),
+        ];
         let arg_handler = ArgHandler::new(args);
-        assert_eq!(arg_handler.concatenar_path_y_nombre_archivo(), "path_cualquiera/file.txt");
+        assert_eq!(
+            arg_handler.concatenar_path_y_nombre_archivo(),
+            "path_cualquiera/file.txt"
+        );
     }
 }

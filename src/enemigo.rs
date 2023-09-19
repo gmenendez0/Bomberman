@@ -6,9 +6,7 @@ pub struct Enemigo {
 
 impl Enemigo {
     pub fn new(vida: i32) -> Enemigo {
-        Enemigo {
-            vida,
-        }
+        Enemigo { vida }
     }
 
     //? Devuelve la vida del enemigo
