@@ -307,7 +307,7 @@ impl Casillero {
     }
 
     //? Devuelve la representacion de la casilla.
-    pub(crate) fn obtener_representacion(&self) -> String {
+    pub fn obtener_representacion(&self) -> String {
         match self {
             Casillero::Vacio(_) => String::from("_"),
             Casillero::Roca(_) => String::from("R"),
@@ -345,5 +345,89 @@ impl Casillero {
             Casillero::BombaNormal(coordenada, _) => coordenada.clone(),
             Casillero::BombaTraspaso(coordenada, _) => coordenada.clone(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::casillero::Casillero;
+    use crate::coordenada::Coordenada;
+    use crate::enemigo::Enemigo;
+    use crate::resultado_rafaga::ResultadoRafaga;
+
+    #[test]
+    fn test_recibir_rafaga_vacio() {
+        let casillero = Casillero::Vacio(Coordenada::new(1, 1));
+        let resultado_rafaga = casillero.recibir_rafaga();
+        assert_eq!(resultado_rafaga, ResultadoRafaga::Insignificante);
+    }
+
+    #[test]
+    fn test_recibir_rafaga_roca() {
+        let casillero = Casillero::Roca(Coordenada::new(2, 2));
+        assert_eq!(casillero.recibir_rafaga(), ResultadoRafaga::Choque);
+    }
+
+    #[test]
+    fn test_recibir_rafaga_pared() {
+        let casillero = Casillero::Pared(Coordenada::new(3, 3));
+        assert_eq!(casillero.recibir_rafaga(), ResultadoRafaga::ChoqueFuerte);
+    }
+
+    #[test]
+    fn test_recibir_rafaga_enemigo_elim() {
+        let enemigo = Enemigo::new(1);
+        let casillero = Casillero::Enemigoo(Coordenada::new(4, 4), enemigo);
+        assert_eq!(casillero.recibir_rafaga(), ResultadoRafaga::EnemigoEliminado);
+    }
+
+    #[test]
+    fn test_recibir_rafaga_enemigo_tocado() {
+        let enemigo = Enemigo::new(3);
+        let casillero = Casillero::Enemigoo(Coordenada::new(5, 5), enemigo);
+        assert_eq!(casillero.recibir_rafaga(), ResultadoRafaga::EnemigoTocado(2));
+    }
+
+    #[test]
+    fn test_obtener_representacion_vacio() {
+        let casillero = Casillero::Vacio(Coordenada::new(1, 1));
+        assert_eq!(casillero.obtener_representacion(), "_".to_string());
+    }
+
+    #[test]
+    fn test_obtener_representacion_roca() {
+        let casillero = Casillero::Roca(Coordenada::new(2, 2));
+        assert_eq!(casillero.obtener_representacion(), "R".to_string());
+    }
+
+    #[test]
+    fn test_get_coordenada() {
+        let coordenada = Coordenada::new(3, 3);
+        let casillero = Casillero::Pared(coordenada.clone());
+        assert_eq!(casillero.get_coordenada(), coordenada);
+    }
+
+    #[test]
+    fn test_rafaga_no_choca_obstaculo() {
+        assert!(Casillero::rafaga_no_choca_obstaculo(&ResultadoRafaga::Insignificante));
+        assert!(Casillero::rafaga_no_choca_obstaculo(&ResultadoRafaga::EnemigoTocado(2)));
+        assert!(!Casillero::rafaga_no_choca_obstaculo(&ResultadoRafaga::DesvioArriba));
+        assert!(!Casillero::rafaga_no_choca_obstaculo(&ResultadoRafaga::ChoqueFuerte));
+    }
+
+    #[test]
+    fn test_rafaga_continua_sin_chocar_obstaculo() {
+        assert!(Casillero::rafaga_continua_sin_chocar_obstaculo(3, &ResultadoRafaga::Insignificante));
+        assert!(Casillero::rafaga_continua_sin_chocar_obstaculo(2, &ResultadoRafaga::EnemigoTocado(2)));
+        assert!(!Casillero::rafaga_continua_sin_chocar_obstaculo(1, &ResultadoRafaga::DesvioArriba));
+        assert!(!Casillero::rafaga_continua_sin_chocar_obstaculo(5, &ResultadoRafaga::ChoqueFuerte));
+    }
+
+    #[test]
+    fn test_rafaga_continua_chocando_obstaculo() {
+        assert!(!Casillero::rafaga_continua_chocando_obstaculo(3, &ResultadoRafaga::Insignificante));
+        assert!(!Casillero::rafaga_continua_chocando_obstaculo(2, &ResultadoRafaga::EnemigoTocado(2)));
+        assert!(Casillero::rafaga_continua_chocando_obstaculo(1, &ResultadoRafaga::DesvioArriba));
+        assert!(Casillero::rafaga_continua_chocando_obstaculo(5, &ResultadoRafaga::ChoqueFuerte));
     }
 }

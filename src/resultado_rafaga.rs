@@ -1,6 +1,8 @@
 use crate::resultado_rafaga::ResultadoRafaga::EnemigoTocado;
 
-#[derive(Clone, Copy, PartialEq)]
+//? Resultado que representa el resultado de rafagear una casilla.
+//? Debug esta implementado para uso en tests.
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum ResultadoRafaga {
     DesvioArriba,
     DesvioAbajo,

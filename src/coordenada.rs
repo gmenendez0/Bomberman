@@ -1,5 +1,6 @@
 //? Estructura que representa una coordenada en el tablero de 2 dimensiones.
-#[derive(Clone)]
+//? PartialEq y Debug solo para testing.
+#[derive(Clone, PartialEq, Debug)]
 pub struct Coordenada {
     x: usize,
     y: usize,
