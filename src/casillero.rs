@@ -59,7 +59,7 @@ impl Casillero {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = Ok(lab.rafagear_coordenada(&coordenada_a_rafagear));
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -78,7 +78,7 @@ impl Casillero {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = Ok(lab.rafagear_coordenada(&coordenada_a_rafagear));
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -97,7 +97,7 @@ impl Casillero {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_x() + 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = Ok(lab.rafagear_coordenada(&coordenada_a_rafagear));
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -116,7 +116,7 @@ impl Casillero {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_x() - 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = Ok(lab.rafagear_coordenada(&coordenada_a_rafagear));
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -127,10 +127,10 @@ impl Casillero {
     }
 
     fn iniciar_rafagas(&self, lab: &mut Laberinto, alcance_restante_rafagas: i32) -> Result<ResultadoRafaga, String>{
-        self.rafagear_arriba(lab, &self.get_coordenada(), alcance_restante_rafagas.clone()) ?;
-        self.rafagear_abajo(lab, &self.get_coordenada(), alcance_restante_rafagas.clone()) ?;
-        self.rafagear_derecha(lab, &self.get_coordenada(), alcance_restante_rafagas.clone()) ?;
-        self.rafagear_izquierda(lab, &self.get_coordenada(), alcance_restante_rafagas.clone())
+        self.rafagear_arriba(lab, &self.get_coordenada(), alcance_restante_rafagas) ?;
+        self.rafagear_abajo(lab, &self.get_coordenada(), alcance_restante_rafagas) ?;
+        self.rafagear_derecha(lab, &self.get_coordenada(), alcance_restante_rafagas) ?;
+        self.rafagear_izquierda(lab, &self.get_coordenada(), alcance_restante_rafagas)
     }
 
     pub fn detonar(&self, lab: &mut Laberinto) -> Result<ResultadoRafaga, String> {
@@ -141,9 +141,11 @@ impl Casillero {
             Casillero::Enemigoo(..) => Err("No se puede detonar un enemigo".to_string()),
             Casillero::Desvio(..) => Err("No se puede detonar un desvio".to_string()),
             Casillero::BombaNormal(_, alcance) => {
-                self.iniciar_rafagas(lab, alcance.clone())
+                lab.reemplazar_objeto_en_tablero(Casillero::Vacio(self.get_coordenada()), self.get_coordenada());
+                self.iniciar_rafagas(lab, *alcance)
             },
             Casillero::BombaTraspaso(_, _) => {
+                lab.reemplazar_objeto_en_tablero(Casillero::Vacio(self.get_coordenada()), self.get_coordenada());
                 Ok(Insignificante)
             },
         }

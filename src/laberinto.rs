@@ -152,17 +152,17 @@ impl Laberinto {
         objeto.detonar(self)
     }
 
-    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> ResultadoRafaga {
+    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
-            return ResultadoRafaga::ChoqueFuerte;
+            return Ok(ResultadoRafaga::ChoqueFuerte);
         }
 
-        let resultado_rafaga = self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].recibir_rafaga();
+        let mut resultado_rafaga = Ok(self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].recibir_rafaga());
 
-        if resultado_rafaga == EnemigoEliminado {
+        if resultado_rafaga.clone()? == EnemigoEliminado {
             self.reemplazar_objeto_en_tablero(Casillero::Vacio(coordenada_a_rafagear.clone()), coordenada_a_rafagear.clone());
-        } else if resultado_rafaga == Detonacion {
-            self.detonar_objeto(coordenada_a_rafagear.clone());
+        } else if resultado_rafaga.clone()? == Detonacion {
+            resultado_rafaga = self.detonar_objeto(coordenada_a_rafagear.clone());
         }
 
         resultado_rafaga
