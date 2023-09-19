@@ -268,7 +268,10 @@ mod tests {
         let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1)).unwrap();
         laberinto.reemplazar_objeto_en_tablero(bomba, Coordenada::new(1, 1));
         let resultado_detonacion = laberinto.detonar_objeto(Coordenada::new(1, 1));
-        assert_eq!(resultado_detonacion.unwrap(), ResultadoRafaga::Insignificante);
+        assert_eq!(
+            resultado_detonacion.unwrap(),
+            ResultadoRafaga::Insignificante
+        );
     }
 
     #[test]
