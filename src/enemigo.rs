@@ -10,10 +10,6 @@ impl Enemigo {
         }
     }
 
-    pub fn reducir_vida(&mut self) {
-        self.vida -= 1;
-    }
-
     pub fn esta_muerto(&self) -> bool {
         self.vida <= 0
     }

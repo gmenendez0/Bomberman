@@ -1,5 +1,5 @@
 use crate::casillero::{Casillero, ResultadoRafaga};
-use crate::casillero::ResultadoRafaga::{Detonacion, EnemigoEliminado};
+use crate::casillero::ResultadoRafaga::{Detonacion, EnemigoEliminado, EnemigoTocado};
 use crate::coordenada::Coordenada;
 use crate::enemigo::Enemigo;
 
@@ -152,6 +152,7 @@ impl Laberinto {
         objeto.detonar(self)
     }
 
+    //? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el resultado.
     pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
             return Ok(ResultadoRafaga::ChoqueFuerte);
@@ -163,6 +164,9 @@ impl Laberinto {
             self.reemplazar_objeto_en_tablero(Casillero::Vacio(coordenada_a_rafagear.clone()), coordenada_a_rafagear.clone());
         } else if resultado_rafaga.clone()? == Detonacion {
             resultado_rafaga = self.detonar_objeto(coordenada_a_rafagear.clone());
+        } else if resultado_rafaga.clone()? == EnemigoTocado(1) || resultado_rafaga.clone()? == EnemigoTocado(2){
+            let enemigo_nuevo = Enemigo::new(resultado_rafaga.clone()?.get_vida_enemigo());
+            self.reemplazar_objeto_en_tablero(Casillero::Enemigoo(coordenada_a_rafagear.clone(), enemigo_nuevo), coordenada_a_rafagear.clone());
         }
 
         resultado_rafaga

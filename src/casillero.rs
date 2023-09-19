@@ -1,4 +1,4 @@
-use crate::casillero::ResultadoRafaga::{Choque, ChoqueFuerte, DesvioAbajo, DesvioArriba, DesvioDerecha, DesvioIzquierda, Detonacion, EnemigoEliminado, Insignificante};
+use crate::casillero::ResultadoRafaga::{Choque, ChoqueFuerte, DesvioAbajo, DesvioArriba, DesvioDerecha, DesvioIzquierda, Detonacion, EnemigoEliminado, EnemigoTocado, Insignificante};
 use crate::coordenada::Coordenada;
 use crate::enemigo::Enemigo;
 use crate::laberinto::Laberinto;
@@ -12,8 +12,18 @@ pub enum ResultadoRafaga {
     Choque,
     ChoqueFuerte,
     Insignificante,
+    EnemigoTocado(i32),
     EnemigoEliminado,
     Detonacion,
+}
+
+impl ResultadoRafaga {
+    pub fn get_vida_enemigo(&self) -> i32 {
+        match self {
+            EnemigoTocado(vida) => *vida,
+            _ => 0,
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -157,13 +167,11 @@ impl Casillero {
             Casillero::Roca(_) => Choque,
             Casillero::Pared(_) => ChoqueFuerte,
             Casillero::Enemigoo(_, enemigo) => {
-                //enemigo.reducir_vida();
-
                 if enemigo.esta_muerto() {
-                    return EnemigoEliminado;
+                    EnemigoEliminado
+                } else {
+                    EnemigoTocado(enemigo.get_vida() - 1)
                 }
-
-                Insignificante
             },
             Casillero::Desvio(_, direccion) => {
                 if direccion == "U" {
