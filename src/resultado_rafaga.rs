@@ -15,6 +15,7 @@ pub enum ResultadoRafaga {
 }
 
 impl ResultadoRafaga {
+    //? Devuelve la vida del EnemigoTocado si corresponde, si no 0.
     pub fn get_vida_enemigo(&self) -> i32 {
         match self {
             EnemigoTocado(vida) => *vida,

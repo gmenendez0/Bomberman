@@ -1,5 +1,5 @@
 //? Estructura que representa una coordenada en el tablero de 2 dimensiones.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct Coordenada {
     x: usize,
     y: usize,
@@ -10,18 +10,22 @@ impl Coordenada {
         Coordenada { x, y }
     }
 
+    //? Devuelve X
     pub fn get_x(&self) -> usize {
         self.x
     }
 
+    //? Devuelve Y
     pub fn get_y(&self) -> usize {
         self.y
     }
 
+    //? Setea X
     pub fn set_x(&mut self, x: usize) {
         self.x = x;
     }
 
+    //? Setea Y
     pub fn set_y(&mut self, y: usize) {
         self.y = y;
     }

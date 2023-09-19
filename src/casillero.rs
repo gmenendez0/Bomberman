@@ -4,6 +4,7 @@ use crate::enemigo::Enemigo;
 use crate::laberinto::Laberinto;
 use crate::resultado_rafaga::ResultadoRafaga;
 
+//? Representa un casillero del tablero. Puede contener o no valores, segun corresponda. Siempre contiene su coordenada.
 #[derive(Clone)]
 pub enum Casillero {
     Vacio(Coordenada),
@@ -78,6 +79,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
+            //TODO
             if coordenada_a_rafagear.get_y() == 0 {
                 *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
             } else {
@@ -102,7 +104,6 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            println!("Coordenada a rafagear: {:?}", coordenada_a_rafagear);
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
             alcance_restante_rafagas -= 1;
 
@@ -143,6 +144,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
+            //TODO
             if coordenada_a_rafagear.get_x() == 0 {
                 *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
             } else {
@@ -175,6 +177,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
+            //TODO
             if coordenada_a_rafagear.get_y() == 0 {
                 *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
             } else {
@@ -239,6 +242,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
+            //TODO
             if coordenada_a_rafagear.get_x() == 0 {
                 *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
             } else {
