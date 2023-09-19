@@ -72,7 +72,12 @@ impl Laberinto {
 
                 result = Ok(Casillero::Enemigoo(coordenada_objeto, enemigo));
             } else if primer_caracter == 'D' {
-                result = Ok(Casillero::Desvio(coordenada_objeto, segundo_caracter.to_string()));
+                let direccion = String::from(segundo_caracter as char);
+                if direccion != "U" && direccion != "D" && direccion != "L" && direccion != "R" {
+                    return Err("Error: La direccion del desvio no es valida".to_string());
+                }
+
+                result = Ok(Casillero::Desvio(coordenada_objeto, direccion));
             }
         };
 
@@ -135,7 +140,7 @@ impl Laberinto {
 
     //? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
-        (coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()) || (coordenada.get_x() < 0 || coordenada.get_y() < 0)
+        coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()
     }
 
     //? Devuelve el objeto ubicado en las coordenadas recibidas.

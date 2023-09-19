@@ -78,10 +78,14 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
-            alcance_restante_rafagas -= 1;
+            if coordenada_a_rafagear.get_y() == 0 {
+                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
+            } else {
+                coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
+                alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            }
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -139,10 +143,14 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() - 1);
-            alcance_restante_rafagas -= 1;
+            if coordenada_a_rafagear.get_x() == 0 {
+                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
+            } else {
+                coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() - 1);
+                alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            }
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -167,10 +175,14 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
-            alcance_restante_rafagas -= 1;
+            if coordenada_a_rafagear.get_y() == 0 {
+                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
+            } else {
+                coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
+                alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            }
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo_traspaso(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -187,7 +199,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
+            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
             alcance_restante_rafagas -= 1;
 
             *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
@@ -227,10 +239,14 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() - 1);
-            alcance_restante_rafagas -= 1;
+            if coordenada_a_rafagear.get_x() == 0 {
+                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
+            } else {
+                coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() - 1);
+                alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            }
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo_traspaso(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -251,11 +267,11 @@ impl Casillero {
     //? Detona la casilla si es posible y devuelve el resultado final de la detonacion (resultado del ultimo rafageo), en caso de no poder detonar se devuelve un error.
     pub fn detonar(&self, lab: &mut Laberinto) -> Result<ResultadoRafaga, String> {
         match self {
-            Casillero::Vacio(_) => Err("No se puede detonar un vacio".to_string()),
-            Casillero::Roca(_) => Err("No se puede detonar una roca".to_string()),
-            Casillero::Pared(_) => Err("No se puede detonar una pared".to_string()),
-            Casillero::Enemigoo(..) => Err("No se puede detonar un enemigo".to_string()),
-            Casillero::Desvio(..) => Err("No se puede detonar un desvio".to_string()),
+            Casillero::Vacio(_) => Err("Error: No se puede detonar un vacio".to_string()),
+            Casillero::Roca(_) => Err("Error: No se puede detonar una roca".to_string()),
+            Casillero::Pared(_) => Err("Error: No se puede detonar una pared".to_string()),
+            Casillero::Enemigoo(..) => Err("Error: No se puede detonar un enemigo".to_string()),
+            Casillero::Desvio(..) => Err("Error: No se puede detonar un desvio".to_string()),
             Casillero::BombaNormal(_, alcance) => {
                 lab.reemplazar_objeto_en_tablero(Casillero::Vacio(self.get_coordenada()), self.get_coordenada());
                 self.iniciar_rafagas(lab, *alcance)
@@ -274,7 +290,7 @@ impl Casillero {
             Casillero::Roca(_) => Choque,
             Casillero::Pared(_) => ChoqueFuerte,
             Casillero::Enemigoo(_, enemigo) => {
-                if enemigo.esta_muerto() {
+                if enemigo.get_vida() - 1 == 0 {
                     EnemigoEliminado
                 } else {
                     EnemigoTocado(enemigo.get_vida() - 1)
@@ -303,9 +319,10 @@ impl Casillero {
             Casillero::Roca(_) => String::from("R"),
             Casillero::Pared(_) => String::from("W"),
             Casillero::Enemigoo(_, enemigo) => {
-                String::from("E") + &enemigo.get_vida().to_string()
+                String::from("F") + &enemigo.get_vida().to_string()
             },
             Casillero::Desvio(_, direccion) => {
+                println!("Direccion: {}", String::from("D") + direccion);
                 String::from("D") + direccion
             },
             Casillero::BombaNormal(_, alcance) => {

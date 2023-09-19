@@ -10,10 +10,6 @@ impl Enemigo {
         }
     }
 
-    pub fn esta_muerto(&self) -> bool {
-        self.vida <= 0
-    }
-
     pub fn get_vida(&self) -> i32 {
         self.vida
     }

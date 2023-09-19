@@ -69,6 +69,7 @@ impl FileHandler {
 
     //? Escribe el mensaje de error recibido por parametro en el archivo especificado target.
     pub fn write_error(&self, error: String) -> Result<(), String> {
+        println!("{}", error);
         let archivo = self.crear_archivo()?;
 
         let mut escritor = BufWriter::new(archivo);

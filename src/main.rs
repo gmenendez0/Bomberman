@@ -28,29 +28,21 @@ fn main() -> Result<(), String> {
     //? Chequeo si hubo un error en la inicializacion previa. Si hubo, imprimo en el archivo y devuelvo error por consola.     --FUNCIONA OK
     if resultado_inicializacion.is_err() {
         file_handler.write_error(resultado_inicializacion.err().unwrap_or("".to_string()))?;
-        return Err("Se ha detallado el error en el archivo.".to_string());
+        return Err("Se ha detallado el error de inicializacion en el archivo.".to_string());
     };
 
-    //? Le digo al laberinto que detone las coordenadas que recibi por consola.                                                 --POR TERMINAR!
-    lab.detonar_objeto(coordenada_bomba_a_detonar)?;
+    //? Le digo al laberinto que detone las coordenadas que recibi por consola.                                                 --FUNCIONA OK
+    let resultado_detonacion = lab.detonar_objeto(coordenada_bomba_a_detonar);
+    match resultado_detonacion {
+        Ok(_) => (),
+        Err(e) => {
+            file_handler.write_error(e)?;
+            return Err("Se ha detallado el error de detonacion en el archivo.".to_string());
+        }
+    }
 
     //? Imprimo la representacion del laberinto en el archivo.                                                                  --FUNCIONA OK
     file_handler.write(lab.obtener_visualizacion())?;
-
-
-
-
-
-    //? FOR TESTING PURPOSES
-    /*
-    let hola = juego.obtener_visualizacion();
-    for i in 0..hola.len() {
-        for j in 0..hola[i].len() {
-            print!("{}", hola[i][j]);
-        }
-        println!();
-    }
-*/
 
     Ok(())
 }
