@@ -78,7 +78,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
+            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
             alcance_restante_rafagas -= 1;
 
             *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
@@ -98,7 +98,8 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
+            println!("Coordenada a rafagear: {:?}", coordenada_a_rafagear);
+            coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
             alcance_restante_rafagas -= 1;
 
             *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);

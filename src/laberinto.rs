@@ -135,7 +135,7 @@ impl Laberinto {
 
     //? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
-        coordenada.get_x() > self.tablero.len() || coordenada.get_y() > self.tablero.len()
+        (coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()) || (coordenada.get_x() < 0 || coordenada.get_y() < 0)
     }
 
     //? Devuelve el objeto ubicado en las coordenadas recibidas.

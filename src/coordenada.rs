@@ -1,5 +1,5 @@
 //? Estructura que representa una coordenada en el tablero de 2 dimensiones.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Coordenada {
     x: usize,
     y: usize,
