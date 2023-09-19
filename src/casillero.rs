@@ -17,8 +17,6 @@ pub enum Casillero {
 }
 
 impl Casillero {
-
-
     //? Devuelve true en caso de que la rafaga no haya chocado un obstaculo de bomba normal.
     fn rafaga_no_choca_obstaculo_traspaso(resultado_rafaga: &ResultadoRafaga) -> bool {
         !matches!(resultado_rafaga,ResultadoRafaga::DesvioArriba | ResultadoRafaga::DesvioAbajo | ResultadoRafaga::DesvioIzquierda | ResultadoRafaga::DesvioDerecha | ResultadoRafaga::ChoqueFuerte)
@@ -72,6 +70,30 @@ impl Casillero {
         }
     }
 
+    //? Aplica la rafaga a la coordenada superior a la recibida.
+    pub fn aplicar_rafaga_arriba(coordenada_base: &mut Coordenada, lab: &mut Laberinto, alcance_restante_rafagas: &mut i32, resultado_rafaga: &mut Result<ResultadoRafaga, String>){
+        if coordenada_base.get_y() == 0 {
+            *resultado_rafaga = Ok(ChoqueFuerte);
+        } else {
+            coordenada_base.set_y(coordenada_base.get_y() - 1);
+            *alcance_restante_rafagas -= 1;
+
+            *resultado_rafaga = lab.rafagear_coordenada(coordenada_base);
+        }
+    }
+
+    //? Aplica la rafaga a la coordenada izquierda a la recibida.
+    pub fn aplicar_rafaga_izquierda(coordenada_base: &mut Coordenada, lab: &mut Laberinto, alcance_restante_rafagas: &mut i32, resultado_rafaga: &mut Result<ResultadoRafaga, String>){
+        if coordenada_base.get_x() == 0 {
+            *resultado_rafaga = Ok(ChoqueFuerte);
+        } else {
+            coordenada_base.set_x(coordenada_base.get_x() - 1);
+            *alcance_restante_rafagas -= 1;
+
+            *resultado_rafaga = lab.rafagear_coordenada(coordenada_base);
+        }
+    }
+
     //? Rafagea hacia arriba. Devuelve el resultado del rafageo de la ultima casilla rafageada.
     pub fn rafagear_arriba(&self, lab: &mut Laberinto, coordenada_inicial: &Coordenada, mut alcance_restante_rafagas: i32) -> Result<ResultadoRafaga, String>{
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
@@ -79,15 +101,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            //TODO
-            if coordenada_a_rafagear.get_y() == 0 {
-                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
-            } else {
-                coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
-                alcance_restante_rafagas -= 1;
-
-                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
-            }
+            Casillero::aplicar_rafaga_arriba(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -144,15 +158,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            //TODO
-            if coordenada_a_rafagear.get_x() == 0 {
-                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
-            } else {
-                coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() - 1);
-                alcance_restante_rafagas -= 1;
-
-                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
-            }
+            Casillero::aplicar_rafaga_izquierda(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -177,15 +183,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            //TODO
-            if coordenada_a_rafagear.get_y() == 0 {
-                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
-            } else {
-                coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() - 1);
-                alcance_restante_rafagas -= 1;
-
-                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
-            }
+            Casillero::aplicar_rafaga_arriba(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo_traspaso(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
@@ -242,15 +240,7 @@ impl Casillero {
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone() ?) {
-            //TODO
-            if coordenada_a_rafagear.get_x() == 0 {
-                *referencia_mutable_resultado_rafaga = Ok(ChoqueFuerte);
-            } else {
-                coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() - 1);
-                alcance_restante_rafagas -= 1;
-
-                *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
-            }
+            Casillero::aplicar_rafaga_izquierda(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo_traspaso(alcance_restante_rafagas, &resultado_rafaga.clone() ?) {
