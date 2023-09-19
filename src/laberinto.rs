@@ -45,68 +45,90 @@ impl Laberinto {
         result
     }
 
+    //? Crea una bomba normal a partir del segundo caracter recibido, o devuelve error.
+    fn crear_bomba_normal(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
+        if segundo_caracter as i32  - ASCII_DIF < 1 {
+            return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
+        }
+
+        Ok(Casillero::BombaNormal(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF))
+    }
+
+    //? Crea una bomba traspaso a partir del segundo caracter recibido, o devuelve error.
+    fn crear_bomba_traspaso(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
+        if segundo_caracter as i32  - ASCII_DIF < 1 {
+            return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
+        }
+
+        Ok(Casillero::BombaTraspaso(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF))
+    }
+
+    //? Crea un enemigo a partir del segundo caracter recibido, o devuelve error.
+    fn crear_enemigo(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
+        if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
+            return Err("Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
+        }
+
+        let enemigo = Enemigo::new(segundo_caracter as i32  - ASCII_DIF);
+
+        Ok(Casillero::Enemigoo(coordenada_objeto, enemigo))
+    }
+
+    //? Crea un desvio a partir del segundo caracter recibido, o devuelve error.
+    fn crear_desvio(segundo_caracter: u8, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
+        let direccion = String::from(segundo_caracter as char);
+        if direccion != "U" && direccion != "D" && direccion != "L" && direccion != "R" {
+            return Err("Error: La direccion del desvio no es valida".to_string());
+        }
+
+        Ok(Casillero::Desvio(coordenada_objeto, direccion))
+    }
+
     //? Crea objetos representados únicamente por dos caracteres.
-    //TODO
     fn crear_objeto_dos_caracteres(&mut self, parte: &str, coordenada_objeto: Coordenada) -> Result<Casillero, String> {
         let mut result: Result<Casillero, String> = Err("Caracter representado no valido".to_string());
         let segundo_caracter = parte.as_bytes()[1];
 
         if let Some(primer_caracter) = parte.chars().next() {
             if primer_caracter == 'B' {
-                if segundo_caracter as i32  - ASCII_DIF < 1 {
-                    return Err("Error: El alcance de la bomba no puede ser menor a 1".to_string());
-                }
-
-                result = Ok(Casillero::BombaNormal(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF));
+                result = Laberinto::crear_bomba_normal(segundo_caracter, coordenada_objeto)
             } else if primer_caracter == 'S' {
-                if segundo_caracter as i32  - ASCII_DIF < 1 {
-                    return Err("Error: El alcance de la bomba traspaso no puede ser menor a 1".to_string());
-                }
-
-                result = Ok(Casillero::BombaTraspaso(coordenada_objeto, segundo_caracter as i32  - ASCII_DIF));
+                result = Laberinto::crear_bomba_traspaso(segundo_caracter, coordenada_objeto)
             } else if primer_caracter == 'F' {
-                if (segundo_caracter as i32  - ASCII_DIF < 1) || (segundo_caracter as i32  - ASCII_DIF > 3) {
-                    return Err("Error: La vida del enemigo no puede ser menor a 1 ni mayor a 3".to_string());
-                }
-
-                let enemigo = Enemigo::new(segundo_caracter as i32  - ASCII_DIF);
-
-                result = Ok(Casillero::Enemigoo(coordenada_objeto, enemigo));
+                result = Laberinto::crear_enemigo(segundo_caracter, coordenada_objeto)
             } else if primer_caracter == 'D' {
-                let direccion = String::from(segundo_caracter as char);
-                if direccion != "U" && direccion != "D" && direccion != "L" && direccion != "R" {
-                    return Err("Error: La direccion del desvio no es valida".to_string());
-                }
-
-                result = Ok(Casillero::Desvio(coordenada_objeto, direccion));
+                result = Laberinto::crear_desvio(segundo_caracter, coordenada_objeto)
             }
         };
 
         result
     }
 
+    //? Crea  el objeto correspondiente y lo agrega al mapa.
+    pub fn crear_objeto_correspondiente(&mut self, parte: &str, coordenada_x: usize, coordenada_y: usize) -> Result<(), String>{
+        let objeto: Casillero;
+        let coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
+        let coordenada_casillero_copia = coordenada_casillero.clone();
+
+        if parte.len() == UN_CARACTER {
+            objeto = self.crear_objeto_un_caracter(parte, coordenada_casillero)?;
+        } else {
+            objeto = self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?;
+        }
+
+        self.reemplazar_objeto_en_tablero(objeto.clone(), coordenada_casillero_copia);
+
+        Ok(())
+    }
+
     //? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
     //? A partir de estos datos, actualiza el tablero.
-    //TODO
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
-        let mut objeto: Casillero;
-        let mut coordenada_casillero: Coordenada;
-        let mut coordenada_casillero_copia: Coordenada;
-
         for (coordenada_y, dato) in datos.iter().enumerate() {
             let partes = dato.split_whitespace().collect::<Vec<&str>>();
 
             for(coordenada_x, parte) in partes.iter().enumerate() {
-                coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
-                coordenada_casillero_copia = coordenada_casillero.clone();
-
-                if parte.len() == UN_CARACTER {
-                    objeto = self.crear_objeto_un_caracter(parte, coordenada_casillero)?;
-                } else {
-                    objeto = self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?;
-                }
-
-                self.reemplazar_objeto_en_tablero(objeto, coordenada_casillero_copia);
+                self.crear_objeto_correspondiente(parte, coordenada_x, coordenada_y)?;
             }
         }
 
