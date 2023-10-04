@@ -238,20 +238,20 @@ impl Laberinto {
         let coordenada_rafageada = coordenada_a_rafagear.clone();
         let resultado_rafaga_copia = resultado_rafaga.clone()?;
 
-        if resultado_rafaga_copia == EnemigoEliminado {
-            self.reemplazar_objeto_en_tablero(
-                Casillero::Vacio(coordenada_rafageada),
-                coordenada_a_rafagear,
-            );
-        } else if resultado_rafaga_copia == Detonacion {
+        if resultado_rafaga_copia == Detonacion {
             resultado_rafaga = self.detonar_objeto(coordenada_rafageada);
-        } else if resultado_rafaga_copia == EnemigoTocado(1) || resultado_rafaga_copia == EnemigoTocado(2) {
-            //? OPCION A. EL ID DE LA BOMBA RAFAGEADORA NO COINCIDE CON LOS DEL ENEMIGO RAFAGEADO.
-            //? OPCION B. EL ID DE LA BOMBA RAFAGEADORA SI COINCIDE CON LOS DEL ENEMIGO RAFAGEADO. NO SE HACE NADA.
-
-            //? CORREGIR ACA!
+        } else if resultado_rafaga_copia == EnemigoEliminado {
+            if !self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].ya_recibio_rafaga_de_bomba_actual(id_bomba_rafageadora).unwrap_or(false) {
+                self.reemplazar_objeto_en_tablero(
+                    Casillero::Vacio(coordenada_rafageada),
+                    coordenada_a_rafagear,
+                );
+            }
+        } else if (resultado_rafaga_copia == EnemigoTocado(1) || resultado_rafaga_copia == EnemigoTocado(2)) && !self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].ya_recibio_rafaga_de_bomba_actual(id_bomba_rafageadora).unwrap_or(false) {
             let enemigo_nuevo = Enemigo::new(resultado_rafaga_copia.get_vida_enemigo());
-            self.reemplazar_objeto_en_tablero(Casillero::Enemigoo(coordenada_rafageada, enemigo_nuevo, Vec::new()), coordenada_a_rafagear);
+            let mut ids_bombas_recibidas = self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].get_ids_bombas_sufridas().unwrap_or(Vec::new());
+            ids_bombas_recibidas.push(*id_bomba_rafageadora);
+            self.reemplazar_objeto_en_tablero(Casillero::Enemigoo(coordenada_rafageada, enemigo_nuevo, ids_bombas_recibidas), coordenada_a_rafagear);
         }
 
         resultado_rafaga

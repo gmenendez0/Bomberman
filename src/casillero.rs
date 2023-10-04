@@ -527,7 +527,6 @@ impl Casillero {
             Casillero::Pared(_) => String::from("W"),
             Casillero::Enemigoo(_, enemigo, _) => String::from("F") + &enemigo.get_vida().to_string(),
             Casillero::Desvio(_, direccion) => {
-                println!("Direccion: {}", String::from("D") + direccion);
                 String::from("D") + direccion
             }
             Casillero::BombaNormal(_, alcance, _) => {
@@ -557,7 +556,37 @@ impl Casillero {
             Casillero::BombaTraspaso(coordenada, _, _) => coordenada.clone(),
         }
     }
+
+    pub fn ya_recibio_rafaga_de_bomba_actual(&self, id_bomba: &i32) -> Result<bool, ()>  {
+        match self {
+            Casillero::Vacio(_) => Err(()),
+            Casillero::Roca(_) => Err(()),
+            Casillero::Pared(_) => Err(()),
+            Casillero::Enemigoo(_, _, ids_bombas_sufridas) => {
+                Ok(ids_bombas_sufridas.iter().any(|&num| &num == id_bomba))
+            },
+            Casillero::Desvio(_, _) => Err(()),
+            Casillero::BombaNormal(_, _, _) => Err(()),
+            Casillero::BombaTraspaso(_, _, _) => Err(()),
+        }
+    }
+
+    pub fn get_ids_bombas_sufridas(&self) -> Result<Vec<i32>, ()>  {
+        match self {
+            Casillero::Vacio(_) => Err(()),
+            Casillero::Roca(_) => Err(()),
+            Casillero::Pared(_) => Err(()),
+            Casillero::Enemigoo(_, _, ids_bombas_sufridas) => {
+                Ok(ids_bombas_sufridas.clone())
+            },
+            Casillero::Desvio(_, _) => Err(()),
+            Casillero::BombaNormal(_, _, _) => Err(()),
+            Casillero::BombaTraspaso(_, _, _) => Err(()),
+        }
+    }
 }
+
+
 
 #[cfg(test)]
 mod tests {
