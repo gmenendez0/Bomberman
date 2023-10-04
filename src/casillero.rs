@@ -423,49 +423,24 @@ impl Casillero {
     }
 
     ///? Rafagea a la izquierda. Devuelve el resultado del rafageo de la ultima casilla rafageada.
-    pub fn rafagear_izquierda_traspaso(
-        &self,
-        lab: &mut Laberinto,
-        coordenada_inicial: &Coordenada,
-        mut alcance_restante_rafagas: i32,
-    ) -> Result<ResultadoRafaga, String> {
+    pub fn rafagear_izquierda_traspaso(&self, lab: &mut Laberinto, coordenada_inicial: &Coordenada, mut alcance_restante_rafagas: i32, ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
-        while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(
-            alcance_restante_rafagas,
-            &referencia_mutable_resultado_rafaga.clone()?,
-        ) {
-            Casillero::aplicar_rafaga_izquierda(
-                &mut coordenada_a_rafagear,
-                lab,
-                &mut alcance_restante_rafagas,
-                referencia_mutable_resultado_rafaga,
-            );
+        while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone()?, ) {
+            Casillero::aplicar_rafaga_izquierda(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga, );
         }
 
-        if Casillero::rafaga_continua_chocando_obstaculo_traspaso(
-            alcance_restante_rafagas,
-            &resultado_rafaga.clone()?,
-        ) {
-            resultado_rafaga = self.evaluar_camino_a_seguir_traspaso(
-                lab,
-                &coordenada_a_rafagear,
-                alcance_restante_rafagas,
-                resultado_rafaga?,
-            );
+        if Casillero::rafaga_continua_chocando_obstaculo_traspaso(alcance_restante_rafagas, &resultado_rafaga.clone()?, ) {
+            resultado_rafaga = self.evaluar_camino_a_seguir_traspaso(lab, &coordenada_a_rafagear, alcance_restante_rafagas, resultado_rafaga?, );
         }
 
         resultado_rafaga
     }
 
     ///? Inicia los rafageos traspaso en todas las direcciones. Devuelve el resultado del rafageo de la ultima casilla rafageada.
-    fn iniciar_rafagas_traspaso(
-        &self,
-        lab: &mut Laberinto,
-        alcance_restante_rafagas: i32,
-    ) -> Result<ResultadoRafaga, String> {
+    fn iniciar_rafagas_traspaso(&self, lab: &mut Laberinto, alcance_restante_rafagas: i32, ) -> Result<ResultadoRafaga, String> {
         self.rafagear_arriba_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
         self.rafagear_abajo_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
         self.rafagear_derecha_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
@@ -483,14 +458,14 @@ impl Casillero {
             Casillero::BombaNormal(_, alcance) => {
                 lab.reemplazar_objeto_en_tablero(
                     Casillero::Vacio(self.get_coordenada()),
-                    self.get_coordenada(),
+                    &self.get_coordenada(),
                 );
                 self.iniciar_rafagas(lab, *alcance)
             }
             Casillero::BombaTraspaso(_, alcance) => {
                 lab.reemplazar_objeto_en_tablero(
                     Casillero::Vacio(self.get_coordenada()),
-                    self.get_coordenada(),
+                    &self.get_coordenada(),
                 );
                 self.iniciar_rafagas_traspaso(lab, *alcance)
             }

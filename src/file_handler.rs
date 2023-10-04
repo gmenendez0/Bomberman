@@ -14,14 +14,10 @@ impl FileHandler {
 
     ///? Crea un archivo en base al target especificado y lo devuelve. Si el archivo ya existe, lo sobreescribe.
     pub fn crear_archivo(&self) -> Result<File, String> {
-        let result: Result<File, String>;
-
         match File::create(&self.target) {
-            Ok(archivo) => result = Ok(archivo),
-            Err(e) => result = Err(e.to_string()),
+            Ok(archivo) => Ok(archivo),
+            Err(e) => Err(e.to_string()),
         }
-
-        result
     }
 
     ///? Crea un archivo en base al target especificado y escribe un mensaje de error de archivo no encontrado en el mismo.

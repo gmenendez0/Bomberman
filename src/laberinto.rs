@@ -143,17 +143,16 @@ impl Laberinto {
         coordenada_x: usize,
         coordenada_y: usize,
     ) -> Result<(), String> {
-        let objeto: Casillero;
         let coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
         let coordenada_casillero_copia = coordenada_casillero.clone();
 
-        if parte.len() == UN_CARACTER {
-            objeto = self.crear_objeto_un_caracter(parte, coordenada_casillero)?;
+        let objeto = if parte.len() == UN_CARACTER {
+            self.crear_objeto_un_caracter(parte, coordenada_casillero)?
         } else {
-            objeto = self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?;
-        }
+            self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?
+        };
 
-        self.reemplazar_objeto_en_tablero(objeto.clone(), coordenada_casillero_copia);
+        self.reemplazar_objeto_en_tablero(objeto.clone(), &coordenada_casillero_copia);
 
         Ok(())
     }
@@ -191,8 +190,8 @@ impl Laberinto {
     }
 
     ///? Reemplaza el casillero ubicado en las coordenadas del casillero recibido por el casillero recibido.
-    pub fn reemplazar_objeto_en_tablero(&mut self, casillero: Casillero, coordenada: Coordenada) {
-        if self.coordenadas_fuera_de_rango(&coordenada) {
+    pub fn reemplazar_objeto_en_tablero(&mut self, casillero: Casillero, coordenada: &Coordenada) {
+        if self.coordenadas_fuera_de_rango(coordenada) {
             return;
         }
 
@@ -205,7 +204,7 @@ impl Laberinto {
     }
 
     ///? Devuelve el objeto ubicado en las coordenadas recibidas.
-    fn obtener_objeto(&mut self, coordenada_buscada: Coordenada) -> Casillero {
+    fn obtener_objeto(&mut self, coordenada_buscada: &Coordenada) -> Casillero {
         self.tablero[coordenada_buscada.get_y()][coordenada_buscada.get_x()].clone()
     }
 
@@ -218,37 +217,34 @@ impl Laberinto {
             return Err("No se puede detonar fuera del mapa!".to_string());
         }
 
-        let objeto = self.obtener_objeto(coordenada_a_detonar.clone());
+        let objeto = self.obtener_objeto(&coordenada_a_detonar);
         objeto.detonar(self)
     }
 
     ///? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el resultado.
-    pub fn rafagear_coordenada(
-        &mut self,
-        coordenada_a_rafagear: &Coordenada,
-    ) -> Result<ResultadoRafaga, String> {
+    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada, ) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
             return Ok(ResultadoRafaga::ChoqueFuerte);
         }
 
-        let mut resultado_rafaga = Ok(self.tablero[coordenada_a_rafagear.get_y()]
-            [coordenada_a_rafagear.get_x()]
-        .recibir_rafaga());
+        let mut resultado_rafaga = Ok(self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].recibir_rafaga());
+        let coordenada_rafageada = coordenada_a_rafagear.clone();
+        let resultado_rafaga_copia = resultado_rafaga.clone()?;
 
-        if resultado_rafaga.clone()? == EnemigoEliminado {
+        if resultado_rafaga_copia == EnemigoEliminado {
             self.reemplazar_objeto_en_tablero(
-                Casillero::Vacio(coordenada_a_rafagear.clone()),
-                coordenada_a_rafagear.clone(),
+                Casillero::Vacio(coordenada_rafageada),
+                coordenada_a_rafagear,
             );
-        } else if resultado_rafaga.clone()? == Detonacion {
-            resultado_rafaga = self.detonar_objeto(coordenada_a_rafagear.clone());
-        } else if resultado_rafaga.clone()? == EnemigoTocado(1)
-            || resultado_rafaga.clone()? == EnemigoTocado(2)
+        } else if resultado_rafaga_copia == Detonacion {
+            resultado_rafaga = self.detonar_objeto(coordenada_rafageada);
+        } else if resultado_rafaga_copia == EnemigoTocado(1)
+            || resultado_rafaga_copia == EnemigoTocado(2)
         {
-            let enemigo_nuevo = Enemigo::new(resultado_rafaga.clone()?.get_vida_enemigo());
+            let enemigo_nuevo = Enemigo::new(resultado_rafaga_copia.get_vida_enemigo());
             self.reemplazar_objeto_en_tablero(
-                Casillero::Enemigoo(coordenada_a_rafagear.clone(), enemigo_nuevo),
-                coordenada_a_rafagear.clone(),
+                Casillero::Enemigoo(coordenada_rafageada, enemigo_nuevo),
+                coordenada_a_rafagear,
             );
         }
 
@@ -266,7 +262,7 @@ mod tests {
     fn test_detonar() {
         let mut laberinto = Laberinto::new(3);
         let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1)).unwrap();
-        laberinto.reemplazar_objeto_en_tablero(bomba, Coordenada::new(1, 1));
+        laberinto.reemplazar_objeto_en_tablero(bomba, &Coordenada::new(1, 1));
         let resultado_detonacion = laberinto.detonar_objeto(Coordenada::new(1, 1));
         assert_eq!(
             resultado_detonacion.unwrap(),
@@ -278,7 +274,7 @@ mod tests {
     fn test_rafagear() {
         let mut laberinto = Laberinto::new(3);
         let bomba = Laberinto::crear_enemigo(51, Coordenada::new(1, 1)).unwrap();
-        laberinto.reemplazar_objeto_en_tablero(bomba, Coordenada::new(1, 1));
+        laberinto.reemplazar_objeto_en_tablero(bomba, &Coordenada::new(1, 1));
         let resultado_rafaga = laberinto.rafagear_coordenada(&Coordenada::new(1, 1));
         assert_eq!(resultado_rafaga.unwrap(), ResultadoRafaga::EnemigoTocado(2));
     }

@@ -8,7 +8,6 @@ mod file_handler;
 mod laberinto;
 mod resultado_rafaga;
 
-// * PARA CORRECTOR: Al compilar, arroja un warning de que el crate Bomberman debe estar en snake_case pero no encuentr dicho crate para cambiarle el nombre.
 fn main() -> Result<(), String> {
     let arg_handler = arg_handler::ArgHandler::new(std::env::args().collect());
     arg_handler.chequear_cant_args()?;
