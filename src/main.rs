@@ -12,9 +12,10 @@ fn main() -> Result<(), String> {
     let arg_handler = arg_handler::ArgHandler::new(std::env::args().collect());
     arg_handler.chequear_cant_args()?;
     let coordenada_bomba_a_detonar = arg_handler.get_coordenada_bomba_a_detonar()?;
-    let full_path = arg_handler.concatenar_path_y_nombre_archivo();
+    let input_path = arg_handler.get_input_path();
+    let output_path = arg_handler.get_full_output_path();
 
-    let file_handler = file_handler::FileHandler::new(full_path);
+    let file_handler = file_handler::FileHandler::new(input_path, output_path);
     let contenido_archivo = file_handler.read()?;
 
     let mut lab = Laberinto::new(contenido_archivo.len());

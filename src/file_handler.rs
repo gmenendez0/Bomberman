@@ -3,18 +3,19 @@ use std::io::{BufRead, BufReader, BufWriter, Write};
 
 ///? FileHandler es una estructura que se encarga de manejar los archivos.
 pub struct FileHandler {
-    target: String,
+    input_target: String,
+    output_target: String,
 }
 
 impl FileHandler {
     ///? Constructor de FileHandler.
-    pub fn new(target: String) -> FileHandler {
-        FileHandler { target }
+    pub fn new(input_target: String, output_target: String) -> FileHandler {
+        FileHandler { input_target, output_target }
     }
 
     ///? Crea un archivo en base al target especificado y lo devuelve. Si el archivo ya existe, lo sobreescribe.
     pub fn crear_archivo(&self) -> Result<File, String> {
-        match File::create(&self.target) {
+        match File::create(&self.output_target) {
             Ok(archivo) => Ok(archivo),
             Err(e) => Err(e.to_string()),
         }
@@ -33,9 +34,9 @@ impl FileHandler {
         Ok(())
     }
 
-    ///? Abre un archivo en base al target especificado y lo devuelve. Si el archivo no existe, crea uno y escribe un mensaje de error de archivo no encontrado en el mismo.
+    ///? Abre un archivo en base al input target especificado y lo devuelve. Si el archivo no existe, crea uno y escribe un mensaje de error de archivo no encontrado en el mismo.
     pub fn abrir_archivo(&self) -> Result<File, String> {
-        let archivo = match File::open(&self.target) {
+        let archivo = match File::open(&self.input_target) {
             Ok(archivo) => archivo,
             Err(_) => {
                 self.archivo_no_encontrado()?;

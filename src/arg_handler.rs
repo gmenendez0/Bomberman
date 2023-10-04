@@ -3,8 +3,8 @@ use crate::coordenada::Coordenada;
 const CANT_ARGS: usize = 5;
 const POSICION_X: usize = 3;
 const POSICION_Y: usize = 4;
-const POSICION_NOMBRE_ARCHIVO: usize = 1;
-const POSICION_PATH: usize = 2;
+const POSICION_PATH_INPUT: usize = 1;
+const POSICION_PATH_OUTPUT: usize = 2;
 
 ///? ArgHandler es el encargado de manejar los argumentos recibidos por el programa.
 pub struct ArgHandler {
@@ -65,12 +65,27 @@ impl ArgHandler {
         Ok(coordenada)
     }
 
-    ///? Concatena el path recibido (2do argumento) con el nombre del archivo recibido (1er argumento).
-    pub fn concatenar_path_y_nombre_archivo(&self) -> String {
-        let mut path = self.args[POSICION_PATH].clone();
-        path.push('/');
-        path.push_str(&self.args[POSICION_NOMBRE_ARCHIVO]);
-        path
+    ///? Extrae del path del archivo su nombre y lo devuelve.
+    pub fn get_nombre_archivo(&self) -> String {
+        let path = self.args[POSICION_PATH_INPUT].clone();
+
+        let partes: Vec<&str> = path.split('/').collect();
+
+        partes.last().unwrap_or(&"").to_string()
+    }
+
+    ///? Concatena el path del archivo output con su nombre y lo devuelve.
+    pub fn get_full_output_path(&self) -> String {
+        let mut path_output = self.args[POSICION_PATH_OUTPUT].clone();
+
+        path_output.push_str(&self.get_nombre_archivo());
+
+        path_output
+    }
+
+    ///? Devuelve el input path
+    pub fn get_input_path(&self) -> String {
+        self.args[POSICION_PATH_INPUT].clone()
     }
 }
 
@@ -144,21 +159,5 @@ mod tests {
         ];
         let arg_handler = ArgHandler::new(args);
         assert!(arg_handler.parse_y().is_err());
-    }
-
-    #[test]
-    fn test_concatenar_path_y_nombre_archivo() {
-        let args = vec![
-            "arg1".to_string(),
-            "file.txt".to_string(),
-            "path_cualquiera".to_string(),
-            "435".to_string(),
-            "arg5".to_string(),
-        ];
-        let arg_handler = ArgHandler::new(args);
-        assert_eq!(
-            arg_handler.concatenar_path_y_nombre_archivo(),
-            "path_cualquiera/file.txt"
-        );
     }
 }

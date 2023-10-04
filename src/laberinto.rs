@@ -209,10 +209,7 @@ impl Laberinto {
     }
 
     ///? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
-    pub fn detonar_objeto(
-        &mut self,
-        coordenada_a_detonar: Coordenada,
-    ) -> Result<ResultadoRafaga, String> {
+    pub fn detonar_objeto(&mut self, coordenada_a_detonar: Coordenada, ) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(&coordenada_a_detonar) {
             return Err("No se puede detonar fuera del mapa!".to_string());
         }
