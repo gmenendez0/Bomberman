@@ -136,9 +136,17 @@ impl Laberinto {
 
         if let Some(primer_caracter) = parte.chars().next() {
             if primer_caracter == 'B' {
-                result = Laberinto::crear_bomba_normal(segundo_caracter, coordenada_objeto, id_bomba_actual)
+                result = Laberinto::crear_bomba_normal(
+                    segundo_caracter,
+                    coordenada_objeto,
+                    id_bomba_actual,
+                )
             } else if primer_caracter == 'S' {
-                result = Laberinto::crear_bomba_traspaso(segundo_caracter, coordenada_objeto, id_bomba_actual)
+                result = Laberinto::crear_bomba_traspaso(
+                    segundo_caracter,
+                    coordenada_objeto,
+                    id_bomba_actual,
+                )
             } else if primer_caracter == 'F' {
                 result = Laberinto::crear_enemigo(segundo_caracter, coordenada_objeto)
             } else if primer_caracter == 'D' {
@@ -150,7 +158,13 @@ impl Laberinto {
     }
 
     ///? Crea  el objeto correspondiente y lo agrega al mapa.
-    pub fn crear_objeto_correspondiente(&mut self, parte: &str, coordenada_x: usize, coordenada_y: usize, id_bomba_actual: &mut i32) -> Result<(), String> {
+    pub fn crear_objeto_correspondiente(
+        &mut self,
+        parte: &str,
+        coordenada_x: usize,
+        coordenada_y: usize,
+        id_bomba_actual: &mut i32,
+    ) -> Result<(), String> {
         let coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
         let coordenada_casillero_copia = coordenada_casillero.clone();
 
@@ -174,7 +188,12 @@ impl Laberinto {
             let partes = dato.split_whitespace().collect::<Vec<&str>>();
 
             for (coordenada_x, parte) in partes.iter().enumerate() {
-                self.crear_objeto_correspondiente(parte, coordenada_x, coordenada_y, &mut id_bomba_actual)?;
+                self.crear_objeto_correspondiente(
+                    parte,
+                    coordenada_x,
+                    coordenada_y,
+                    &mut id_bomba_actual,
+                )?;
             }
         }
 
@@ -219,7 +238,10 @@ impl Laberinto {
     }
 
     ///? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
-    pub fn detonar_objeto(&mut self, coordenada_a_detonar: Coordenada, ) -> Result<ResultadoRafaga, String> {
+    pub fn detonar_objeto(
+        &mut self,
+        coordenada_a_detonar: Coordenada,
+    ) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(&coordenada_a_detonar) {
             return Err("No se puede detonar fuera del mapa!".to_string());
         }
@@ -229,29 +251,49 @@ impl Laberinto {
     }
 
     ///? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el resultado.
-    pub fn rafagear_coordenada(&mut self, coordenada_a_rafagear: &Coordenada, id_bomba_rafageadora: &i32) -> Result<ResultadoRafaga, String> {
+    pub fn rafagear_coordenada(
+        &mut self,
+        coordenada_a_rafagear: &Coordenada,
+        id_bomba_rafageadora: &i32,
+    ) -> Result<ResultadoRafaga, String> {
         if self.coordenadas_fuera_de_rango(coordenada_a_rafagear) {
             return Ok(ResultadoRafaga::ChoqueFuerte);
         }
 
-        let mut resultado_rafaga = Ok(self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].recibir_rafaga());
+        let mut resultado_rafaga = Ok(self.tablero[coordenada_a_rafagear.get_y()]
+            [coordenada_a_rafagear.get_x()]
+        .recibir_rafaga());
         let coordenada_rafageada = coordenada_a_rafagear.clone();
         let resultado_rafaga_copia = resultado_rafaga.clone()?;
 
         if resultado_rafaga_copia == Detonacion {
             resultado_rafaga = self.detonar_objeto(coordenada_rafageada);
         } else if resultado_rafaga_copia == EnemigoEliminado {
-            if !self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].ya_recibio_rafaga_de_bomba_actual(id_bomba_rafageadora).unwrap_or(false) {
+            if !self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()]
+                .ya_recibio_rafaga_de_bomba_actual(id_bomba_rafageadora)
+                .unwrap_or(false)
+            {
                 self.reemplazar_objeto_en_tablero(
                     Casillero::Vacio(coordenada_rafageada),
                     coordenada_a_rafagear,
                 );
             }
-        } else if (resultado_rafaga_copia == EnemigoTocado(1) || resultado_rafaga_copia == EnemigoTocado(2)) && !self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].ya_recibio_rafaga_de_bomba_actual(id_bomba_rafageadora).unwrap_or(false) {
+        } else if (resultado_rafaga_copia == EnemigoTocado(1)
+            || resultado_rafaga_copia == EnemigoTocado(2))
+            && !self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()]
+                .ya_recibio_rafaga_de_bomba_actual(id_bomba_rafageadora)
+                .unwrap_or(false)
+        {
             let enemigo_nuevo = Enemigo::new(resultado_rafaga_copia.get_vida_enemigo());
-            let mut ids_bombas_recibidas = self.tablero[coordenada_a_rafagear.get_y()][coordenada_a_rafagear.get_x()].get_ids_bombas_sufridas().unwrap_or(Vec::new());
+            let mut ids_bombas_recibidas = self.tablero[coordenada_a_rafagear.get_y()]
+                [coordenada_a_rafagear.get_x()]
+            .get_ids_bombas_sufridas()
+            .unwrap_or(Vec::new());
             ids_bombas_recibidas.push(*id_bomba_rafageadora);
-            self.reemplazar_objeto_en_tablero(Casillero::Enemigoo(coordenada_rafageada, enemigo_nuevo, ids_bombas_recibidas), coordenada_a_rafagear);
+            self.reemplazar_objeto_en_tablero(
+                Casillero::Enemigoo(coordenada_rafageada, enemigo_nuevo, ids_bombas_recibidas),
+                coordenada_a_rafagear,
+            );
         }
 
         resultado_rafaga
@@ -278,11 +320,11 @@ mod tests {
 
     #[test]
     fn test_rafagear() {
-/*        let mut laberinto = Laberinto::new(3);
-        let bomba = Laberinto::crear_enemigo(51, Coordenada::new(1, 1)).unwrap();
-        laberinto.reemplazar_objeto_en_tablero(bomba, &Coordenada::new(1, 1));
-        let resultado_rafaga = laberinto.rafagear_coordenada(&Coordenada::new(1, 1), );
-        assert_eq!(resultado_rafaga.unwrap(), ResultadoRafaga::EnemigoTocado(2));*/
+        let mut laberinto = Laberinto::new(3);
+        let enemigo = Laberinto::crear_enemigo(51, Coordenada::new(1, 1)).unwrap();
+        laberinto.reemplazar_objeto_en_tablero(enemigo, &Coordenada::new(1, 1));
+        let resultado_rafaga = laberinto.rafagear_coordenada(&Coordenada::new(1, 1), &1);
+        assert_eq!(resultado_rafaga.unwrap(), ResultadoRafaga::EnemigoTocado(2));
     }
 
     #[test]

@@ -10,7 +10,10 @@ pub struct FileHandler {
 impl FileHandler {
     ///? Constructor de FileHandler.
     pub fn new(input_target: String, output_target: String) -> FileHandler {
-        FileHandler { input_target, output_target }
+        FileHandler {
+            input_target,
+            output_target,
+        }
     }
 
     ///? Crea un archivo en base al target especificado y lo devuelve. Si el archivo ya existe, lo sobreescribe.
