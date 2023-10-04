@@ -84,12 +84,13 @@ impl Casillero {
         coordenada_inicial: &Coordenada,
         alcance_restante: i32,
         resultado_rafaga: ResultadoRafaga,
+        id_bomba: &i32,
     ) -> Result<ResultadoRafaga, String> {
         match resultado_rafaga {
-            DesvioArriba => self.rafagear_arriba(lab, coordenada_inicial, alcance_restante),
-            DesvioAbajo => self.rafagear_abajo(lab, coordenada_inicial, alcance_restante),
-            DesvioIzquierda => self.rafagear_izquierda(lab, coordenada_inicial, alcance_restante),
-            DesvioDerecha => self.rafagear_derecha(lab, coordenada_inicial, alcance_restante),
+            DesvioArriba => self.rafagear_arriba(lab, coordenada_inicial, alcance_restante, id_bomba),
+            DesvioAbajo => self.rafagear_abajo(lab, coordenada_inicial, alcance_restante, id_bomba),
+            DesvioIzquierda => self.rafagear_izquierda(lab, coordenada_inicial, alcance_restante, id_bomba),
+            DesvioDerecha => self.rafagear_derecha(lab, coordenada_inicial, alcance_restante, id_bomba),
             ChoqueFuerte => Ok(ChoqueFuerte),
             _ => Ok(Choque),
         }
@@ -102,17 +103,18 @@ impl Casillero {
         coordenada_inicial: &Coordenada,
         alcance_restante: i32,
         resultado_rafaga: ResultadoRafaga,
+        id_bomba: &i32
     ) -> Result<ResultadoRafaga, String> {
         match resultado_rafaga {
             DesvioArriba => {
-                self.rafagear_arriba_traspaso(lab, coordenada_inicial, alcance_restante)
+                self.rafagear_arriba_traspaso(lab, coordenada_inicial, alcance_restante, id_bomba)
             }
-            DesvioAbajo => self.rafagear_abajo_traspaso(lab, coordenada_inicial, alcance_restante),
+            DesvioAbajo => self.rafagear_abajo_traspaso(lab, coordenada_inicial, alcance_restante, id_bomba),
             DesvioIzquierda => {
-                self.rafagear_izquierda_traspaso(lab, coordenada_inicial, alcance_restante)
+                self.rafagear_izquierda_traspaso(lab, coordenada_inicial, alcance_restante, id_bomba)
             }
             DesvioDerecha => {
-                self.rafagear_derecha_traspaso(lab, coordenada_inicial, alcance_restante)
+                self.rafagear_derecha_traspaso(lab, coordenada_inicial, alcance_restante, id_bomba)
             }
             _ => Ok(ChoqueFuerte),
         }
@@ -124,6 +126,7 @@ impl Casillero {
         lab: &mut Laberinto,
         alcance_restante_rafagas: &mut i32,
         resultado_rafaga: &mut Result<ResultadoRafaga, String>,
+        id_bomba: &i32,
     ) {
         if coordenada_base.get_y() == 0 {
             *resultado_rafaga = Ok(ChoqueFuerte);
@@ -131,7 +134,7 @@ impl Casillero {
             coordenada_base.set_y(coordenada_base.get_y() - 1);
             *alcance_restante_rafagas -= 1;
 
-            *resultado_rafaga = lab.rafagear_coordenada(coordenada_base);
+            *resultado_rafaga = lab.rafagear_coordenada(coordenada_base, id_bomba);
         }
     }
 
@@ -141,6 +144,7 @@ impl Casillero {
         lab: &mut Laberinto,
         alcance_restante_rafagas: &mut i32,
         resultado_rafaga: &mut Result<ResultadoRafaga, String>,
+        id_bomba: &i32,
     ) {
         if coordenada_base.get_x() == 0 {
             *resultado_rafaga = Ok(ChoqueFuerte);
@@ -148,7 +152,7 @@ impl Casillero {
             coordenada_base.set_x(coordenada_base.get_x() - 1);
             *alcance_restante_rafagas -= 1;
 
-            *resultado_rafaga = lab.rafagear_coordenada(coordenada_base);
+            *resultado_rafaga = lab.rafagear_coordenada(coordenada_base, id_bomba);
         }
     }
 
@@ -158,6 +162,7 @@ impl Casillero {
         lab: &mut Laberinto,
         coordenada_inicial: &Coordenada,
         mut alcance_restante_rafagas: i32,
+        id_bomba: &i32,
     ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
@@ -172,6 +177,7 @@ impl Casillero {
                 lab,
                 &mut alcance_restante_rafagas,
                 referencia_mutable_resultado_rafaga,
+                id_bomba,
             );
         }
 
@@ -184,6 +190,7 @@ impl Casillero {
                 &coordenada_a_rafagear,
                 alcance_restante_rafagas,
                 resultado_rafaga?,
+                id_bomba
             );
         }
 
@@ -196,6 +203,7 @@ impl Casillero {
         lab: &mut Laberinto,
         coordenada_inicial: &Coordenada,
         mut alcance_restante_rafagas: i32,
+        id_bomba: &i32,
     ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
@@ -208,7 +216,7 @@ impl Casillero {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear, id_bomba);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(
@@ -220,6 +228,7 @@ impl Casillero {
                 &coordenada_a_rafagear,
                 alcance_restante_rafagas,
                 resultado_rafaga?,
+                id_bomba
             );
         }
 
@@ -232,6 +241,7 @@ impl Casillero {
         lab: &mut Laberinto,
         coordenada_inicial: &Coordenada,
         mut alcance_restante_rafagas: i32,
+        id_bomba: &i32,
     ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
@@ -244,7 +254,7 @@ impl Casillero {
             coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() + 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear, id_bomba);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(
@@ -256,6 +266,7 @@ impl Casillero {
                 &coordenada_a_rafagear,
                 alcance_restante_rafagas,
                 resultado_rafaga?,
+                id_bomba
             );
         }
 
@@ -268,6 +279,7 @@ impl Casillero {
         lab: &mut Laberinto,
         coordenada_inicial: &Coordenada,
         mut alcance_restante_rafagas: i32,
+        id_bomba: &i32,
     ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
@@ -277,12 +289,7 @@ impl Casillero {
             alcance_restante_rafagas,
             &referencia_mutable_resultado_rafaga.clone()?,
         ) {
-            Casillero::aplicar_rafaga_izquierda(
-                &mut coordenada_a_rafagear,
-                lab,
-                &mut alcance_restante_rafagas,
-                referencia_mutable_resultado_rafaga,
-            );
+            Casillero::aplicar_rafaga_izquierda(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga, id_bomba);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo(
@@ -294,6 +301,7 @@ impl Casillero {
                 &coordenada_a_rafagear,
                 alcance_restante_rafagas,
                 resultado_rafaga?,
+                id_bomba
             );
         }
 
@@ -305,11 +313,12 @@ impl Casillero {
         &self,
         lab: &mut Laberinto,
         alcance_restante_rafagas: i32,
+        id_bomba: &i32,
     ) -> Result<ResultadoRafaga, String> {
-        self.rafagear_arriba(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
-        self.rafagear_abajo(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
-        self.rafagear_derecha(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
-        self.rafagear_izquierda(lab, &self.get_coordenada(), alcance_restante_rafagas)
+        self.rafagear_arriba(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)?;
+        self.rafagear_abajo(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)?;
+        self.rafagear_derecha(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)?;
+        self.rafagear_izquierda(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)
     }
 
     ///? Rafagea hacia arriba. Devuelve el resultado del rafageo de la ultima casilla rafageada.
@@ -318,6 +327,7 @@ impl Casillero {
         lab: &mut Laberinto,
         coordenada_inicial: &Coordenada,
         mut alcance_restante_rafagas: i32,
+        id_bomba: &i32
     ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
@@ -332,6 +342,7 @@ impl Casillero {
                 lab,
                 &mut alcance_restante_rafagas,
                 referencia_mutable_resultado_rafaga,
+                id_bomba
             );
         }
 
@@ -344,6 +355,7 @@ impl Casillero {
                 &coordenada_a_rafagear,
                 alcance_restante_rafagas,
                 resultado_rafaga?,
+                id_bomba
             );
         }
 
@@ -356,6 +368,7 @@ impl Casillero {
         lab: &mut Laberinto,
         coordenada_inicial: &Coordenada,
         mut alcance_restante_rafagas: i32,
+        id_bomba: &i32
     ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
@@ -368,7 +381,7 @@ impl Casillero {
             coordenada_a_rafagear.set_y(coordenada_a_rafagear.get_y() + 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear, id_bomba);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo_traspaso(
@@ -380,6 +393,7 @@ impl Casillero {
                 &coordenada_a_rafagear,
                 alcance_restante_rafagas,
                 resultado_rafaga?,
+                id_bomba
             );
         }
 
@@ -392,6 +406,7 @@ impl Casillero {
         lab: &mut Laberinto,
         coordenada_inicial: &Coordenada,
         mut alcance_restante_rafagas: i32,
+        id_bomba: &i32
     ) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
@@ -404,7 +419,7 @@ impl Casillero {
             coordenada_a_rafagear.set_x(coordenada_a_rafagear.get_x() + 1);
             alcance_restante_rafagas -= 1;
 
-            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear);
+            *referencia_mutable_resultado_rafaga = lab.rafagear_coordenada(&coordenada_a_rafagear, id_bomba);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo_traspaso(
@@ -416,6 +431,7 @@ impl Casillero {
                 &coordenada_a_rafagear,
                 alcance_restante_rafagas,
                 resultado_rafaga?,
+                id_bomba
             );
         }
 
@@ -423,28 +439,28 @@ impl Casillero {
     }
 
     ///? Rafagea a la izquierda. Devuelve el resultado del rafageo de la ultima casilla rafageada.
-    pub fn rafagear_izquierda_traspaso(&self, lab: &mut Laberinto, coordenada_inicial: &Coordenada, mut alcance_restante_rafagas: i32, ) -> Result<ResultadoRafaga, String> {
+    pub fn rafagear_izquierda_traspaso(&self, lab: &mut Laberinto, coordenada_inicial: &Coordenada, mut alcance_restante_rafagas: i32, id_bomba: &i32) -> Result<ResultadoRafaga, String> {
         let mut coordenada_a_rafagear = coordenada_inicial.clone();
         let mut resultado_rafaga: Result<ResultadoRafaga, String> = Ok(Insignificante);
         let referencia_mutable_resultado_rafaga = &mut resultado_rafaga;
 
         while Casillero::rafaga_continua_sin_chocar_obstaculo_traspaso(alcance_restante_rafagas, &referencia_mutable_resultado_rafaga.clone()?, ) {
-            Casillero::aplicar_rafaga_izquierda(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga, );
+            Casillero::aplicar_rafaga_izquierda(&mut coordenada_a_rafagear, lab, &mut alcance_restante_rafagas, referencia_mutable_resultado_rafaga, id_bomba);
         }
 
         if Casillero::rafaga_continua_chocando_obstaculo_traspaso(alcance_restante_rafagas, &resultado_rafaga.clone()?, ) {
-            resultado_rafaga = self.evaluar_camino_a_seguir_traspaso(lab, &coordenada_a_rafagear, alcance_restante_rafagas, resultado_rafaga?, );
+            resultado_rafaga = self.evaluar_camino_a_seguir_traspaso(lab, &coordenada_a_rafagear, alcance_restante_rafagas, resultado_rafaga?, id_bomba);
         }
 
         resultado_rafaga
     }
 
     ///? Inicia los rafageos traspaso en todas las direcciones. Devuelve el resultado del rafageo de la ultima casilla rafageada.
-    fn iniciar_rafagas_traspaso(&self, lab: &mut Laberinto, alcance_restante_rafagas: i32, ) -> Result<ResultadoRafaga, String> {
-        self.rafagear_arriba_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
-        self.rafagear_abajo_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
-        self.rafagear_derecha_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)?;
-        self.rafagear_izquierda_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas)
+    fn iniciar_rafagas_traspaso(&self, lab: &mut Laberinto, alcance_restante_rafagas: i32, id_bomba: &i32, ) -> Result<ResultadoRafaga, String> {
+        self.rafagear_arriba_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)?;
+        self.rafagear_abajo_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)?;
+        self.rafagear_derecha_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)?;
+        self.rafagear_izquierda_traspaso(lab, &self.get_coordenada(), alcance_restante_rafagas, id_bomba)
     }
 
     ///? Detona la casilla si es posible y devuelve el resultado final de la detonacion (resultado del ultimo rafageo), en caso de no poder detonar se devuelve un error.
@@ -461,7 +477,7 @@ impl Casillero {
                     &self.get_coordenada(),
                 );
 
-                self.iniciar_rafagas(lab, *alcance)
+                self.iniciar_rafagas(lab, *alcance, id_bomba)
             }
             Casillero::BombaTraspaso(_, alcance, id_bomba) => {
                 lab.reemplazar_objeto_en_tablero(
@@ -469,7 +485,7 @@ impl Casillero {
                     &self.get_coordenada(),
                 );
 
-                self.iniciar_rafagas_traspaso(lab, *alcance)
+                self.iniciar_rafagas_traspaso(lab, *alcance, id_bomba)
             }
         }
     }
