@@ -13,10 +13,10 @@ pub enum Casillero {
     Vacio(Coordenada),
     Roca(Coordenada),
     Pared(Coordenada),
-    Enemigoo(Coordenada, Enemigo),
+    Enemigoo(Coordenada, Enemigo, Vec<i32>),
     Desvio(Coordenada, String),
-    BombaNormal(Coordenada, i32),
-    BombaTraspaso(Coordenada, i32),
+    BombaNormal(Coordenada, i32, i32),
+    BombaTraspaso(Coordenada, i32, i32),
 }
 
 impl Casillero {
@@ -455,18 +455,20 @@ impl Casillero {
             Casillero::Pared(_) => Err("ERROR: No se puede detonar una pared".to_string()),
             Casillero::Enemigoo(..) => Err("ERROR: No se puede detonar un enemigo".to_string()),
             Casillero::Desvio(..) => Err("ERROR: No se puede detonar un desvio".to_string()),
-            Casillero::BombaNormal(_, alcance) => {
+            Casillero::BombaNormal(_, alcance, id_bomba) => {
                 lab.reemplazar_objeto_en_tablero(
                     Casillero::Vacio(self.get_coordenada()),
                     &self.get_coordenada(),
                 );
+
                 self.iniciar_rafagas(lab, *alcance)
             }
-            Casillero::BombaTraspaso(_, alcance) => {
+            Casillero::BombaTraspaso(_, alcance, id_bomba) => {
                 lab.reemplazar_objeto_en_tablero(
                     Casillero::Vacio(self.get_coordenada()),
                     &self.get_coordenada(),
                 );
+
                 self.iniciar_rafagas_traspaso(lab, *alcance)
             }
         }
@@ -478,7 +480,7 @@ impl Casillero {
             Casillero::Vacio(_) => Insignificante,
             Casillero::Roca(_) => Choque,
             Casillero::Pared(_) => ChoqueFuerte,
-            Casillero::Enemigoo(_, enemigo) => {
+            Casillero::Enemigoo(_, enemigo, _) => {
                 if enemigo.get_vida() - 1 == 0 {
                     EnemigoEliminado
                 } else {
@@ -496,8 +498,8 @@ impl Casillero {
                     DesvioDerecha
                 }
             }
-            Casillero::BombaNormal(_, _) => Detonacion,
-            Casillero::BombaTraspaso(_, _) => Detonacion,
+            Casillero::BombaNormal(_, _, _) => Detonacion,
+            Casillero::BombaTraspaso(_, _, _) => Detonacion,
         }
     }
 
@@ -507,18 +509,18 @@ impl Casillero {
             Casillero::Vacio(_) => String::from("_"),
             Casillero::Roca(_) => String::from("R"),
             Casillero::Pared(_) => String::from("W"),
-            Casillero::Enemigoo(_, enemigo) => String::from("F") + &enemigo.get_vida().to_string(),
+            Casillero::Enemigoo(_, enemigo, _) => String::from("F") + &enemigo.get_vida().to_string(),
             Casillero::Desvio(_, direccion) => {
                 println!("Direccion: {}", String::from("D") + direccion);
                 String::from("D") + direccion
             }
-            Casillero::BombaNormal(_, alcance) => {
+            Casillero::BombaNormal(_, alcance, _) => {
                 let representacion_bomba = String::from("B");
                 let representacion_alcance = alcance.to_string();
 
                 representacion_bomba + &representacion_alcance
             }
-            Casillero::BombaTraspaso(_, alcance) => {
+            Casillero::BombaTraspaso(_, alcance, _) => {
                 let representacion_bomba_traspaso = String::from("S");
                 let representacion_alcance = alcance.to_string();
 
@@ -535,8 +537,8 @@ impl Casillero {
             Casillero::Pared(coordenada) => coordenada.clone(),
             Casillero::Enemigoo(coordenada, ..) => coordenada.clone(),
             Casillero::Desvio(coordenada, _) => coordenada.clone(),
-            Casillero::BombaNormal(coordenada, _) => coordenada.clone(),
-            Casillero::BombaTraspaso(coordenada, _) => coordenada.clone(),
+            Casillero::BombaNormal(coordenada, _, _) => coordenada.clone(),
+            Casillero::BombaTraspaso(coordenada, _, _) => coordenada.clone(),
         }
     }
 }
@@ -570,7 +572,7 @@ mod tests {
     #[test]
     fn test_recibir_rafaga_enemigo_elim() {
         let enemigo = Enemigo::new(1);
-        let casillero = Casillero::Enemigoo(Coordenada::new(4, 4), enemigo);
+        let casillero = Casillero::Enemigoo(Coordenada::new(4, 4), enemigo, Vec::new());
         assert_eq!(
             casillero.recibir_rafaga(),
             ResultadoRafaga::EnemigoEliminado
@@ -580,7 +582,7 @@ mod tests {
     #[test]
     fn test_recibir_rafaga_enemigo_tocado() {
         let enemigo = Enemigo::new(3);
-        let casillero = Casillero::Enemigoo(Coordenada::new(5, 5), enemigo);
+        let casillero = Casillero::Enemigoo(Coordenada::new(5, 5), enemigo, Vec::new());
         assert_eq!(
             casillero.recibir_rafaga(),
             ResultadoRafaga::EnemigoTocado(2)

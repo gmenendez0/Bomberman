@@ -54,21 +54,28 @@ impl Laberinto {
     fn crear_bomba_normal(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
+        id_bomba_actual: &mut i32,
     ) -> Result<Casillero, String> {
         if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
             return Err("ERROR: El alcance de la bomba no puede ser menor a 1".to_string());
         }
 
-        Ok(Casillero::BombaNormal(
+        let bomba = Ok(Casillero::BombaNormal(
             coordenada_objeto,
             segundo_caracter as i32 - ASCII_DIF,
-        ))
+            *id_bomba_actual,
+        ));
+
+        *id_bomba_actual += 1;
+
+        bomba
     }
 
     ///? Crea una bomba traspaso a partir del segundo caracter recibido, o devuelve error.
     fn crear_bomba_traspaso(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
+        id_bomba_actual: &mut i32,
     ) -> Result<Casillero, String> {
         if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
             return Err(
@@ -76,10 +83,15 @@ impl Laberinto {
             );
         }
 
-        Ok(Casillero::BombaTraspaso(
+        let bomba = Ok(Casillero::BombaTraspaso(
             coordenada_objeto,
             segundo_caracter as i32 - ASCII_DIF,
-        ))
+            *id_bomba_actual,
+        ));
+
+        *id_bomba_actual += 1;
+
+        bomba
     }
 
     ///? Crea un enemigo a partir del segundo caracter recibido, o devuelve error.
@@ -95,7 +107,7 @@ impl Laberinto {
 
         let enemigo = Enemigo::new(segundo_caracter as i32 - ASCII_DIF);
 
-        Ok(Casillero::Enemigoo(coordenada_objeto, enemigo))
+        Ok(Casillero::Enemigoo(coordenada_objeto, enemigo, Vec::new()))
     }
 
     ///? Crea un desvio a partir del segundo caracter recibido, o devuelve error.
@@ -116,6 +128,7 @@ impl Laberinto {
         &mut self,
         parte: &str,
         coordenada_objeto: Coordenada,
+        id_bomba_actual: &mut i32,
     ) -> Result<Casillero, String> {
         let mut result: Result<Casillero, String> =
             Err("ERROR: Caracter representado no valido".to_string());
@@ -123,9 +136,9 @@ impl Laberinto {
 
         if let Some(primer_caracter) = parte.chars().next() {
             if primer_caracter == 'B' {
-                result = Laberinto::crear_bomba_normal(segundo_caracter, coordenada_objeto)
+                result = Laberinto::crear_bomba_normal(segundo_caracter, coordenada_objeto, id_bomba_actual)
             } else if primer_caracter == 'S' {
-                result = Laberinto::crear_bomba_traspaso(segundo_caracter, coordenada_objeto)
+                result = Laberinto::crear_bomba_traspaso(segundo_caracter, coordenada_objeto, id_bomba_actual)
             } else if primer_caracter == 'F' {
                 result = Laberinto::crear_enemigo(segundo_caracter, coordenada_objeto)
             } else if primer_caracter == 'D' {
@@ -137,19 +150,14 @@ impl Laberinto {
     }
 
     ///? Crea  el objeto correspondiente y lo agrega al mapa.
-    pub fn crear_objeto_correspondiente(
-        &mut self,
-        parte: &str,
-        coordenada_x: usize,
-        coordenada_y: usize,
-    ) -> Result<(), String> {
+    pub fn crear_objeto_correspondiente(&mut self, parte: &str, coordenada_x: usize, coordenada_y: usize, id_bomba_actual: &mut i32) -> Result<(), String> {
         let coordenada_casillero = Coordenada::new(coordenada_x, coordenada_y);
         let coordenada_casillero_copia = coordenada_casillero.clone();
 
         let objeto = if parte.len() == UN_CARACTER {
             self.crear_objeto_un_caracter(parte, coordenada_casillero)?
         } else {
-            self.crear_objeto_dos_caracteres(parte, coordenada_casillero)?
+            self.crear_objeto_dos_caracteres(parte, coordenada_casillero, id_bomba_actual)?
         };
 
         self.reemplazar_objeto_en_tablero(objeto.clone(), &coordenada_casillero_copia);
@@ -160,11 +168,13 @@ impl Laberinto {
     ///? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
     ///? A partir de estos datos, actualiza el tablero.
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
+        let mut id_bomba_actual = 1;
+
         for (coordenada_y, dato) in datos.iter().enumerate() {
             let partes = dato.split_whitespace().collect::<Vec<&str>>();
 
             for (coordenada_x, parte) in partes.iter().enumerate() {
-                self.crear_objeto_correspondiente(parte, coordenada_x, coordenada_y)?;
+                self.crear_objeto_correspondiente(parte, coordenada_x, coordenada_y, &mut id_bomba_actual)?;
             }
         }
 
@@ -235,14 +245,10 @@ impl Laberinto {
             );
         } else if resultado_rafaga_copia == Detonacion {
             resultado_rafaga = self.detonar_objeto(coordenada_rafageada);
-        } else if resultado_rafaga_copia == EnemigoTocado(1)
-            || resultado_rafaga_copia == EnemigoTocado(2)
-        {
+        } else if resultado_rafaga_copia == EnemigoTocado(1) || resultado_rafaga_copia == EnemigoTocado(2) {
+            //? CORREGIR ACA!
             let enemigo_nuevo = Enemigo::new(resultado_rafaga_copia.get_vida_enemigo());
-            self.reemplazar_objeto_en_tablero(
-                Casillero::Enemigoo(coordenada_rafageada, enemigo_nuevo),
-                coordenada_a_rafagear,
-            );
+            self.reemplazar_objeto_en_tablero(Casillero::Enemigoo(coordenada_rafageada, enemigo_nuevo, Vec::new()), coordenada_a_rafagear);
         }
 
         resultado_rafaga
@@ -258,7 +264,7 @@ mod tests {
     #[test]
     fn test_detonar() {
         let mut laberinto = Laberinto::new(3);
-        let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1)).unwrap();
+        let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1), &mut 1).unwrap();
         laberinto.reemplazar_objeto_en_tablero(bomba, &Coordenada::new(1, 1));
         let resultado_detonacion = laberinto.detonar_objeto(Coordenada::new(1, 1));
         assert_eq!(
