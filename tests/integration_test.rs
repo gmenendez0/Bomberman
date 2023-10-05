@@ -20,7 +20,7 @@ mod file_handler;
 use file_handler::FileHandler;
 
 #[test]
-fn integration1(){
+fn integration1() {
     let mut lab = Laberinto::new(7);
 
     let tablero_inicial = vec![
@@ -33,12 +33,19 @@ fn integration1(){
         String::from("_ _ _ _ _ _ _"),
     ];
 
-    lab.inicializar_laberinto_con_datos(tablero_inicial).expect("TODO: panic message");
-    lab.detonar_objeto(Coordenada::new(0, 0)).expect("TODO: panic message");
+    lab.inicializar_laberinto_con_datos(tablero_inicial)
+        .expect("TODO: panic message");
+    lab.detonar_objeto(Coordenada::new(0, 0))
+        .expect("TODO: panic message");
     let visualizacion = lab.obtener_visualizacion();
 
-    let file_handler = FileHandler::new("tests/lab_test.txt".to_string(), "tests/lab_test.txt".to_string());
-    file_handler.write(visualizacion).expect("TODO: panic message");
+    let file_handler = FileHandler::new(
+        "tests/lab_test.txt".to_string(),
+        "tests/lab_test.txt".to_string(),
+    );
+    file_handler
+        .write(visualizacion)
+        .expect("TODO: panic message");
 
     let tablero_esperado = vec![
         String::from("_ R R _ _ _ _ "),

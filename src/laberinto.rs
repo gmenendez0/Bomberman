@@ -237,7 +237,7 @@ impl Laberinto {
         self.tablero[coordenada_buscada.get_y()][coordenada_buscada.get_x()].clone()
     }
 
-    ///? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar.
+    ///? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar, o el ResultadoRafaga de la ultima rafaga en caso de todo OK.
     pub fn detonar_objeto(
         &mut self,
         coordenada_a_detonar: Coordenada,
@@ -250,7 +250,7 @@ impl Laberinto {
         objeto.detonar(self)
     }
 
-    ///? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el resultado.
+    ///? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el ResultadoRafaga en caso de OK, un string en caso de Err.
     pub fn rafagear_coordenada(
         &mut self,
         coordenada_a_rafagear: &Coordenada,
