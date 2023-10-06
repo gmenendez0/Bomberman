@@ -17,6 +17,8 @@ impl FileHandler {
     }
 
     ///? Crea un archivo en base al target especificado y lo devuelve. Si el archivo ya existe, lo sobreescribe.
+    /// # Errors:
+    /// Devuelve un error si no se puede crear el archivo.
     pub fn crear_archivo(&self) -> Result<File, String> {
         match File::create(&self.output_target) {
             Ok(archivo) => Ok(archivo),
@@ -25,6 +27,8 @@ impl FileHandler {
     }
 
     ///? Crea un archivo en base al target especificado y escribe un mensaje de error de archivo no encontrado en el mismo.
+    /// # Errors:
+    /// Devuelve un error si no se puede crear el archivo o si hay un problema al intentar escribirlo.
     pub fn archivo_no_encontrado(&self) -> Result<(), String> {
         let archivo = self.crear_archivo()?;
 
@@ -38,6 +42,8 @@ impl FileHandler {
     }
 
     ///? Abre un archivo en base al input target especificado y lo devuelve. Si el archivo no existe, crea uno y escribe un mensaje de error de archivo no encontrado en el mismo.
+    /// # Errors:
+    /// Devuelve un error si no se puede abrir el archivo.
     pub fn abrir_archivo(&self) -> Result<File, String> {
         let archivo = match File::open(&self.input_target) {
             Ok(archivo) => archivo,
@@ -51,6 +57,8 @@ impl FileHandler {
     }
 
     ///? Lee el archivo especificado en el target y devuelve un vector de strings con las lineas del mismo.
+    /// # Errors:
+    /// Devuelve un error si no se puede abrir el archivo o si hay un problema al intentar leerlo.
     pub fn read(&self) -> Result<Vec<String>, String> {
         let archivo = self.abrir_archivo()?;
 
@@ -68,6 +76,8 @@ impl FileHandler {
     }
 
     ///? Escribe el mensaje de error recibido por parametro en el archivo especificado target.
+    /// # Errors:
+    /// Devuelve un error si no se puede crear el archivo o si hay un problema al intentar escribirlo.
     pub fn write_error(&self, error: String) -> Result<(), String> {
         println!("{}", error);
         let archivo = self.crear_archivo()?;
@@ -82,6 +92,8 @@ impl FileHandler {
     }
 
     ///? Escribe el vector de strings recibido por parametro en el archivo especificado target.
+    /// # Errors:
+    /// Devuelve un error si no se puede crear el archivo o si hay un problema al intentar escribirlo.
     pub fn write(&self, data: Vec<Vec<String>>) -> Result<(), String> {
         let archivo = self.crear_archivo()?;
 

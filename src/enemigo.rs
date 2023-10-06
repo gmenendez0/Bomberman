@@ -5,6 +5,7 @@ pub struct Enemigo {
 }
 
 impl Enemigo {
+    ///? Crea un nuevo Enemigo.
     pub fn new(vida: i32) -> Enemigo {
         Enemigo { vida }
     }

@@ -14,6 +14,8 @@ pub struct Laberinto {
 
 impl Laberinto {
     ///? Crea un laberinto lleno de Vacio y lo devuelve.
+    /// # Arguments
+    /// * `dimension_tablero` - Dimension del tablero.
     pub fn new(dimension_tablero: usize) -> Laberinto {
         let mut tablero: Vec<Vec<Casillero>> = Vec::new();
 
@@ -31,6 +33,14 @@ impl Laberinto {
     }
 
     ///? Crea objetos representados unicamente por un unico caracter.
+    /// # Arguments
+    /// * `caracter` - Caracter que representa el objeto.
+    /// * `coordenada_objeto` - Coordenada del objeto.
+    /// # Returns
+    /// * `Ok(Casillero)` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: Caracter representado no valido` - En caso de que el caracter no sea valido.
     fn crear_objeto_un_caracter(
         &mut self,
         caracter: &str,
@@ -51,13 +61,22 @@ impl Laberinto {
     }
 
     ///? Crea una bomba normal a partir del segundo caracter recibido, o devuelve error.
+    /// # Arguments
+    /// * `segundo_caracter` - Segundo caracter que representa el alcance de la bomba.
+    /// * `coordenada_objeto` - Coordenada del objeto.
+    /// * `id_bomba_actual` - Id de la bomba.
+    /// # Returns
+    /// * `Ok(Casillero)` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: El alcance de la bomba  no puede ser menor a 1 o mayor a 9` - En caso de que el alcance sea menor a 1 o mayor a 9.
     fn crear_bomba_normal(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
         id_bomba_actual: &mut i32,
     ) -> Result<Casillero, String> {
         if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
-            return Err("ERROR: El alcance de la bomba no puede ser menor a 1".to_string());
+            return Err("ERROR: El alcance de la bomba no puede ser menor a 1 o mayor a 9".to_string());
         }
 
         let bomba = Ok(Casillero::BombaNormal(
@@ -72,6 +91,15 @@ impl Laberinto {
     }
 
     ///? Crea una bomba traspaso a partir del segundo caracter recibido, o devuelve error.
+    /// # Arguments
+    /// * `segundo_caracter` - Segundo caracter que representa el alcance de la bomba.
+    /// * `coordenada_objeto` - Coordenada del objeto.
+    /// * `id_bomba_actual` - Id de la bomba.
+    /// # Returns
+    /// * `Ok(Casillero)` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: El alcance de la bomba traspaso no puede ser menor a 1 o mayor a 9` - En caso de que el alcance sea menor a 1 o mayor a 9.
     fn crear_bomba_traspaso(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
@@ -79,7 +107,7 @@ impl Laberinto {
     ) -> Result<Casillero, String> {
         if (segundo_caracter as i32 - ASCII_DIF < 1) || (segundo_caracter as i32 - ASCII_DIF > 9) {
             return Err(
-                "ERROR: El alcance de la bomba traspaso no puede ser menor a 1".to_string(),
+                "ERROR: El alcance de la bomba traspaso no puede ser menor a 1 o mayor a 9".to_string(),
             );
         }
 
@@ -95,6 +123,14 @@ impl Laberinto {
     }
 
     ///? Crea un enemigo a partir del segundo caracter recibido, o devuelve error.
+    /// # Arguments
+    /// * `segundo_caracter` - Segundo caracter que representa la vida del enemigo.
+    /// * `coordenada_objeto` - Coordenada del objeto.
+    /// # Returns
+    /// * `Ok(Casillero)` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: La vida del enemigo no puede ser menor a 1 ni mayor a 3` - En caso de que la vida sea menor a 1 o mayor a 3.
     fn crear_enemigo(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
@@ -111,6 +147,21 @@ impl Laberinto {
     }
 
     ///? Crea un desvio a partir del segundo caracter recibido, o devuelve error.
+    /// # Arguments
+    /// * `segundo_caracter` - Segundo caracter que representa la direccion del desvio.
+    /// * `coordenada_objeto` - Coordenada del objeto.
+    /// # Returns
+    /// * `Ok(Casillero)` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: La direccion del desvio no es valida` - En caso de que la direccion no sea valida.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::coordenada::Coordenada;
+    /// let desvio = Laberinto::crear_desvio(85, Coordenada::new(1, 1));
+    /// assert!(desvio.is_ok());
+    /// ```
     fn crear_desvio(
         segundo_caracter: u8,
         coordenada_objeto: Coordenada,
@@ -124,6 +175,22 @@ impl Laberinto {
     }
 
     ///? Crea objetos representados únicamente por dos caracteres.
+    /// # Arguments
+    /// * `parte` - Parte del string que representa el objeto.
+    /// * `coordenada_objeto` - Coordenada del objeto.
+    /// * `id_bomba_actual` - Id de la bomba.
+    /// # Returns
+    /// * `Ok(Casillero)` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: Caracter representado no valido` - En caso de que el caracter no sea valido.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::coordenada::Coordenada;
+    /// let objeto = Laberinto::crear_objeto_dos_caracteres("B2", Coordenada::new(1, 1), &mut 1);
+    /// assert!(objeto.is_ok());
+    /// ```
     fn crear_objeto_dos_caracteres(
         &mut self,
         parte: &str,
@@ -158,6 +225,24 @@ impl Laberinto {
     }
 
     ///? Crea  el objeto correspondiente y lo agrega al mapa.
+    /// # Arguments
+    /// * `parte` - Parte del string que representa el objeto.
+    /// * `coordenada_x` - Coordenada x del objeto.
+    /// * `coordenada_y` - Coordenada y del objeto.
+    /// * `id_bomba_actual` - Id de la bomba.
+    /// # Returns
+    /// * `Ok(())` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: Caracter representado no valido` - En caso de que el caracter no sea valido.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::coordenada::Coordenada;
+    /// let mut lab = Laberinto::new(3);
+    /// let objeto = lab.crear_objeto_correspondiente("B2", 1, 1, &mut 1);
+    /// assert!(objeto.is_ok());
+    /// ```
     pub fn crear_objeto_correspondiente(
         &mut self,
         parte: &str,
@@ -181,6 +266,24 @@ impl Laberinto {
 
     ///? Recibe un vector de strings, donde cada string representa una fila del laberinto y cada caracter representa un objeto.
     ///? A partir de estos datos, actualiza el tablero.
+    /// # Arguments
+    /// * `datos` - Vector de strings que representa el laberinto.
+    /// # Returns
+    /// * `Ok(())` - Casillero creado.
+    /// * `Err(String)` - Error.
+    /// # Errors
+    /// * `ERROR: Caracter representado no valido` - En caso de que el caracter no sea valido.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// let mut lab = Laberinto::new(3);
+    /// let datos = vec![
+    ///    "R _ _".to_string(),
+    ///   "_ W _".to_string(),
+    ///   "_ _ _".to_string(),
+    /// ];
+    /// assert!(lab.inicializar_laberinto_con_datos(datos).is_ok());
+    /// ```
     pub fn inicializar_laberinto_con_datos(&mut self, datos: Vec<String>) -> Result<(), String> {
         let mut id_bomba_actual = 1;
 
@@ -201,6 +304,23 @@ impl Laberinto {
     }
 
     ///? Devuelve la visualizacion del estado actual del laberinto.
+    /// # Returns
+    /// * `Vec<Vec<String>>` - Visualizacion del laberinto.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// let mut lab = Laberinto::new(3);
+    /// let datos = vec![
+    ///   "R _ _".to_string(),
+    ///  "_ W _".to_string(),
+    /// "_ _ _".to_string(),
+    /// ];
+    /// lab.inicializar_laberinto_con_datos(datos).unwrap();
+    /// let visualizacion = lab.obtener_visualizacion();
+    /// assert_eq!(visualizacion[0][0], "R");
+    /// assert_eq!(visualizacion[0][2], "_");
+    /// assert_eq!(visualizacion[1][2], "W");
+    /// ```
     pub fn obtener_visualizacion(&self) -> Vec<Vec<String>> {
         let mut tablero_visualizacion: Vec<Vec<String>> = Vec::new();
 
@@ -219,6 +339,18 @@ impl Laberinto {
     }
 
     ///? Reemplaza el casillero ubicado en las coordenadas del casillero recibido por el casillero recibido.
+    /// # Arguments
+    /// * `casillero` - Casillero a reemplazar.
+    /// * `coordenada` - Coordenada del casillero a reemplazar.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::casillero::Casillero;
+    /// use bomberman::coordenada::Coordenada;
+    /// let mut lab = Laberinto::new(3);
+    /// let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1), &mut 1).unwrap();
+    /// lab.reemplazar_objeto_en_tablero(bomba, &Coordenada::new(1, 1));
+    /// ```
     pub fn reemplazar_objeto_en_tablero(&mut self, casillero: Casillero, coordenada: &Coordenada) {
         if self.coordenadas_fuera_de_rango(coordenada) {
             return;
@@ -228,16 +360,61 @@ impl Laberinto {
     }
 
     ///? Devuelve true en caso de que las coordenadas recibidas esten fuera del tablero, false caso contrario.
+    /// # Arguments
+    /// * `coordenada` - Coordenada a chequear.
+    /// # Returns
+    /// * `bool` - True en caso de que las coordenadas esten fuera del tablero, false caso contrario.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::coordenada::Coordenada;
+    /// let lab = Laberinto::new(3);
+    /// let coordenada = Coordenada::new(4, 3);
+    /// assert!(lab.coordenadas_fuera_de_rango(&coordenada));
+    /// ```
     pub fn coordenadas_fuera_de_rango(&self, coordenada: &Coordenada) -> bool {
         coordenada.get_x() >= self.tablero.len() || coordenada.get_y() >= self.tablero.len()
     }
 
     ///? Devuelve el objeto ubicado en las coordenadas recibidas.
+    /// # Arguments
+    /// * `coordenada_buscada` - Coordenada del objeto a buscar.
+    /// # Returns
+    /// * `Casillero` - Casillero ubicado en las coordenadas recibidas.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::casillero::Casillero;
+    /// use bomberman::coordenada::Coordenada;
+    /// let mut lab = Laberinto::new(3);
+    /// let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1), &mut 1).unwrap();
+    /// lab.reemplazar_objeto_en_tablero(bomba, &Coordenada::new(1, 1));
+    /// let objeto = lab.obtener_objeto(&Coordenada::new(1, 1));
+    /// assert_eq!(objeto, Casillero::BombaNormal(Coordenada::new(1, 1), 1, 1));
+    /// ```
     fn obtener_objeto(&mut self, coordenada_buscada: &Coordenada) -> Casillero {
         self.tablero[coordenada_buscada.get_y()][coordenada_buscada.get_x()].clone()
     }
 
     ///? Detonar el objeto ubicado en las coordenadas recibidas. Devuelve un error en caso de que no se pueda detonar, o el ResultadoRafaga de la ultima rafaga en caso de todo OK.
+    /// # Arguments
+    /// * `coordenada_a_detonar` - Coordenada del objeto a detonar.
+    /// # Returns
+    /// * `Result<ResultadoRafaga, String>` - ResultadoRafaga de la ultima rafaga en caso de todo OK, o un error en caso de que no se pueda detonar.
+    /// # Errors
+    /// * `ERROR: No se puede detonar fuera del mapa!` - En caso de que la coordenada a detonar este fuera del mapa.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::coordenada::Coordenada;
+    /// use bomberman::resultado_rafaga::ResultadoRafaga;
+    /// use bomberman::resultado_rafaga::ResultadoRafaga::Insignificante;
+    /// let mut lab = Laberinto::new(3);
+    /// let bomba = Laberinto::crear_bomba_normal(49, Coordenada::new(1, 1), &mut 1).unwrap();
+    /// lab.reemplazar_objeto_en_tablero(bomba, &Coordenada::new(1, 1));
+    /// let resultado_detonacion = lab.detonar_objeto(Coordenada::new(1, 1));
+    /// assert_eq!(resultado_detonacion.unwrap(), Insignificante);
+    /// ```
     pub fn detonar_objeto(
         &mut self,
         coordenada_a_detonar: Coordenada,
@@ -251,6 +428,25 @@ impl Laberinto {
     }
 
     ///? Ordena al objeto correspondiente que reciba la rafaga, aplica las consecuencias y devuelve el ResultadoRafaga en caso de OK, un string en caso de Err.
+    /// # Arguments
+    /// * `coordenada_a_rafagear` - Coordenada del objeto a rafagear.
+    /// * `id_bomba_rafageadora` - Id de la bomba que rafagea.
+    /// # Returns
+    /// * `Result<ResultadoRafaga, String>` - ResultadoRafaga en caso de OK, un string en caso de Err.
+    /// # Errors
+    /// * `ERROR: No se puede rafagear fuera del mapa!` - En caso de que la coordenada a rafagear este fuera del mapa.
+    /// # Examples
+    /// ```
+    /// use bomberman::laberinto::Laberinto;
+    /// use bomberman::coordenada::Coordenada;
+    /// use bomberman::resultado_rafaga::ResultadoRafaga;
+    /// use bomberman::resultado_rafaga::ResultadoRafaga::EnemigoTocado;
+    /// let mut lab = Laberinto::new(3);
+    /// let enemigo = Laberinto::crear_enemigo(51, Coordenada::new(1, 1)).unwrap();
+    /// lab.reemplazar_objeto_en_tablero(enemigo, &Coordenada::new(1, 1));
+    /// let resultado_rafaga = lab.rafagear_coordenada(&Coordenada::new(1, 1), &1);
+    /// assert_eq!(resultado_rafaga.unwrap(), EnemigoTocado(2));
+    /// ```
     pub fn rafagear_coordenada(
         &mut self,
         coordenada_a_rafagear: &Coordenada,

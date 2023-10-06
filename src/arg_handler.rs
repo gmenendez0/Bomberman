@@ -18,6 +18,8 @@ impl ArgHandler {
     }
 
     ///? Chequea que la cantidad de argumentos recibidos sea la esperada.
+    /// # Errors:
+    /// Devolvera error en caso de que la cantidad de argumentos recibidos sea distinta a la esperada.
     pub(crate) fn chequear_cant_args(&self) -> Result<(), String> {
         if self.args.len() != CANT_ARGS {
             return Err("ERROR: Se esperaban 4 argumentos pero se recibió otra cantidad. Cerrando el programa...".to_string());
@@ -26,6 +28,8 @@ impl ArgHandler {
     }
 
     ///? Parsea el argumento 3 a un i32.
+    /// # Errors:
+    /// Devolvera error en caso de error al parsear el argumento 3.
     pub fn parse_x(&self) -> Result<i32, String> {
         let x = match self.args[POSICION_X].parse::<i32>() {
             Ok(x) => x,
@@ -41,6 +45,8 @@ impl ArgHandler {
     }
 
     ///? Parsea el argumento 4 a un i32.
+    /// # Errors:
+    /// Devolvera error en caso de error al parsear el argumento 4.
     pub fn parse_y(&self) -> Result<i32, String> {
         let y = match self.args[POSICION_Y].parse::<i32>() {
             Ok(y) => y,
@@ -56,6 +62,8 @@ impl ArgHandler {
     }
 
     ///? Devuelve una Coordenada a partir de los argumentos 3 y 4.
+    /// # Errors:
+    /// Devolvera error en caso de error al parsear los argumentos 3 o 4.
     pub fn get_coordenada_bomba_a_detonar(&self) -> Result<Coordenada, String> {
         let x = self.parse_x()?;
         let y = self.parse_y()?;
@@ -66,6 +74,12 @@ impl ArgHandler {
     }
 
     ///? Extrae del path del archivo su nombre y lo devuelve.
+    /// # Examples: 
+    /// ```
+    /// let path = "path/to/file.txt";
+    /// let nombre_archivo = get_nombre_archivo(path);
+    /// assert_eq!(nombre_archivo, "file.txt");
+    /// ```
     pub fn get_nombre_archivo(&self) -> String {
         let path = self.args[POSICION_PATH_INPUT].clone();
 
@@ -75,6 +89,13 @@ impl ArgHandler {
     }
 
     ///? Concatena el path del archivo output con su nombre y lo devuelve.
+    /// # Examples:
+    /// ```
+    /// let path_output = "path/to/output/";
+    /// let nombre_archivo = "file.txt";
+    /// let full_output_path = get_full_output_path(path_output, nombre_archivo);
+    /// assert_eq!(full_output_path, "path/to/output/file.txt");
+    /// ```
     pub fn get_full_output_path(&self) -> String {
         let mut path_output = self.args[POSICION_PATH_OUTPUT].clone();
 
